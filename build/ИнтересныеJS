@@ -1,0 +1,5 @@
+ВидШтрафныхСанкций событие change
+var descr = this.getValue().getDescr();
+fields.getElement("ПроцентыСт395").setVisible(descr=="Проценты");
+fields.getElement("Пени").setVisible(descr=="Пени");
+fields.getElement("Штраф").setVisible(descr=="Штраф");

@@ -1,0 +1,10 @@
+cd to directory
+php /home/andrey/www/composer.phar install --no-dev
+
+composer.json content
+
+{
+  "require": {
+    	"mustache/mustache": "2.12.*"
+    }
+}

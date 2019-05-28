@@ -3,623 +3,1636 @@
 <metadata debug="TRUE" owner="law_tmpl" dataSchema="public">
 	<versions>
 		<version dateOpen="2018-10-08 08:10:07">1.001</version>
-		<version dateOpen="2018-10-08 08:10:07">1.001</version>
+		<version dateOpen="2018-10-08 08:10:07" dateClose="2019-05-28 15:05:10">1.001 
+		<lastBuild>2019-05-28 15:10:51</lastBuild></version>
 	</versions>
 	<!--
 	<globalFilters>
 		<field id="store_id"/>
 	</globalFilters>
 	-->
-	<enums cmd="alt">
-		<enum cmd="add" id="locales">
+	<enums>
+		<enum id="locales">
 			<value id="ru">
-				<ru descr="Русский" />
+				<ru descr="Русский"/>
 			</value>
 		</enum>
-		<enum cmd="add" id="role_types">
+		<enum id="role_types">
 			<value id="admin">
-				<ru descr="Администратор" />
+				<ru descr="Администратор"/>
+			</value>
+			<value id="lawyer">
+				<ru descr="Юрист"/>
+			</value>
+		</enum>
+		<enum id="data_types" descr="Типы данных">
+			<value id="users">
+				<ru descr="Пользователи"/>
+			</value>
+			<value id="employees">
+				<ru descr="Сотрудники"/>
+			</value>
+			<value id="departments">
+				<ru descr="Отделы"/>
+			</value>
+			<value id="banks">
+				<ru descr="Банки"/>
+			</value>
+		</enum>
+		<enum id="email_types" descr="Типы email сообщений">
+			<value id="new_account">
+				<ru descr="Новый акаунт"/>
+			</value>
+			<value id="reset_pwd">
+				<ru descr="Установка пароля"/>
+			</value>
+			<value id="user_email_conf">
+				<ru descr="Подтверждение пароля"/>
 			</value>
 		</enum>
 	</enums>
-	<modules></modules>
+	<modules/>
 	<models limitConstant="doc_per_page_count">
-		<model cmd="add" id="User" parent="ModelSQL" dataTable="users" virtual="FALSE">
+		<model id="TimeZoneLocale" parent="ModelSQL" dataTable="time_zone_locales" virtual="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="TRUE" alias="Код"/>
+			<field id="descr" dataType="String" required="TRUE" length="100" alias="Описание"/>
+			<field id="name" dataType="String" required="TRUE" length="50" alias="Наименование"/>
+			<field id="hour_dif" dataType="Int" required="TRUE" alias="Смещение в часах"/>
+		</model>
+		<model id="User" parent="ModelSQL" dataTable="users" virtual="FALSE">
 			<defaultOrder>
-				<field id="name" />
+				<field id="name"/>
 			</defaultOrder>
-			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="TRUE" />
-			<field id="name" dataType="String" required="TRUE" length="50" />
-			<field id="role_id" dataType="Enum" enumId="role_types" required="TRUE" />
-			<field id="email" dataType="String" required="FALSE" length="50" />
-			<field id="pwd" dataType="Password" length="32" />
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="TRUE"/>
+			<field id="name" dataType="String" required="TRUE" length="50"/>
+			<field id="role_id" dataType="Enum" enumId="role_types" required="TRUE"/>
+			<field id="email" dataType="String" required="FALSE" length="50"/>
+			<field id="pwd" dataType="Password" length="32"/>
+			<field id="create_dt" dataType="DateTimeTZ" alias="Дата создания"/>
+			<field id="email_confirmed" dataType="Bool" alias="Адрес электр.почты подтвержден" defaultValue="FALSE"/>
+			<field id="locale_id" dataType="Enum" enumId="locales"/>
+			<field id="color_palette" dataType="Text" length="" alias="Цветовая схема"/>
+			<field id="phone_cel" dataType="String" length="10"/>
+			<field id="time_zone_locale_id" dataType="Int" refTable="time_zone_locales" refField="id"/>
 			<index id="users_name_index">
-				<field id="name" unique="TRUE" />
+				<field id="name" unique="TRUE"/>
 			</index>
 		</model>
-		<model cmd="add" id="UserList" parent="ModelSQL" dataTable="users_list" virtual="TRUE">
-			<field id="id" dataType="Int" primaryKey="TRUE" />
-			<field id="name" dataType="String" />
-			<field id="email" dataType="String" required="FALSE" length="50" />
+		<model id="UserList" parent="ModelSQL" dataTable="users_list" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="TRUE" alias="Код"/>
+			<field id="name" dataType="String" required="TRUE" length="50" unique="TRUE" alias="Логин"/>
+			<field id="email" dataType="String" length="50" alias="Email"/>
+			<field id="phone_cel" dataType="String" length="50" alias="Телефон"/>
+			<field id="role_id" dataType="Enum" enumId="role_types"/>
+			<field id="create_dt" dataType="DateTimeTZ"/>
 		</model>
-		<model cmd="add" id="UserDialog" parent="ModelSQL" dataTable="user_view" virtual="TRUE">
-			<field id="id" dataType="Int" primaryKey="TRUE" alias="Код" />
-			<field id="name" dataType="String" alias="Имя" />
-			<field id="email" dataType="String" alias="Эл.почта" />
-			<field id="role_id" dataType="String" />
+		<model id="UserDialog" parent="ModelSQL" dataTable="users_view" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" alias="Код"/>
+			<field id="name" dataType="String" alias="Имя"/>
+			<field id="name_full" dataType="String" length="250"/>
+			<field id="banned" dataType="Bool"/>
+			<field id="email" dataType="String" alias="Эл.почта"/>
+			<field id="role_descr" dataType="String" alias="Роль"/>
+			<field id="role_id" dataType="String"/>
+			<field id="time_zone_locale_id" dataType="Int"/>
+			<field id="time_zone_locale_descr" dataType="String"/>
+			<field id="phone_cel" dataType="String" length="11" alias="Моб.телефон"/>
+			<field id="color_palette" dataType="Text" length="" alias="Цветовая схема"/>
+			<field id="reminders_to_email" dataType="Bool"/>
 		</model>
-		<model cmd="add" id="ConstantList" parent="ModelSQL" dataTable="constants_list_view" virtual="TRUE">
+		<model id="UserProfile" parent="ModelSQL" dataTable="users_profile" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" alias="Код"/>
+			<field id="name" dataType="String" alias="Имя"/>
+			<field id="name_full" dataType="String" length="250"/>
+			<field id="email" dataType="String" alias="Эл.почта"/>
+			<field id="phone_cel" dataType="String" length="11" alias="Моб.телефон"/>
+			<field id="color_palette" dataType="Text" length="" alias="Цветовая схема"/>
+			<field id="reminders_to_email" dataType="Bool"/>
+			<globalFilter id="user_id" fieldId="id"/>
+		</model>
+		<model id="ConstantList" parent="ModelSQL" dataTable="constants_list_view" virtual="TRUE">
 			<defaultOrder>
-				<field id="name" />
+				<field id="name"/>
 			</defaultOrder>
-			<field id="id" dataType="String" primaryKey="TRUE" />
-			<field id="name" dataType="String" />
-			<field id="descr" dataType="Text" />
-			<field id="val" dataType="Text" />
-			<field id="val_type" dataType="Text" />
-			<field id="ctrl_class" dataType="Text" />
-			<field id="ctrl_options" dataType="JSON" />
-			<field id="view_class" dataType="Text" />
-			<field id="view_options" dataType="JSON" />
+			<field id="id" dataType="String" primaryKey="TRUE"/>
+			<field id="name" dataType="String"/>
+			<field id="descr" dataType="Text"/>
+			<field id="val" dataType="Text"/>
+			<field id="val_type" dataType="Text"/>
+			<field id="ctrl_class" dataType="Text"/>
+			<field id="ctrl_options" dataType="JSON"/>
+			<field id="view_class" dataType="Text"/>
+			<field id="view_options" dataType="JSON"/>
 		</model>
-		<model cmd="add" id="View" parent="ModelSQL" dataTable="views" virtual="FALSE">
+		<model id="View" parent="ModelSQL" dataTable="views" virtual="FALSE">
 			<defaultOrder>
-				<field id="section" />
-				<field id="descr" />
+				<field id="section"/>
+				<field id="descr"/>
 			</defaultOrder>
-			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE" alias="Код" />
-			<field id="c" dataType="Text" />
-			<field id="f" dataType="Text" />
-			<field id="t" dataType="Text" />
-			<field id="section" dataType="Text" required="TRUE" />
-			<field id="descr" dataType="Text" required="TRUE" />
-			<field id="limited" dataType="bool" />
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE" alias="Код"/>
+			<field id="c" dataType="Text"/>
+			<field id="f" dataType="Text"/>
+			<field id="t" dataType="Text"/>
+			<field id="section" dataType="Text" required="TRUE"/>
+			<field id="descr" dataType="Text" required="TRUE"/>
+			<field id="limited" dataType="Bool"/>
 			<index id="views_section_descr_idx" unique="TRUE">
-				<field id="section" />
-				<field id="descr" />
+				<field id="section"/>
+				<field id="descr"/>
 			</index>
 		</model>
-		<model cmd="add" id="ViewList" parent="ModelSQL" dataTable="views_list" virtual="TRUE">
+		<model id="ViewList" parent="ModelSQL" dataTable="views_list" virtual="TRUE">
 			<defaultOrder>
-				<field id="user_descr" />
+				<field id="user_descr"/>
 			</defaultOrder>
-			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE" alias="Код" />
-			<field id="c" dataType="Text" />
-			<field id="f" dataType="Text" />
-			<field id="t" dataType="Text" />
-			<field id="href" dataType="Text" />
-			<field id="user_descr" dataType="Text" />
-			<field id="section" dataType="Text" />
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE" alias="Код"/>
+			<field id="c" dataType="Text"/>
+			<field id="f" dataType="Text"/>
+			<field id="t" dataType="Text"/>
+			<field id="href" dataType="Text"/>
+			<field id="user_descr" dataType="Text"/>
+			<field id="section" dataType="Text"/>
 		</model>
-		<model cmd="add" id="ViewSectionList" parent="ModelSQL" dataTable="views_section_list" virtual="TRUE">
-			<field id="section" dataType="Text" />
+		<model id="ViewSectionList" parent="ModelSQL" dataTable="views_section_list" virtual="TRUE">
+			<field id="section" dataType="Text"/>
 		</model>
-		<model cmd="add" id="MainMenuConstructor" parent="ModelSQL" dataTable="main_menus" virtual="FALSE">
+		<model id="MainMenuConstructor" parent="ModelSQL" dataTable="main_menus" virtual="FALSE">
 			<defaultOrder>
-				<field id="role_id" />
+				<field id="role_id"/>
 			</defaultOrder>
-			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE" alias="Код" />
-			<field id="role_id" dataType="Enum" enumId="role_types" required="TRUE" />
-			<field id="user_id" dataType="Int" refTable="users" refField="id" />
-			<field id="content" dataType="Text" required="TRUE" alias="Содержание" />
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE" alias="Код"/>
+			<field id="role_id" dataType="Enum" enumId="role_types" required="TRUE"/>
+			<field id="user_id" dataType="Int" refTable="users" refField="id"/>
+			<field id="content" dataType="Text" required="TRUE" alias="Содержание"/>
 			<index id="main_menus_role_user_idx" unique="TRUE">
-				<field id="role_id" />
-				<field id="user_id" />
+				<field id="role_id"/>
+				<field id="user_id"/>
 			</index>
 		</model>
-		<model cmd="add" id="MainMenuConstructorList" parent="ModelSQL" dataTable="main_menus_list" virtual="TRUE">
-			<field id="id" dataType="Int" primaryKey="TRUE" sysCol="TRUE" />
-			<field id="role_id" dataType="String" />
-			<field id="role_descr" dataType="String" />
-			<field id="user_id" dataType="String" />
-			<field id="user_descr" dataType="String" />
-			<field id="content" dataType="Text" />
+		<model id="MainMenuConstructorList" parent="ModelSQL" dataTable="main_menus_list" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" sysCol="TRUE"/>
+			<field id="role_id" dataType="String"/>
+			<field id="role_descr" dataType="String"/>
+			<field id="user_id" dataType="String"/>
+			<field id="user_descr" dataType="String"/>
+			<field id="content" dataType="Text"/>
+		</model>
+		<model id="MainMenuConstructorDialog" parent="ModelSQL" dataTable="main_menus_dialog" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" sysCol="TRUE"/>
+			<field id="role_id" dataType="String"/>
+			<field id="role_descr" dataType="String"/>
+			<field id="user_id" dataType="String"/>
+			<field id="user_descr" dataType="String"/>
+			<field id="content" dataType="Text"/>
 		</model>
 		<model id="MainMenuContent" parentJS="ModelXMLTree" parent="Model" virtual="TRUE" server="FALSE">
-			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" />
-			<field id="descr" dataType="String" />
-			<field id="viewid" dataType="String" />
-			<field id="viewdescr" dataType="String" />
-			<field id="default" dataType="Bool" />
-			<field id="glyphclass" dataType="String" />
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE"/>
+			<field id="descr" dataType="String"/>
+			<field id="viewid" dataType="String"/>
+			<field id="viewdescr" dataType="String"/>
+			<field id="default" dataType="Bool"/>
+			<field id="glyphclass" dataType="String"/>
 		</model>
-		<model cmd="add" id="VariantStorage" parent="ModelSQL" dataTable="variant_storages" virtual="FALSE">
-			<field id="user_id" dataType="Int" refTable="users" refField="id" primaryKey="TRUE" required="TRUE" />
-			<field id="storage_name" dataType="Text" primaryKey="TRUE" required="TRUE" />
-			<field id="variant_name" dataType="Text" primaryKey="TRUE" required="TRUE" />
-			<field id="default_variant" dataType="Bool" />
-			<field id="filter_data" dataType="Text" />
-			<field id="col_visib_data" dataType="Text" />
-			<field id="col_order_data" dataType="Text" />
+		<model id="VariantStorage" parent="ModelSQL" dataTable="variant_storages" virtual="FALSE">
+			<field id="user_id" dataType="Int" refTable="users" refField="id" primaryKey="TRUE" required="TRUE"/>
+			<field id="storage_name" dataType="Text" primaryKey="TRUE" required="TRUE"/>
+			<field id="variant_name" dataType="Text" primaryKey="TRUE" required="TRUE"/>
+			<field id="default_variant" dataType="Bool"/>
+			<field id="filter_data" dataType="Text"/>
+			<field id="col_visib_data" dataType="Text"/>
+			<field id="col_order_data" dataType="Text"/>
 		</model>
-		<model cmd="add" id="VariantStorageList" parent="ModelSQL" dataTable="variant_storages_list" virtual="TRUE">
-			<field id="user_id" dataType="Int" refTable="users" refField="id" primaryKey="TRUE" required="TRUE" />
-			<field id="storage_name" dataType="Text" primaryKey="TRUE" required="TRUE" />
-			<field id="default_variant" dataType="Bool" />
-			<field id="variant_name" dataType="Text" />
+		<model id="VariantStorageList" parent="ModelSQL" dataTable="variant_storages_list" virtual="TRUE">
+			<field id="user_id" dataType="Int" refTable="users" refField="id" primaryKey="TRUE" required="TRUE"/>
+			<field id="storage_name" dataType="Text" primaryKey="TRUE" required="TRUE"/>
+			<field id="default_variant" dataType="Bool"/>
+			<field id="variant_name" dataType="Text"/>
 		</model>
 		<model id="About" parent="ModelSQL" virtual="TRUE">
-			<field id="author" dataType="String" />
-			<field id="tech_mail" dataType="String" />
-			<field id="app_name" dataType="String" />
-			<field id="fw_version" dataType="String" />
-			<field id="app_version" dataType="String" />
-			<field id="db_name" dataType="String" />
+			<field id="author" dataType="String"/>
+			<field id="tech_mail" dataType="String"/>
+			<field id="app_name" dataType="String"/>
+			<field id="fw_version" dataType="String"/>
+			<field id="app_version" dataType="String"/>
+			<field id="db_name" dataType="String"/>
+		</model>
+		<model id="Bank" parent="ModelSQL" dataTable="banks" virtual="FALSE">
+			<defaultOrder>
+				<field id="codegr"/>
+				<field id="bik"/>
+			</defaultOrder>
+			<field id="bik" dataType="String" primaryKey="TRUE" autoInc="FALSE" length="9"/>
+			<field id="codegr" dataType="String" length="9"/>
+			<field id="name" dataType="Text"/>
+			<field id="korshet" dataType="String" length="20"/>
+			<field id="adres" dataType="Text"/>
+			<field id="gor" dataType="Text"/>
+			<field id="tgroup" dataType="Bool"/>
+			<index id="banks_codegr_idx">
+				<field id="codegr"/>
+			</index>
+		</model>
+		<model id="BankList" parent="ModelSQL" dataTable="banks_list" virtual="TRUE">
+			<defaultOrder>
+				<field id="codegr"/>
+				<field id="bik"/>
+			</defaultOrder>
+			<field id="bik" dataType="String" primaryKey="TRUE" autoInc="FALSE" length="9" alias="БИК"/>
+			<field id="codegr" dataType="String" length="9"/>
+			<field id="gr_descr" dataType="String" length="50" alias="Регион"/>
+			<field id="name" dataType="String" length="50" alias="Наименование"/>
+			<field id="korshet" dataType="String" length="20" alias="Кoр.счет"/>
+			<field id="adres" dataType="String" length="70" alias="Адрес"/>
+			<field id="gor" dataType="String" length="31" alias="Город"/>
+			<field id="tgoup" dataType="Int" length="31"/>
+			<index id="banks_codegr_idx">
+				<field id="codegr"/>
+			</index>
+		</model>
+		<model id="Post" parent="ModelSQL" dataTable="posts" virtual="FALSE">
+			<defaultOrder>
+				<field id="name"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="name" dataType="String" length="200"/>
+			<index unique="TRUE" id="post_name_idx">
+				<expression>lower(name)</expression>
+			</index>
+		</model>
+		<model id="Employee" parent="ModelSQL" dataTable="employees" virtual="FALSE">
+			<defaultOrder>
+				<field id="name"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="name" dataType="String" length="200" required="TRUE"/>
+			<field id="user_id" dataType="Int" refTable="users" refField="id"/>
+			<field id="department_id" dataType="Int" refTable="departments" refField="id"/>
+			<field id="post_id" dataType="Int" refTable="posts" refField="id"/>
+			<field id="picture" dataType="Text"/>
+			<field id="picture_info" dataType="JSON"/>
+			<field id="snils" dataType="String" length="11"/>
+			<index unique="TRUE" id="employes_name_idx">
+				<expression>lower(name)</expression>
+			</index>
+			<index unique="TRUE" id="employes_user_idx">
+				<field id="user_id"/>
+			</index>
+			<index unique="TRUE" id="employes_snils_idx">
+				<field id="snils"/>
+			</index>
+		</model>
+		<model id="EmployeeDialog" parent="ModelSQL" dataTable="employees_dialog" virtual="TRUE" baseModelId="Employee">
+			<field id="id" dataType="Int"/>
+			<field id="name" dataType="String"/>
+			<field id="users_ref" dataType="JSON"/>
+			<field id="posts_ref" dataType="JSON"/>
+			<field id="snils" dataType="String"/>
+			<field id="departments_ref" dataType="JSON"/>
+		</model>
+		<model id="EmployeeList" parent="ModelSQL" dataTable="employees_list" virtual="TRUE" baseModelId="Employee">
+			<defaultOrder>
+				<field id="name"/>
+			</defaultOrder>
+			<field id="id" dataType="Int"/>
+			<field id="name" dataType="String"/>
+			<field id="departments_ref" dataType="JSON"/>
+		</model>
+		<model id="Department" parent="ModelSQL" dataTable="departments" virtual="FALSE">
+			<defaultOrder>
+				<field id="name"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="name" dataType="String" length="200" required="TRUE"/>
+			<field id="boss_employee_id" dataType="Int" refTable="employees" refField="id"/>
+			<field id="email" dataType="String" length="50"/>
+			<index unique="TRUE" id="departments_name_idx">
+				<expression>lower(name)</expression>
+			</index>
+		</model>
+		<model id="DepartmentDialog" parent="ModelSQL" dataTable="departments_dialog" virtual="TRUE" baseModelId="Department">
+			<field id="id" dataType="Int"/>
+			<field id="name" dataType="String"/>
+			<field id="email" dataType="String"/>
+			<field id="boss_employees_ref" dataType="JSON"/>
+		</model>
+		<model id="DepartmentList" parent="ModelSQL" dataTable="departments_list" virtual="TRUE" baseModelId="Department">
+			<defaultOrder>
+				<field id="name"/>
+			</defaultOrder>
+			<field id="id" dataType="Int"/>
+			<field id="name" dataType="String"/>
+			<field id="boss_employees_ref" dataType="JSON"/>
+			<field id="email" dataType="String"/>
+		</model>
+		<model id="Contact" parent="ModelSQL" dataTable="contacts" virtual="FALSE">
+			<defaultOrder>
+				<field id="contact"/>
+			</defaultOrder>
+			<field id="parent_id" primaryKey="TRUE" required="TRUE" dataType="Int"/>
+			<field id="parent_type" primaryKey="TRUE" required="TRUE" dataType="Enum" enumId="data_types"/>
+			<field id="parent_ind" primaryKey="TRUE" required="TRUE" dataType="Int"/>
+			<field id="firm_name" dataType="String" length="250"/>
+			<field id="dep" dataType="String" length="250"/>
+			<field id="post" dataType="Text"/>
+			<field id="name" dataType="String" length="200"/>
+			<field id="email" dataType="Text"/>
+			<field id="tel" dataType="String" length="15"/>
+			<field id="contact" dataType="Text"/>
+			<index id="contacts_contact_idx" type="btree" unique="TRUE">
+				<field id="contact"/>
+			</index>
+		</model>
+		<model id="ShortMessageRecipientState" parent="ModelSQL" dataTable="short_message_recipient_states" virtual="FALSE">
+			<defaultOrder>
+				<field id="name"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="name" dataType="String" length="150"/>
+			<field id="bg_class" dataType="Text"/>
+			<predefinedItems>
+				<predefinedItem alias="free">
+					<id>1</id>
+					<name>Свободен</name>
+					<bg_class>bg-success</bg_class>
+				</predefinedItem>
+			</predefinedItems>
+		</model>
+		<model id="ShortMessageRecipientCurrentState" parent="ModelSQL" dataTable="short_message_recipient_current_states" virtual="FALSE">
+			<field id="recipient_id" dataType="Int" refTable="employees" refField="id" required="TRUE" primaryKey="TRUE"/>
+			<field id="recipient_state_id" dataType="Int" refTable="short_message_recipient_states" refField="id" required="TRUE"/>
+		</model>
+		<model id="ShortMessage" parent="ModelSQL" dataTable="short_messages" virtual="FALSE">
+			<defaultOrder>
+				<field id="date_time" sortDirect="ASC"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="date_time" dataType="DateTimeTZ" defaultValue="CURRENT_TIMESTAMP"/>
+			<field id="recipient_id" dataType="Int" refTable="employees" refField="id"/>
+			<field id="to_recipient_id" dataType="Int" refTable="employees" refField="id"/>
+			<field id="reminder_id" dataType="Int" refTable="reminders" refField="id" required="TRUE"/>
+			<index id="short_messages_to_recipient_idx">
+				<field id="to_recipient_id"/>
+				<field id="date_time"/>
+			</index>
+			<index id="short_messages_recipient_idx">
+				<field id="recipient_id"/>
+				<field id="date_time"/>
+			</index>
+		</model>
+		<model id="ShortMessageList" parent="ModelSQL" dataTable="short_messages_list" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="date_time" dataType="DateTimeTZ" defaultValue="CURRENT_TIMESTAMP"/>
+			<field id="recipients_ref" dataType="JSON"/>
+			<field id="to_recipients_ref" dataType="JSON"/>
+			<field id="doc_flow_importance_types_ref" dataType="JSON"/>
+			<field id="content" dataType="Text"/>
+			<field id="files" dataType="JSON"/>
+			<field id="recipient_id" dataType="Int"/>
+			<field id="to_recipient_id" dataType="Int"/>
+			<field id="view_date_time" dataType="DateTimeTZ"/>
+			<field id="viewed" dataType="Bool"/>
+		</model>
+		<model id="ShortMessageChat" parent="ModelSQL" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="date_time" dataType="DateTimeTZ" defaultValue="CURRENT_TIMESTAMP"/>
+			<field id="recipients_ref" dataType="JSON"/>
+			<field id="to_recipients_ref" dataType="JSON"/>
+			<field id="doc_flow_importance_types_ref" dataType="JSON"/>
+			<field id="content" dataType="Text"/>
+			<field id="files" dataType="JSON"/>
+			<field id="recipient_id" dataType="Int"/>
+			<field id="to_recipient_id" dataType="Int"/>
+			<field id="view_date_time" dataType="DateTimeTZ"/>
+			<field id="viewed" dataType="Bool"/>
+		</model>
+		<model id="RecipientPicture" parent="ModelSQL" virtual="TRUE">
+			<field id="picture" dataType="Text"/>
+		</model>
+		<model id="ShortMessageRecipientList" parent="ModelSQL" dataTable="short_message_recipient_list" virtual="TRUE">
+			<field id="recipient_id" dataType="Int"/>
+			<field id="recipient_descr" dataType="String"/>
+			<field id="recipients_ref" dataType="JSON"/>
+			<field id="departments_ref" dataType="JSON"/>
+			<field id="department_descr" dataType="String"/>
+			<field id="is_online" dataType="Bool"/>
+			<field id="recipient_states_ref" dataType="JSON"/>
+			<field id="recipient_init" dataType="String"/>
+		</model>
+		<model id="EmployeeLocalList" parentJS="ModelJSON" virtual="TRUE" server="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE"/>
+			<field id="employees_ref" dataType="JSON"/>
+		</model>
+		<model id="UserCatalogMetadata" parent="ModelSQL" dataTable="user_catalog_metadata" virtual="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="user_id" dataType="String" length="100" required="TRUE"/>
+			<field id="name" dataType="Text"/>
+			<field id="fields" dataType="JSON" retAfterInsert="TRUE"/>
+			<index id="user_catalog_metadata_user_id_idx" unique="TRUE">
+				<field id="user_id"/>
+			</index>
+		</model>
+		<model id="UserCatalogMetadataList" parent="ModelSQL" virtual="TRUE" dataTable="user_catalog_metadata_list">
+			<defaultOrder>
+				<field id="user_id" sortDirect="ASC"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE"/>
+			<field id="user_id" dataType="String"/>
+			<field id="name" dataType="String"/>
+			<field id="fields" dataType="JSON"/>
+		</model>
+		<model id="UserCatalogMetadataDialog" parent="ModelSQL" virtual="TRUE" dataTable="user_catalog_metadata_dialog">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE"/>
+			<field id="user_id" dataType="String"/>
+			<field id="name" dataType="String"/>
+			<field id="fields" dataType="JSON"/>
+			<!--<field id="field_values" dataType="JSON" />-->
+		</model>
+		<model id="UserCatalogData" parent="ModelSQL" dataTable="user_catalog_data" virtual="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="user_catalog_metadata_id" dataType="Int" refTable="user_catalog_metadata" refField="id"/>
+			<field id="field_values" dataType="JSONB"/>
+			<index id="user_catalog_data_idx" unique="TRUE">
+				<field id="user_catalog_metadata_id"/>
+				<expression>(field_values-&gt;&gt;'name'::text)</expression>
+			</index>
+		</model>
+		<model id="UserCatalogDataList" parent="ModelSQL" virtual="TRUE" dataTable="user_catalog_data_list">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE"/>
+			<field id="user_catalog_metadata_id" dataType="Int"/>
+			<field id="field_values" dataType="JSONB"/>
+		</model>
+		<model id="UserCatalogField" parentJS="ModelJSON" virtual="TRUE" server="FALSE">
+			<field id="id" dataType="String"/>
+			<field id="descr" dataType="String"/>
+		</model>
+		<model id="DocTemplate" parent="ModelSQL" dataTable="doc_templates" virtual="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" required="FALSE" autoInc="TRUE"/>
+			<field id="name" dataType="String" length="100" alias="Наименование" required="TRUE"/>
+			<field id="comment_text" dataType="Text" alias="Комментарий"/>
+			<field id="employee_id" dataType="Int" refTable="employees" refField="id"/>
+			<field id="permissions" dataType="JSONB"/>
+			<field id="permission_ar" dataType="Array"/>
+			<field id="fields" dataType="JSON"/>
+			<field id="document_prefix" dataType="String" length="10" required="TRUE"/>
+			<field id="for_all_employees" dataType="Bool" defaultValue="FALSE"/>
+			<field id="template_file" dataType="JSONB"/>
+			<field id="template_data" dataType="Text"/>
+			<field id="user_functions" dataType="Text"/>
+			<index id="doc_templates_employee_idx" unique="FALSE">
+				<field id="employee_id"/>
+			</index>
+			<index id="doc_templates_permissions_idx" unique="FALSE" type="GIN">
+				<field id="permission_ar"/>
+			</index>
+			<index id="doc_templates_name_idx" unique="TRUE">
+				<expression>lower(name)</expression>
+			</index>
+		</model>
+		<model id="DocTemplateList" parent="ModelSQL" dataTable="doc_templates_list" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" required="FALSE" autoInc="TRUE"/>
+			<field id="name" dataType="String" length="100" alias="Наименование"/>
+			<field id="employee_id" dataType="Int" refTable="employees" refField="id" required="TRUE"/>
+			<field id="employees_ref" dataType="JSON"/>
+			<field id="permission_ar" dataType="Array"/>
+			<field id="for_all_employees" dataType="Bool" defaultValue="FALSE"/>
+			<field id="document_prefix" dataType="String"/>
+		</model>
+		<model id="DocTemplateDialog" parent="ModelSQL" dataTable="doc_templates_dialog" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" required="FALSE" autoInc="TRUE"/>
+			<field id="name" dataType="String" length="100" alias="Наименование"/>
+			<field id="comment_text" dataType="Text" alias="Комментарий"/>
+			<field id="employees_ref" dataType="JSON"/>
+			<field id="permissions" dataType="JSON"/>
+			<field id="fields" dataType="JSON"/>
+			<field id="for_all_employees" dataType="Bool" defaultValue="FALSE"/>
+			<field id="document_prefix" dataType="String" length="10"/>
+			<field id="template_file" dataType="JSONB"/>
+			<field id="user_functions" dataType="Text"/>
+		</model>
+		<model id="AccessPermission" parentJS="ModelJSON" virtual="TRUE" server="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE"/>
+			<field id="obj" dataType="JSON"/>
+		</model>
+		<model id="MailForSending" parent="ModelSQL" dataTable="mail_for_sending" virtual="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" required="TRUE" autoInc="TRUE"/>
+			<field id="date_time" dataType="DateTimeTZ" defaultValue="CURRENT_TIMESTAMP"/>
+			<field id="from_addr" dataType="String" length="50"/>
+			<field id="from_name" dataType="Text"/>
+			<field id="to_addr" dataType="Text"/>
+			<field id="to_name" dataType="Text"/>
+			<field id="reply_addr" dataType="Text"/>
+			<field id="reply_name" dataType="Text"/>
+			<field id="body" dataType="Text"/>
+			<field id="sender_addr" dataType="Text"/>
+			<field id="subject" dataType="Text"/>
+			<field id="sent" dataType="Bool" defaultValue="false"/>
+			<field id="sent_date_time" dataType="DateTimeTZ"/>
+			<field id="email_type" dataType="Enum" enumId="email_types"/>
+			<field id="error_str" dataType="Text"/>
+			<index id="mail_for_sending_date_time_idx" unique="FALSE">
+				<field id="date_time"/>
+			</index>
+			<index id="mail_for_sending_sent_idx" unique="FALSE">
+				<field id="sent"/>
+			</index>
+		</model>
+		<model id="MailForSendingList" parent="ModelSQL" dataTable="mail_for_sending_list" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE"/>
+			<field id="date_time" dataType="DateTimeTZ" alias="Дата письма"/>
+			<field id="from_addr" dataType="String" length="50" alias="Адрес отправителя"/>
+			<field id="from_name" dataType="String" length="255" alias="Отправитель"/>
+			<field id="to_addr" dataType="String" length="50" alias="Адрес получателя"/>
+			<field id="to_name" dataType="String" length="255" alias="Получатель"/>
+			<field id="reply_addr" dataType="String" length="50"/>
+			<field id="reply_name" dataType="String" length="255"/>
+			<field id="body" dataType="Text"/>
+			<field id="sender_addr" dataType="String" length="50"/>
+			<field id="subject" dataType="String" length="255" alias="Тема"/>
+			<field id="sent" dataType="Bool" defaultValue="false" alias="Отправлено"/>
+			<field id="sent_date_time" dataType="DateTimeTZ" alias="Дата отправки"/>
+			<field id="email_type" dataType="Enum" enumId="email_types" alias="Тип"/>
+			<field id="error_str" dataType="Text"/>
+		</model>
+		<model id="MailForSendingAttachment" parent="ModelSQL" dataTable="mail_for_sending_attachments" virtual="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="TRUE"/>
+			<field id="mail_for_sending_id" dataType="Int" refTable="mail_for_sending" refField="id"/>
+			<field id="file_name" dataType="String" length="255"/>
+			<index id="mail_for_sending_attachments_id_idx" unique="FALSE">
+				<field id="mail_for_sending_id"/>
+			</index>
+		</model>
+		<model id="Holiday" parent="ModelSQL" dataTable="holidays" virtual="FALSE">
+			<defaultOrder>
+				<field id="date"/>
+			</defaultOrder>
+			<field id="date" primaryKey="TRUE" dataType="Date"/>
+			<field id="name" dataType="String" length="200"/>
+		</model>
+		<model id="DocTemplateField" parentJS="ModelJSON" virtual="TRUE" server="FALSE">
+			<field id="user_id" dataType="String" primaryKey="TRUE"/>
+		</model>
+		<model id="Document" parent="ModelSQL" dataTable="documents" virtual="FALSE">
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE"/>
+			<field id="date_time" dataType="DateTimeTZ" dbRequired="TRUE" retAfterInsert="TRUE"/>
+			<field id="employee_id" dataType="Int" refTable="employees" refField="id" required="TRUE"/>
+			<field id="comment_text" dataType="Text" alias="Комментарий"/>
+			<field id="doc_template_id" dataType="Int" refTable="doc_templates" refField="id" required="TRUE"/>
+			<field id="field_values" dataType="JSON"/>
+			<field id="doc_number" dataType="String" length="20" alias="Номер" dbRequired="TRUE" retAfterInsert="TRUE"/>
+			<field id="document_data" dataType="Bytea"/>
+			<field id="permissions" dataType="JSONB"/>
+			<field id="permission_ar" dataType="Array"/>
+			<field id="for_all_employees" dataType="Bool" defaultValue="FALSE"/>
+			<field id="document_gen_date" dataType="DateTimeTZ"/>
+			<field id="document_gen_employee_id" dataType="Int" refTable="employees" refField="id"/>
+			<index id="documents_employee_idx" unique="FALSE">
+				<field id="employee_id"/>
+			</index>
+			<index id="documents_date_time_idx" unique="FALSE">
+				<field id="date_time"/>
+			</index>
+			<index id="documents_template_idx" unique="FALSE">
+				<field id="doc_template_id"/>
+			</index>
+			<index id="documents_doc_number_idx" unique="TRUE">
+				<field id="doc_number"/>
+			</index>
+		</model>
+		<model id="DocumentList" parent="ModelSQL" dataTable="documents_list" virtual="TRUE">
+			<defaultOrder>
+				<field id="date_time" sortDirect="DESC"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" required="FALSE" autoInc="TRUE"/>
+			<field id="date_time" dataType="DateTimeTZ" required="TRUE"/>
+			<field id="doc_number" dataType="String" length="15" alias="Номер"/>
+			<field id="employee_id" dataType="Int" refTable="employees" refField="id" required="TRUE"/>
+			<field id="employees_ref" dataType="JSON"/>
+			<field id="doc_template_id" dataType="Int" refTable="doc_templates" refField="id" required="TRUE"/>
+			<field id="doc_templates_ref" dataType="JSON"/>
+		</model>
+		<model id="DocumentDialog" parent="ModelSQL" dataTable="documents_dialog" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE" required="FALSE" autoInc="TRUE"/>
+			<field id="date_time" dataType="DateTimeTZ" required="TRUE"/>
+			<field id="doc_number" dataType="String" length="15" alias="Номер"/>
+			<field id="employees_ref" dataType="JSON"/>
+			<field id="comment_text" dataType="Text"/>
+			<field id="doc_templates_ref" dataType="JSON"/>
+			<field id="doc_template_id" dataType="Int"/>
+			<field id="field_values" dataType="JSON"/>
+			<field id="permissions" dataType="JSON"/>
+			<field id="permission_ar" dataType="Text"/>
+			<field id="for_all_employees" dataType="Bool"/>
+			<field id="tmpl_permissions" dataType="JSON"/>
+			<field id="tmpl_for_all_employees" dataType="Bool"/>
+			<field id="document_data_exists" dataType="Bool"/>
+			<field id="document_gen_date" dataType="DateTimeTZ"/>
+			<field id="document_gen_employees_ref" dataType="JSON"/>
+		</model>
+		<model id="DocAttrEvent" parentJS="ModelJSON" virtual="TRUE" server="FALSE">
+			<field id="id" dataType="String" primaryKey="TRUE"/>
+			<field id="func" dataType="Text"/>
+		</model>
+		<model id="DataTypeFieldAlias" parent="ModelSQL" dataTable="data_type_field_aliases" virtual="FALSE">
+			<defaultOrder>
+				<field id="data_type"/>
+				<field id="alias"/>
+			</defaultOrder>
+			<field id="data_type" dataType="Enum" enumId="data_types" primaryKey="TRUE"/>
+			<field id="field" dataType="String" length="100" primaryKey="TRUE"/>
+			<field id="alias" dataType="String" length="100"/>
+		</model>
+		<model id="EgrulSearchData" parent="ModelSQL" dataTable="egrul_search_data" virtual="FALSE">
+			<field id="inn" dataType="String" length="12" required="TRUE" primaryKey="TRUE"/>
+			<field id="ogrn" dataType="String" length="15" required="TRUE"/>
+			<field id="name" dataType="Text" required="TRUE"/>
+			<field id="data" dataType="JSON"/>
+			<field id="user_id" dataType="Int" refTable="users" refField="id"/>
+			<field id="create_dt" dataType="DateTimeTZ" defaultValue="current_timestamp"/>
+			<field id="update_dt" dataType="DateTimeTZ"/>
+			<field id="update_count" dataType="Int" defaultValue="0"/>
+			<index id="egrul_search_data_ogrn_idx" unique="TRUE">
+				<field id="ogrn"/>
+			</index>
+			<index id="egrul_search_data_ogname_idx">
+				<expression>lower(name)</expression>
+			</index>
 		</model>
 	</models>
-	<constants cmd="add">
-		<constant cmd="add" id="doc_per_page_count" name="Количество документов на странице" descr="Количество документов на странице в журнале документов" dataType="Int" defaultValue="60" autoload="TRUE" />
-		<constant cmd="add" id="grid_refresh_interval" name="Период обновления таблиц" descr="Период обновления таблиц в секундах" dataType="Int" defaultValue="15" autoload="TRUE" />
-		<constant cmd="add" id="session_live_time" name="Время жизни сессии" descr="Время, в течении которого сессия не будет удаляться на сервере" dataType="Interval" defaultValue="48:00" viewOptions="{'dateFormat':'H:i'}" ctrlOptions="{'editMask':'99:99'}" />
+	<constants>
+		<constant id="doc_per_page_count" name="Количество документов на странице" descr="Количество документов на странице в журнале документов" dataType="Int" defaultValue="60" autoload="TRUE"/>
+		<constant id="grid_refresh_interval" name="Период обновления таблиц" descr="Период обновления таблиц в секундах" dataType="Int" defaultValue="15" autoload="TRUE"/>
+		<constant id="session_live_time" name="Время жизни сессии" descr="Время, в течении которого сессия не будет удаляться на сервере" dataType="Interval" defaultValue="48:00" viewOptions="{'dateFormat':'H:i'}" ctrlOptions="{'editMask':'99:99'}"/>
+		<constant id="reminder_refresh_interval" name="Период обновления напоминаний" descr="Период обновления напоминаний в секундах" dataType="Int" defaultValue="15" autoload="TRUE"/>
 	</constants>
 	<controllers>
 		<controller id="Constant" parentId="ControllerSQL">
 			<publicMethod id="set_value">
-				<field id="id" dataType="String" required="TRUE" />
-				<field id="val" dataType="String" />
+				<field id="id" dataType="String" required="TRUE"/>
+				<field id="val" dataType="String"/>
 			</publicMethod>
-			<publicMethod id="get_list" modelId="ConstantList" />
-			<publicMethod id="get_object" modelId="ConstantList" />
+			<publicMethod id="get_list" modelId="ConstantList"/>
+			<publicMethod id="get_object" modelId="ConstantList"/>
 			<publicMethod id="get_values">
-				<field id="id_list" dataType="String" />
-				<field id="field_sep" dataType="String" length="1" />
+				<field id="id_list" dataType="String"/>
+				<field id="field_sep" dataType="String" length="1"/>
 			</publicMethod>
 		</controller>
 		<controller id="Enum" parentId="ControllerSQL">
 			<publicMethod id="get_enum_list">
-				<field id="id" dataType="String" />
+				<field id="id" dataType="String"/>
 			</publicMethod>
 		</controller>
 		<controller id="MainMenuConstructor" parentId="ControllerSQL">
-			<publicMethod id="insert" modelId="MainMenuConstructor" />
-			<publicMethod id="update" modelId="MainMenuConstructor" />
-			<publicMethod id="delete" modelId="MainMenuConstructor" />
-			<publicMethod id="get_list" modelId="MainMenuConstructorList" />
-			<publicMethod id="get_object" modelId="MainMenuConstructor" />
+			<publicMethod id="insert" modelId="MainMenuConstructor"/>
+			<publicMethod id="update" modelId="MainMenuConstructor"/>
+			<publicMethod id="delete" modelId="MainMenuConstructor"/>
+			<publicMethod id="get_list" modelId="MainMenuConstructorList"/>
+			<publicMethod id="get_object" modelId="MainMenuConstructorDialog"/>
 		</controller>
 		<controller id="MainMenuContent" parentIdJS="ControllerObjClient" server="FALSE">
-			<publicMethod id="insert" modelId="MainMenuContent" />
-			<publicMethod id="update" modelId="MainMenuContent" />
-			<publicMethod id="delete" modelId="MainMenuContent" />
-			<publicMethod id="get_list" modelId="MainMenuContent" />
-			<publicMethod id="get_object" modelId="MainMenuContent" />
+			<publicMethod id="insert" modelId="MainMenuContent"/>
+			<publicMethod id="update" modelId="MainMenuContent"/>
+			<publicMethod id="delete" modelId="MainMenuContent"/>
+			<publicMethod id="get_list" modelId="MainMenuContent"/>
+			<publicMethod id="get_object" modelId="MainMenuContent"/>
 		</controller>
 		<controller id="View" parentId="ControllerSQL">
-			<publicMethod id="get_list" modelId="ViewList" />
-			<publicMethod id="complete" modelId="ViewList" patternFieldId="user_descr" />
-			<publicMethod id="get_section_list" modelId="ViewSectionList" />
+			<publicMethod id="get_list" modelId="ViewList"/>
+			<publicMethod id="complete" modelId="ViewList" patternFieldId="user_descr"/>
+			<publicMethod id="get_section_list" modelId="ViewSectionList"/>
 		</controller>
 		<controller id="VariantStorage" parentId="ControllerSQL">
-			<publicMethod id="insert" modelId="VariantStorage" />
+			<publicMethod id="insert" modelId="VariantStorage"/>
 			<publicMethod id="upsert_filter_data" modelId="VariantStorage">
-				<field id="storage_name" dataType="String" required="TRUE" />
-				<field id="variant_name" dataType="String" required="TRUE" />
-				<field id="filter_data" dataType="String" required="TRUE" />
-				<field id="default_variant" dataType="Bool" required="TRUE" />
+				<field id="storage_name" dataType="String" required="TRUE"/>
+				<field id="variant_name" dataType="String" required="TRUE"/>
+				<field id="filter_data" dataType="String" required="TRUE"/>
+				<field id="default_variant" dataType="Bool" required="TRUE"/>
 			</publicMethod>
 			<publicMethod id="upsert_col_visib_data" modelId="VariantStorage">
-				<field id="storage_name" dataType="String" required="TRUE" />
-				<field id="variant_name" dataType="String" required="TRUE" />
-				<field id="col_visib" dataType="String" required="TRUE" />
-				<field id="default_variant" dataType="Bool" required="TRUE" />
+				<field id="storage_name" dataType="String" required="TRUE"/>
+				<field id="variant_name" dataType="String" required="TRUE"/>
+				<field id="col_visib" dataType="String" required="TRUE"/>
+				<field id="default_variant" dataType="Bool" required="TRUE"/>
 			</publicMethod>
 			<publicMethod id="upsert_col_order_data" modelId="VariantStorage">
-				<field id="storage_name" dataType="String" required="TRUE" />
-				<field id="variant_name" dataType="String" required="TRUE" />
-				<field id="col_order" dataType="String" required="TRUE" />
-				<field id="default_variant" dataType="Bool" required="TRUE" />
+				<field id="storage_name" dataType="String" required="TRUE"/>
+				<field id="variant_name" dataType="String" required="TRUE"/>
+				<field id="col_order" dataType="String" required="TRUE"/>
+				<field id="default_variant" dataType="Bool" required="TRUE"/>
 			</publicMethod>
-			<publicMethod id="update" modelId="VariantStorage" />
-			<publicMethod id="delete" modelId="VariantStorage" />
+			<publicMethod id="update" modelId="VariantStorage"/>
+			<publicMethod id="delete" modelId="VariantStorage"/>
 			<publicMethod id="get_list">
-				<field id="storage_name" dataType="String" required="TRUE" />
-				<field id="variant_name" dataType="String" />
+				<field id="storage_name" dataType="String" required="TRUE"/>
+				<field id="variant_name" dataType="String"/>
 			</publicMethod>
-			<publicMethod id="get_object" modelId="VariantStorage" />
+			<publicMethod id="get_object" modelId="VariantStorage"/>
 			<publicMethod id="get_filter_data" modelId="VariantStorage">
-				<field id="storage_name" dataType="String" required="TRUE" />
-				<field id="variant_name" dataType="String" />
+				<field id="storage_name" dataType="String" required="TRUE"/>
+				<field id="variant_name" dataType="String"/>
 			</publicMethod>
 			<publicMethod id="get_col_visib_data" modelId="VariantStorage">
-				<field id="storage_name" dataType="String" required="TRUE" />
-				<field id="variant_name" dataType="String" />
+				<field id="storage_name" dataType="String" required="TRUE"/>
+				<field id="variant_name" dataType="String"/>
 			</publicMethod>
 			<publicMethod id="get_col_order_data" modelId="VariantStorage">
-				<field id="storage_name" dataType="String" required="TRUE" />
-				<field id="variant_name" dataType="String" />
+				<field id="storage_name" dataType="String" required="TRUE"/>
+				<field id="variant_name" dataType="String"/>
 			</publicMethod>
 		</controller>
 		<controller id="About" parentId="ControllerSQL">
-			<publicMethod id="get_object" modelId="About" />
+			<publicMethod id="get_object" modelId="About"/>
 		</controller>
 		<controller id="User" parentId="ControllerSQL" noState="FALSE">
-			<publicMethod id="insert" modelId="User" />
-			<publicMethod id="update" modelId="User" />
-			<publicMethod id="delete" modelId="User" />
-			<publicMethod id="get_list" modelId="UserList" />
-			<publicMethod id="get_object" modelId="UserDialog" />
-			<publicMethod id="complete" modelId="UserList" patternFieldId="name" />
-			<publicMethod id="get_profile" modelId="UserDialog" />
-			<publicMethod id="reset_pwd">
-				<field id="user_id" dataType="Int" required="TRUE" />
+			<publicMethod id="insert" modelId="User"/>
+			<publicMethod id="update" modelId="User"/>
+			<publicMethod id="delete" modelId="User"/>
+			<publicMethod id="get_list" modelId="UserList"/>
+			<publicMethod id="get_object" modelId="UserDialog"/>
+			<publicMethod id="complete" modelId="UserList" patternFieldId="name"/>
+			<publicMethod id="get_profile" modelId="UserProfile"/>
+			<publicMethod id="password_recover">
+				<field id="email" dataType="String" required="TRUE" length="100"/>
+				<field id="captcha_key" dataType="String" required="TRUE" length="10"/>
+			</publicMethod>
+			<publicMethod id="register" requestType="post">
+				<field id="name" dataType="String" required="TRUE" length="50"/>
+				<field id="name_full" dataType="String" required="TRUE" length="250"/>
+				<field id="pwd" dataType="String" required="TRUE" length="50"/>
+				<field id="email" dataType="String" required="TRUE" length="100"/>
+				<field id="pers_data_proc_agreement" dataType="Bool" defaultValue="FALSE" required="TRUE"/>
+				<field id="captcha_key" dataType="String" required="TRUE" length="10"/>
+			</publicMethod>
+			<publicMethod id="name_check">
+				<field id="name" dataType="String" required="TRUE" length="100"/>
 			</publicMethod>
 			<publicMethod id="login">
-				<field id="name" dataType="String" alias="Имя пользователя" length="50" required="TRUE" />
-				<field id="pwd" dataType="Password" alias="Пароль" length="20" required="TRUE" />
+				<field id="name" dataType="String" alias="Имя пользователя" length="50" required="TRUE"/>
+				<field id="pwd" dataType="Password" alias="Пароль" length="50" required="TRUE"/>
+				<!--<field id="rememberMe" dataType="Bool" alias="Запомнить меня" defaultValue="FALSE" />-->
 			</publicMethod>
+			<!--
 			<publicMethod id="login_refresh">
 				<field id="refresh_token" dataType="String" required="true" length="50" />
 			</publicMethod>
-			<publicMethod id="logout" />
-			<publicMethod id="logout_html" />
+			-->
+			<publicMethod id="logout"/>
+			<publicMethod id="logout_html"/>
+			<publicMethod id="email_confirm">
+				<field id="key" dataType="String" required="TRUE" length="36"/>
+			</publicMethod>
+			<publicMethod id="hide">
+				<field id="id" dataType="Int" required="TRUE"/>
+			</publicMethod>
+		</controller>
+		<controller id="Post" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="Post"/>
+			<publicMethod id="update" modelId="Post"/>
+			<publicMethod id="delete" modelId="Post"/>
+			<publicMethod id="get_object" modelId="Post"/>
+			<publicMethod id="get_list" modelId="Post"/>
+			<publicMethod id="complete" patternFieldId="name" modelId="Post"/>
+		</controller>
+		<controller id="Contact" parentId="ControllerSQL">
+			<publicMethod id="get_complete_list" modelId="Contact">
+				<field id="search" dataType="String" length="250"/>
+				<field id="mid" dataType="Int"/>
+				<field id="ic" dataType="Int"/>
+			</publicMethod>
+			<publicMethod id="get_list" modelId="Contact"/>
+		</controller>
+		<controller id="Department" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="Department"/>
+			<publicMethod id="update" modelId="Department"/>
+			<publicMethod id="delete" modelId="Department"/>
+			<publicMethod id="get_object" modelId="DepartmentDialog"/>
+			<publicMethod id="get_list" modelId="DepartmentList"/>
+			<publicMethod id="complete" patternFieldId="id" modelId="DepartmentList"/>
+		</controller>
+		<controller id="Employee" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="Employee" encType="multipart" requestType="post">
+				<field id="picture_file" dataType="Text"/>
+			</publicMethod>
+			<publicMethod id="update" modelId="Employee" encType="multipart" requestType="post">
+				<field id="picture_file" dataType="Text"/>
+			</publicMethod>
+			<publicMethod id="delete" modelId="Employee"/>
+			<publicMethod id="get_object" modelId="EmployeeDialog"/>
+			<publicMethod id="get_list" modelId="EmployeeList"/>
+			<publicMethod id="complete" patternFieldId="name" modelId="EmployeeList"/>
+			<publicMethod id="download_picture"/>
+			<publicMethod id="delete_picture"/>
+		</controller>
+		<controller id="ShortMessageRecipientState" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="ShortMessageRecipientState"/>
+			<publicMethod id="update" modelId="ShortMessageRecipientState"/>
+			<publicMethod id="delete" modelId="ShortMessageRecipientState"/>
+			<publicMethod id="get_object" modelId="ShortMessageRecipientState"/>
+			<publicMethod id="get_list" modelId="ShortMessageRecipientState"/>
+		</controller>
+		<controller id="ShortMessage" parentId="ControllerSQL">
+			<publicMethod id="send_message" modelId="ShortMessage" encType="multipart" requestType="post">
+				<field id="content" dataType="Text" required="true"/>
+				<field id="files" dataType="Text"/>
+				<field id="recipient_ids" dataType="Text" required="true"/>
+				<field id="doc_flow_importance_type_id" dataType="Int" required="true"/>
+			</publicMethod>
+			<publicMethod id="get_object" modelId="ShortMessageList"/>
+			<publicMethod id="get_list" modelId="ShortMessageList">
+				<field id="to_recipient_id" dataType="Int" required="true"/>
+			</publicMethod>
+			<publicMethod id="get_chat_list" modelId="ShortMessageChat">
+				<field id="to_recipient_id" dataType="Int" required="true"/>
+			</publicMethod>
+			<publicMethod id="get_recipient_list" modelId="ShortMessageRecipientList" condFields="TRUE"/>
+			<publicMethod id="get_unviewed_list" modelId="ShortMessageRecipientList" condFields="TRUE"/>
+			<publicMethod id="set_recipient_state">
+				<field id="recipient_state_id" dataType="Int"/>
+			</publicMethod>
+			<publicMethod id="get_recipient_state"/>
+			<publicMethod id="download_file">
+				<field id="id" dataType="String" length="36"/>
+				<field id="message_id" dataType="Int"/>
+			</publicMethod>
+		</controller>
+		<controller id="Captcha" parentId="Controller">
+			<publicMethod id="get"/>
+		</controller>
+		<controller id="EmployeeLocalList" parentIdJS="ControllerObjClient" server="FALSE">
+			<publicMethod id="insert" modelId="EmployeeLocalList"/>
+			<publicMethod id="update" modelId="EmployeeLocalList"/>
+			<publicMethod id="delete" modelId="EmployeeLocalList"/>
+			<publicMethod id="get_object" modelId="EmployeeLocalList"/>
+			<publicMethod id="get_list" modelId="EmployeeLocalList"/>
+		</controller>
+		<controller id="Bank" parentId="ControllerSQL" noState="FALSE">
+			<publicMethod id="get_list" modelId="BankList"/>
+			<publicMethod id="get_object" modelId="BankList"/>
+			<publicMethod id="complete" modelId="BankList" patternFieldId="bik"/>
+		</controller>
+		<controller id="UserCatalogMetadata" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="UserCatalogMetadata"/>
+			<publicMethod id="update" modelId="UserCatalogMetadata"/>
+			<publicMethod id="delete" modelId="UserCatalogMetadata"/>
+			<publicMethod id="get_list" modelId="UserCatalogMetadataList"/>
+			<publicMethod id="get_object" modelId="UserCatalogMetadataDialog"/>
+		</controller>
+		<controller id="UserCatalogField" parentIdJS="ControllerObjClient" server="FALSE">
+			<publicMethod id="insert" modelId="UserCatalogField"/>
+			<publicMethod id="update" modelId="UserCatalogField"/>
+			<publicMethod id="delete" modelId="UserCatalogField"/>
+			<publicMethod id="get_list" modelId="UserCatalogField"/>
+			<publicMethod id="get_object" modelId="UserCatalogField"/>
+		</controller>
+		<controller id="UserCatalogData" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="UserCatalogData"/>
+			<publicMethod id="update" modelId="UserCatalogData"/>
+			<publicMethod id="delete" modelId="UserCatalogData"/>
+			<publicMethod id="get_list" modelId="UserCatalogDataList"/>
+			<publicMethod id="get_object" modelId="UserCatalogData"/>
+		</controller>
+		<controller id="DocTemplate" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="DocTemplate" encType="multipart" requestType="post">
+				<field id="template_file_data" dataType="Text"/>
+			</publicMethod>
+			<publicMethod id="update" modelId="DocTemplate" encType="multipart" requestType="post">
+				<field id="template_file_data" dataType="Text"/>
+			</publicMethod>
+			<publicMethod id="delete" modelId="DocTemplate"/>
+			<publicMethod id="get_list" modelId="DocTemplateList"/>
+			<publicMethod id="get_object" modelId="DocTemplateDialog"/>
+			<publicMethod id="complete" patternFieldId="name" modelId="DocTemplateList"/>
+			<publicMethod id="delete_template">
+				<field id="doc_id" dataType="Int" required="TRUE"/>
+				<field id="file_id" dataType="String" required="TRUE" length="36"/>
+			</publicMethod>
+			<publicMethod id="get_template">
+				<field id="doc_id" dataType="Int" required="TRUE"/>
+				<field id="file_id" dataType="String" required="TRUE" length="36"/>
+			</publicMethod>
+		</controller>
+		<controller id="AccessPermission" parentIdJS="ControllerObjClient" server="FALSE">
+			<publicMethod id="insert" modelId="AccessPermission"/>
+			<publicMethod id="update" modelId="AccessPermission"/>
+			<publicMethod id="delete" modelId="AccessPermission"/>
+			<publicMethod id="get_list" modelId="AccessPermission"/>
+			<publicMethod id="get_object" modelId="AccessPermission"/>
+		</controller>
+		<controller id="DocAttrEvent" parentIdJS="ControllerObjClient" server="FALSE">
+			<publicMethod id="insert" modelId="DocAttrEvent"/>
+			<publicMethod id="update" modelId="DocAttrEvent"/>
+			<publicMethod id="delete" modelId="DocAttrEvent"/>
+			<publicMethod id="get_list" modelId="DocAttrEvent"/>
+			<publicMethod id="get_object" modelId="DocAttrEvent"/>
+		</controller>
+		<controller id="MailForSending" parentId="ControllerSQL">
+			<publicMethod id="get_list" modelId="MailForSendingList"/>
+			<publicMethod id="get_object" modelId="MailForSending"/>
+		</controller>
+		<controller id="TimeZoneLocale" parentId="ControllerSQL">
+			<publicMethod id="get_list" modelId="TimeZoneLocale"/>
+			<publicMethod id="get_object" modelId="TimeZoneLocale"/>
+		</controller>
+		<controller id="Holiday" parentId="ControllerSQL" state="TRUE">
+			<publicMethod id="insert" modelId="Holiday"/>
+			<publicMethod id="update" modelId="Holiday"/>
+			<publicMethod id="delete" modelId="Holiday"/>
+			<publicMethod id="get_list" modelId="Holiday"/>
+			<publicMethod id="get_object" modelId="Holiday"/>
+		</controller>
+		<controller id="ProjectManager" parentId="Controller">
+			<publicMethod id="open_version">
+				<field id="version" dataType="String" length="15"/>
+			</publicMethod>
+			<publicMethod id="close_version">
+				<field id="commit_description" dataType="Text"/>
+			</publicMethod>
+			<publicMethod id="minify_js"/>
+			<publicMethod id="build_all"/>
+			<publicMethod id="create_symlinks"/>
+			<publicMethod id="pull"/>
+			<publicMethod id="push">
+				<field id="commit_description" dataType="Text"/>
+			</publicMethod>
+			<publicMethod id="zip_project"/>
+			<publicMethod id="zip_db"/>
+			<publicMethod id="get_version"/>
+			<publicMethod id="apply_patch"/>
+			<publicMethod id="apply_sql"/>
+		</controller>
+		<controller id="DocTemplateField" parentIdJS="ControllerObjClient" server="FALSE">
+			<publicMethod id="insert" modelId="DocTemplateField"/>
+			<publicMethod id="update" modelId="DocTemplateField"/>
+			<publicMethod id="delete" modelId="DocTemplateField"/>
+			<publicMethod id="get_list" modelId="DocTemplateField"/>
+			<publicMethod id="get_object" modelId="DocTemplateField"/>
+		</controller>
+		<controller id="Document" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="Document"/>
+			<publicMethod id="update" modelId="Document"/>
+			<publicMethod id="delete" modelId="Document"/>
+			<publicMethod id="get_list" modelId="DocumentList"/>
+			<publicMethod id="get_object" modelId="DocumentDialog"/>
+			<publicMethod id="complete" patternFieldId="id" modelId="DocumentList"/>
+			<publicMethod id="process" encType="multipart" requestType="post">
+				<field id="doc_id" dataType="Int" required="TRUE"/>
+				<field id="field_values" dataType="JSON" required="TRUE"/>
+			</publicMethod>
+			<publicMethod id="get_document">
+				<field id="doc_id" dataType="Int" required="TRUE"/>
+			</publicMethod>
+			<publicMethod id="delete_document">
+				<field id="doc_id" dataType="Int" required="TRUE"/>
+			</publicMethod>
+		</controller>
+		<controller id="EgrulSearchData" parentId="ControllerSQL">
+			<publicMethod id="get_list" modelId="EgrulSearchData"/>
+			<publicMethod id="get_object" modelId="EgrulSearchData"/>
+			<publicMethod id="complete" patternFieldId="inn" modelId="EgrulSearchData"/>
+			<publicMethod id="search">
+				<field id="query" dataType="String" length="250" required="TRUE"/>
+			</publicMethod>
+		</controller>
+		<controller id="DataTypeFieldAlias" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="DataTypeFieldAlias"/>
+			<publicMethod id="update" modelId="DataTypeFieldAlias"/>
+			<publicMethod id="delete" modelId="DataTypeFieldAlias"/>
+			<publicMethod id="get_list" modelId="DataTypeFieldAlias"/>
+			<publicMethod id="get_object" modelId="DataTypeFieldAlias"/>
 		</controller>
 	</controllers>
 	<permissions>
-		<permission type="allow" controllerId="all" methodId="all" roleId="admin" />
-		<permission type="allow" controllerId="User" methodId="login" roleId="guest" />
+		<permission type="allow" controllerId="all" methodId="all" roleId="admin"/>
+		<permission type="allow" controllerId="User" methodId="login" roleId="guest"/>
 	</permissions>
-	<views cmd="alt">
-		<view cmd="add" id="10000" c="User_Controller" t="UserList" f="get_list" section="Справочники" descr="Пользователи" />
-		<view cmd="add" id="40000" c="Constant_Controller" t="ConstantList" f="get_list" section="Константы" descr="Все константы" />
+	<views>
+		<view id="10000" c="User_Controller" t="UserList" f="get_list" section="Справочники" descr="Пользователи"/>
+		<view id="10001" c="Bank_Controller" t="BankList" f="get_list" section="Справочники" descr="Банки"/>
+		<view id="10002" c="UserCatalogMetadata_Controller" t="UserCatalogMetadataList" f="get_list" section="Справочники" descr="Пользовательские справочники"/>
+		<view id="10003" c="UserCatalogData_Controller" t="UserCatalogDataList" f="get_list" section="Справочники" descr="Пользовательские справочники (значения)"/>
+		<view id="10004" c="DocTemplate_Controller" t="DocTemplateList" f="get_list" section="Справочники" descr="Шаблоны документов"/>
+		<view id="10005" c="TimeZoneLocale_Controller" t="TimeZoneLocale" f="get_list" section="Справочники" descr="Временные зоны"/>
+		<view id="10006" c="MailForSending_Controller" t="MailForSendingList" f="get_list" section="Справочники" descr="Электронная почта"/>
+		<view id="10007" c="Holiday_Controller" t="HolidayList" f="get_list" section="Справочники" descr="Государственные праздники"/>
+		<view id="10008" c="Department_Controller" t="DepartmentList" f="get_list" section="Справочники" descr="Отделы"/>
+		<view id="10009" c="Employee_Controller" t="EmployeeList" f="get_list" section="Справочники" descr="Сотрудники"/>
+		<view id="10010" c="Post_Controller" t="PostList" f="get_list" section="Справочники" descr="Должности"/>
+		<view id="10011" c="Contact_Controller" t="ContactList" f="get_list" section="Справочники" descr="Контакты"/>
+		<view id="10012" c="DataTypeFieldAlias_Controller" t="DataTypeFieldAliasList" f="get_list" section="Справочники" descr="Соответствия полей типам данных"/>
+		<view id="20001" c="Document_Controller" t="DocumentList" f="get_list" section="Журналы" descr="Документы"/>
+		<view id="50001" c="Reminder_Controller" t="ReminderList" f="get_list" section="Формы" descr="Напоминания"/>
+		<view id="50002" c="ProjectManager_Controller" t="ProjectManager" section="Формы" descr="Управление проектом"/>
+		<view id="40000" c="Constant_Controller" t="ConstantList" f="get_list" section="Константы" descr="Все константы"/>
 	</views>
 	<serverTemplates>
-		<serverTemplate id="About" />
-		<serverTemplate id="ConstantList" class="list" />
-		<serverTemplate id="MainMenuConstructorList" class="list" />
-		<serverTemplate id="ViewList" class="list" />
-		<serverTemplate id="UserList" class="list" />
+		<serverTemplate id="About"/>
+		<serverTemplate id="ConstantList" class="list"/>
+		<serverTemplate id="MainMenuConstructorList" class="list"/>
+		<serverTemplate id="ViewList" class="list"/>
+		<serverTemplate id="UserList" class="list"/>
+		<serverTemplate id="BankList" class="list"/>
+		<serverTemplate id="TimeZoneLocale" class="list"/>
+		<serverTemplate id="MainMenuConstructorList" class="list"/>
+		<serverTemplate id="MailForSendingList" class="list"/>
+		<serverTemplate id="EmailTemplateList" class="list"/>
+		<serverTemplate id="HolidayList"/>
+		<serverTemplate id="DepartmentList"/>
+		<serverTemplate id="EmployeeList"/>
+		<serverTemplate id="PostList"/>
+		<serverTemplate id="ContactList"/>
+		<serverTemplate id="UserCatalogMetadataList"/>
+		<serverTemplate id="DocTemplateList"/>
+		<serverTemplate id="DocumentList"/>
+		<serverTemplate id="DataTypeFieldAliasList"/>
 	</serverTemplates>
 	<jsTemplates>
-		<jsTemplate id="GridCmdContainerAjx" file="controls/tmpl/GridCmdContainerAjx.html" />
-		<jsTemplate id="ViewGridColManager" file="controls/tmpl/ViewGridColManager.html" />
-		<jsTemplate id="PopOver" file="controls/tmpl/PopOver.html" />
-		<jsTemplate id="GridCmdFilterView" file="controls/tmpl/GridCmdFilterView.html" />
-		<jsTemplate id="EditPeriodDate" file="controls/tmpl/EditPeriodDate.html" />
-		<jsTemplate id="WindowPrint" file="controls/tmpl/WindowPrint.html" />
-		<jsTemplate id="VariantStorageSaveView" file="controls/tmpl/VariantStorageSaveView.html" />
-		<jsTemplate id="VariantStorageOpenView" file="controls/tmpl/VariantStorageOpenView.html" />
+		<jsTemplate id="FatalException" file="tmpl/FatalException.html"/>
+		<jsTemplate id="DbException" file="tmpl/DbException.html"/>
+		<jsTemplate id="VersException" file="tmpl/VersException.html"/>
+		<jsTemplate id="GridCmdContainerAjx" file="tmpl/GridCmdContainerAjx.html"/>
+		<jsTemplate id="ViewGridColManager" file="tmpl/ViewGridColManager.html"/>
+		<jsTemplate id="PopOver" file="controls/tmpl/PopOver.html"/>
+		<jsTemplate id="GridCmdFilterView" file="controls/tmpl/GridCmdFilterView.html"/>
+		<jsTemplate id="EditPeriodDate" file="controls/tmpl/EditPeriodDate.html"/>
+		<jsTemplate id="WindowPrint" file="controls/tmpl/WindowPrint.html"/>
+		<jsTemplate id="VariantStorageSaveView" file="controls/tmpl/VariantStorageSaveView.html"/>
+		<jsTemplate id="VariantStorageOpenView" file="controls/tmpl/VariantStorageOpenView.html"/>
+		<jsTemplate id="Captcha" file="tmpl/Captcha.html"/>
+		<jsTemplate id="ErrorControl" file="tmpl/ErrorControl.html"/>
+		<jsTemplate id="ViewBankAcc" file="tmpl/ViewBankAcc.html"/>
+		<jsTemplate id="MailAttachment" file="tmpl/MailAttachment.html"/>
+		<jsTemplate id="IcomoonList" file="tmpl/IcomoonList.html"/>
+		<jsTemplate id="ColorPaletteList" file="tmpl/ColorPaletteList.html"/>
+		<jsTemplate id="EditFile" file="tmpl/EditFile.html"/>
+		<jsTemplate id="EditFileInf" file="tmpl/EditFileInf.html"/>
+		<jsTemplate id="ShortMessage" file="tmpl/ShortMessage.html"/>
+		<jsTemplate id="ShortMessageChat" file="tmpl/ShortMessageChat.html"/>
+		<jsTemplate id="DocTemplateField" file="tmpl/DocTemplateField.html"/>
+		<jsTemplate id="DocTemplateFieldContainer" file="tmpl/DocTemplateFieldContainer.html"/>
+		<jsTemplate id="CollectionField" file="tmpl/CollectionField.html"/>
+		<jsTemplate id="DocTemplateTest" file="tmpl/DocTemplateTest.html"/>
+		<jsTemplate id="UserCatalogDataListFromMd" file="tmpl/UserCatalogDataListFromMd.html"/>
+		<jsTemplate id="FieldGroup" file="tmpl/FieldGroup.html"/>
 	</jsTemplates>
-	<packages></packages>
+	<packages/>
 	<sqlScripts>
-		<sqlScript cmd="add" file="logins_process.sql" />
-		<sqlScript cmd="add" file="variant_storages_upsert_col_order_data.sql" />
-		<sqlScript cmd="add" file="variant_storages_upsert_col_visib_data.sql" />
-		<sqlScript cmd="add" file="variant_storages_upsert_filter_data.sql" />
-		<sqlScript cmd="add" file="variant_storages_list.sql" />
+		<sqlScript file="logins_process.sql"/>
+		<sqlScript file="variant_storages_upsert_col_order_data.sql"/>
+		<sqlScript file="variant_storages_upsert_col_visib_data.sql"/>
+		<sqlScript file="variant_storages_upsert_filter_data.sql"/>
+		<sqlScript file="variant_storages_list.sql"/>
 	</sqlScripts>
 	<jsScripts>
-		<jsScript file="ext/jquery-1.12.4/jquery-1.12.4.min.js" compressed="TRUE" standalone="TRUE" />
-		<jsScript file="ext/bootstrap-3.3.6/bootstrap.min.js" compressed="TRUE" standalone="TRUE" version="1.0" />
-		<jsScript file="ext/bootstrap-datepicker/bootstrap-datepicker.min.js" compressed="TRUE" standalone="TRUE" version="1.0" />
-		<jsScript file="ext/bootstrap-datepicker/bootstrap-datepicker.ru.min.js" compressed="TRUE" standalone="TRUE" version="1.0" />
-		<!--<jsScript file="ext/Bush-jquery.maskedinput/dist/jquery.maskedinput.min.js" compressed="TRUE" standalone="TRUE" version="1.0"/>-->
-		<jsScript file="ext/Bush-jquery.maskedinput/jquery.maskedinput.js" compressed="FALSE" standalone="TRUE" version="1.0" />
-		<jsScript file="ext/startbootstrap-sb-admin-2-1.0.8/bower_components/metisMenu/dist/metisMenu.min.js" compressed="TRUE" standalone="TRUE" version="1.0" />
-		<jsScript file="ext/startbootstrap-sb-admin-2-1.0.8/bower_components/raphael/raphael-min.js" compressed="TRUE" standalone="TRUE" version="1.0" />
-		<jsScript file="ext/startbootstrap-sb-admin-2-1.0.8/bower_components/morrisjs/morris.min.js" compressed="TRUE" standalone="TRUE" version="1.0" />
-		<jsScript file="ext/startbootstrap-sb-admin-2-1.0.8/dist/js/sb-admin-2.js" compressed="TRUE" standalone="TRUE" version="1.0" />
-		<jsScript file="ext/jshash-2.2/md5-min.js" compressed="TRUE" standalone="TRUE" />
-		<jsScript file="ext/mustache/mustache.min.js" compressed="TRUE" standalone="TRUE" />
+		<!-- Core JS files -->
+		<!--<jsScript file="assets/js/plugins/loaders/pace.min.js" compressed="TRUE" standalone="TRUE" />-->
+		<jsScript file="assets/js/core/libraries/jquery.min.js" compressed="TRUE" standalone="TRUE"/>
+		<jsScript file="assets/js/core/libraries/bootstrap.min.js" compressed="TRUE" standalone="TRUE"/>
+		<jsScript file="assets/js/plugins/loaders/blockui.min.js" compressed="TRUE" standalone="TRUE"/>
+		<jsScript file="assets/js/core/app.js" compressed="TRUE" standalone="TRUE"/>
+		<jsScript file="controls/easyTree.js" compressed="FALSE" standalone="FALSE"/>
+		<jsScript file="ext/bootstrap-datepicker/bootstrap-datepicker.min.js" compressed="TRUE" standalone="TRUE" version="1.0"/>
+		<jsScript file="ext/bootstrap-datepicker/bootstrap-datepicker.ru.min.js" compressed="TRUE" standalone="TRUE" version="1.0"/>
+		<!-- /theme JS files -->
+		<jsScript file="jquery.maskedinput.js" compressed="FALSE" standalone="FALSE" version="1.0"/>
+		<jsScript file="ext/mustache/mustache.min.js" compressed="TRUE" standalone="TRUE"/>
+		<jsScript file="ext/jshash-2.2/md5-min.js" compressed="TRUE" standalone="TRUE"/>
+		<jsScript file="ext/resumablejs/resumable.js" compressed="FALSE" standalone="FALSE"/>
 		<!--Drag && Drop-->
-		<jsScript file="ext/DragnDrop/DragMaster.js" />
-		<jsScript file="ext/DragnDrop/DragObject.js" />
-		<jsScript file="ext/DragnDrop/DropTarget.js" />
+		<jsScript file="ext/DragnDrop/DragMaster.js"/>
+		<jsScript file="ext/DragnDrop/DragObject.js"/>
+		<jsScript file="ext/DragnDrop/DropTarget.js"/>
 		<!-- core -->
-		<jsScript file="core/extend.js" />
-		<jsScript file="core/App.js" />
-		<jsScript file="core/AppWin.js" />
-		<jsScript file="core/CommonHelper.js" />
-		<jsScript file="core/DOMHelper.js" />
-		<jsScript file="core/DateHelper.js" />
-		<jsScript file="core/EventHelper.js" />
-		<jsScript file="core/ConstantManager.js" />
-		<jsScript file="core/ServConnector.js" />
-		<jsScript file="core/Response.js" />
-		<jsScript file="core/ResponseXML.js" />
-		<jsScript file="core/ResponseJSON.js" />
-		<jsScript file="core/PublicMethod.js" />
-		<jsScript file="core/PublicMethodServer.js" />
-		<jsScript file="core/Controller.js" />
-		<jsScript file="core/ControllerObj.js" />
-		<jsScript file="core/ControllerObjServer.js" />
-		<jsScript file="core/ControllerObjClient.js" />
-		<jsScript file="core/Model.js" />
-		<jsScript file="core/ModelXML.js" />
-		<jsScript file="core/ModelObjectXML.js" />
-		<jsScript file="core/ModelServRespXML.js" />
-		<jsScript file="core/ModelJSON.js" />
-		<jsScript file="core/ModelObjectJSON.js" />
-		<jsScript file="core/ModelServRespJSON.js" />
-		<jsScript file="core/ModelXMLTree.js" />
-		<jsScript file="core/Validator.js" />
-		<jsScript file="core/ValidatorString.js" />
-		<jsScript file="core/ValidatorBool.js" />
-		<jsScript file="core/ValidatorDate.js" />
-		<jsScript file="core/ValidatorDateTime.js" />
-		<jsScript file="core/ValidatorTime.js" />
-		<jsScript file="core/ValidatorInt.js" />
-		<jsScript file="core/ValidatorFloat.js" />
-		<jsScript file="core/ValidatorEnum.js" />
-		<jsScript file="core/ValidatorJSON.js" />
-		<jsScript file="core/ValidatorArray.js" />
-		<jsScript file="core/ValidatorEmail.js" />
-		<jsScript file="core/Field.js" />
-		<jsScript file="core/FieldString.js" />
-		<jsScript file="core/FieldEnum.js" />
-		<jsScript file="core/FieldBool.js" />
-		<jsScript file="core/FieldDate.js" />
-		<jsScript file="core/FieldDateTime.js" />
-		<jsScript file="core/FieldDateTimeTZ.js" />
-		<jsScript file="core/FieldTime.js" />
-		<jsScript file="core/FieldInt.js" />
-		<jsScript file="core/FieldBigInt.js" />
-		<jsScript file="core/FieldSmallInt.js" />
-		<jsScript file="core/FieldFloat.js" />
-		<jsScript file="core/FieldPassword.js" />
-		<jsScript file="core/FieldText.js" />
-		<jsScript file="core/FieldInterval.js" />
-		<jsScript file="core/FieldJSON.js" />
-		<jsScript file="core/FieldArray.js" />
-		<jsScript file="core/ModelFilter.js" />
-		<jsScript file="core/RefType.js" />
-		<jsScript file="core/rs_ru.js" resource="ru" />
+		<jsScript file="core/extend.js"/>
+		<jsScript file="core/App.js"/>
+		<jsScript file="core/AppWin.js"/>
+		<jsScript file="core/CommonHelper.js"/>
+		<jsScript file="core/DOMHelper.js"/>
+		<jsScript file="core/DateHelper.js" jsDoc="FALSE"/>
+		<jsScript file="core/EventHelper.js"/>
+		<jsScript file="core/FatalException.js"/>
+		<jsScript file="core/DbException.js"/>
+		<jsScript file="core/VersException.js"/>
+		<jsScript file="core/ConstantManager.js"/>
+		<jsScript file="core/ServConnector.js"/>
+		<jsScript file="core/Response.js"/>
+		<jsScript file="core/ResponseXML.js"/>
+		<jsScript file="core/ResponseJSON.js"/>
+		<jsScript file="core/PublicMethod.js"/>
+		<jsScript file="core/PublicMethodServer.js"/>
+		<jsScript file="core/Controller.js"/>
+		<jsScript file="core/ControllerObj.js"/>
+		<jsScript file="core/ControllerObjServer.js"/>
+		<jsScript file="core/ControllerObjClient.js"/>
+		<jsScript file="core/Model.js"/>
+		<jsScript file="core/ModelXML.js"/>
+		<jsScript file="core/ModelObjectXML.js"/>
+		<jsScript file="core/ModelServRespXML.js"/>
+		<jsScript file="core/ModelJSON.js"/>
+		<jsScript file="core/ModelObjectJSON.js"/>
+		<jsScript file="core/ModelServRespJSON.js"/>
+		<jsScript file="core/ModelXMLTree.js"/>
+		<jsScript file="core/ModelJSONTree.js"/>
+		<!--<jsScript file="core/ModelServAuthXML.js"/>-->
+		<jsScript file="core/Validator.js"/>
+		<jsScript file="core/ValidatorString.js"/>
+		<jsScript file="core/ValidatorBool.js"/>
+		<jsScript file="core/ValidatorDate.js"/>
+		<jsScript file="core/ValidatorDateTime.js"/>
+		<jsScript file="core/ValidatorTime.js"/>
+		<jsScript file="core/ValidatorInterval.js"/>
+		<jsScript file="core/ValidatorInt.js"/>
+		<jsScript file="core/ValidatorFloat.js"/>
+		<jsScript file="core/ValidatorEnum.js"/>
+		<jsScript file="core/ValidatorJSON.js"/>
+		<jsScript file="core/ValidatorArray.js"/>
+		<jsScript file="core/ValidatorEmail.js"/>
+		<jsScript file="core/ValidatorXML.js"/>
+		<jsScript file="core/Field.js"/>
+		<jsScript file="core/FieldString.js"/>
+		<jsScript file="core/FieldEnum.js"/>
+		<jsScript file="core/FieldBool.js"/>
+		<jsScript file="core/FieldDate.js"/>
+		<jsScript file="core/FieldDateTime.js"/>
+		<jsScript file="core/FieldDateTimeTZ.js"/>
+		<jsScript file="core/FieldTime.js"/>
+		<jsScript file="core/FieldInt.js"/>
+		<jsScript file="core/FieldBigInt.js"/>
+		<jsScript file="core/FieldSmallInt.js"/>
+		<jsScript file="core/FieldFloat.js"/>
+		<jsScript file="core/FieldPassword.js"/>
+		<jsScript file="core/FieldText.js"/>
+		<jsScript file="core/FieldInterval.js"/>
+		<jsScript file="core/FieldJSON.js"/>
+		<jsScript file="core/FieldJSONB.js"/>
+		<jsScript file="core/FieldArray.js"/>
+		<jsScript file="core/FieldXML.js"/>
+		<jsScript file="core/FieldBytea.js"/>
+		<jsScript file="core/ModelFilter.js"/>
+		<jsScript file="core/RefType.js"/>
+		<jsScript file="core/rs_ru.js" resource="ru"/>
 		<!-- **** controls *** -->
-		<jsScript file="controls/DataBinding.js" />
-		<jsScript file="controls/Command.js" />
-		<jsScript file="controls/CommandBinding.js" />
-		<jsScript file="controls/Control.js" />
-		<jsScript file="controls/rs/Control.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ControlContainer.js" />
-		<jsScript file="controls/rs/ControlContainer.rs_ru.js" resource="ru" />
-		<jsScript file="controls/View.js" />
-		<jsScript file="controls/ViewAjx.js" />
-		<jsScript file="controls/rs/ViewAjx.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ErrorControl.js" />
-		<jsScript file="controls/Calculator.js" />
-		<jsScript file="controls/rs/Calculator.rs_ru.js" resource="ru" />
-		<jsScript file="controls/Button.js" />
-		<jsScript file="controls/ButtonCtrl.js" />
-		<jsScript file="controls/ButtonEditCtrl.js" />
-		<jsScript file="controls/rs/ButtonEditCtrl.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonCalc.js" />
-		<jsScript file="controls/rs/ButtonCalc.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonCalendar.js" />
-		<jsScript file="controls/rs/ButtonCalendar.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonClear.js" />
-		<jsScript file="controls/rs/ButtonClear.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonCmd.js" />
-		<jsScript file="controls/ButtonExpToExcel.js" />
-		<jsScript file="controls/rs/ButtonExpToExcel.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonExpToPDF.js" />
-		<jsScript file="controls/rs/ButtonExpToPDF.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonOpen.js" />
-		<jsScript file="controls/rs/ButtonOpen.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonInsert.js" />
-		<jsScript file="controls/rs/ButtonInsert.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonPrint.js" />
-		<jsScript file="controls/rs/ButtonPrint.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonPrintList.js" />
-		<jsScript file="controls/rs/ButtonPrintList.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonSelectRef.js" />
-		<jsScript file="controls/rs/ButtonSelectRef.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonToggle.js" />
-		<jsScript file="controls/Label.js" />
-		<jsScript file="controls/Edit.js" />
-		<jsScript file="controls/rs/Edit.rs_ru.js" resource="ru" />
-		<jsScript file="controls/EditRef.js" />
-		<jsScript file="controls/EditString.js" />
-		<jsScript file="controls/EditText.js" />
-		<jsScript file="controls/EditInt.js" />
-		<jsScript file="controls/EditFloat.js" />
-		<jsScript file="controls/EditMoney.js" />
-		<jsScript file="controls/EditPhone.js" />
-		<jsScript file="controls/EditEmail.js" />
-		<jsScript file="controls/EditPercent.js" />
-		<jsScript file="controls/EditDate.js" />
-		<jsScript file="controls/EditDateTime.js" />
-		<jsScript file="controls/EditTime.js" />
-		<jsScript file="controls/EditPassword.js" />
-		<jsScript file="controls/EditCheckBox.js" />
-		<jsScript file="controls/EditContainer.js" />
-		<jsScript file="controls/rs/EditContainer.rs_ru.js" resource="ru" />
-		<jsScript file="controls/EditRadioGroup.js" />
-		<jsScript file="controls/EditRadio.js" />
-		<jsScript file="controls/EditSelect.js" />
-		<jsScript file="controls/EditSelectRef.js" />
-		<jsScript file="controls/rs/EditSelectRef.rs_ru.js" resource="ru" />
-		<jsScript file="controls/EditSelectOption.js" />
-		<jsScript file="controls/EditSelectOptionRef.js" />
-		<jsScript file="controls/EditRadioGroupRef.js" />
-		<jsScript file="controls/rs/EditRadioGroupRef.rs_ru.js" resource="ru" />
-		<jsScript file="controls/PrintObj.js" />
-		<jsScript file="controls/ControlForm.js" />
-		<jsScript file="controls/HiddenKey.js" />
-		<jsScript file="controls/EditJSON.js" />
-		<jsScript file="controls/EditBankAcc.js" />
-		<jsScript file="controls/EditModalDialog.js" />
-		<jsScript file="controls/rs/EditModalDialog.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridColumn.js" />
-		<jsScript file="controls/GridColumnBool.js" />
-		<jsScript file="controls/GridColumnPhone.js" />
-		<jsScript file="controls/GridColumnFloat.js" />
-		<jsScript file="controls/GridColumnByte.js" />
-		<jsScript file="controls/GridColumnDate.js" />
-		<jsScript file="controls/GridColumnDateTime.js" />
-		<jsScript file="controls/GridColumnEnum.js" />
-		<jsScript file="controls/GridColumnRef.js" />
-		<jsScript file="controls/GridCell.js" />
-		<jsScript file="controls/GridCellHead.js" />
-		<jsScript file="controls/GridCellFoot.js" />
-		<jsScript file="controls/GridHead.js" />
-		<jsScript file="controls/GridRow.js" />
-		<jsScript file="controls/GridFoot.js" />
-		<jsScript file="controls/GridBody.js" />
-		<jsScript file="controls/Grid.js" />
-		<jsScript file="controls/rs/Grid.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCommands.js" />
-		<jsScript file="controls/GridCmd.js" />
-		<jsScript file="controls/GridCmdContainer.js" />
-		<jsScript file="controls/rs/GridCmdContainer.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdContainerAjx.js" />
-		<jsScript file="controls/GridCmdContainerDOC.js" />
-		<jsScript file="controls/GridCmdInsert.js" />
-		<jsScript file="controls/rs/GridCmdInsert.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdEdit.js" />
-		<jsScript file="controls/rs/GridCmdEdit.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdCopy.js" />
-		<jsScript file="controls/rs/GridCmdCopy.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdDelete.js" />
-		<jsScript file="controls/rs/GridCmdDelete.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdColManager.js" />
-		<jsScript file="controls/rs/GridCmdColManager.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdPrint.js" />
-		<jsScript file="controls/rs/GridCmdPrint.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdRefresh.js" />
-		<jsScript file="controls/rs/GridCmdRefresh.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdPrintObj.js" />
-		<jsScript file="controls/GridCmdSearch.js" />
-		<jsScript file="controls/rs/GridCmdSearch.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdExport.js" />
-		<jsScript file="controls/rs/GridCmdExport.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdAllCommands.js" />
-		<jsScript file="controls/rs/GridCmdAllCommands.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdDOCUnprocess.js" />
-		<jsScript file="controls/rs/GridCmdDOCUnprocess.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdDOCShowActs.js" />
-		<jsScript file="controls/rs/GridCmdDOCShowActs.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdRowUp.js" />
-		<jsScript file="controls/rs/GridCmdRowUp.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdRowDown.js" />
-		<jsScript file="controls/rs/GridCmdRowDown.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdFilter.js" />
-		<jsScript file="controls/rs/GridCmdFilter.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdFilterView.js" />
-		<jsScript file="controls/rs/GridCmdFilterView.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdFilterSave.js" />
-		<jsScript file="controls/rs/GridCmdFilterSave.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCmdFilterOpen.js" />
-		<jsScript file="controls/rs/GridCmdFilterOpen.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewGridColManager.js" />
-		<jsScript file="controls/rs/ViewGridColManager.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewGridColParam.js" />
-		<jsScript file="controls/rs/ViewGridColParam.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewGridColVisibility.js" />
-		<jsScript file="controls/rs/ViewGridColVisibility.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewGridColOrder.js" />
-		<jsScript file="controls/rs/ViewGridColOrder.rs_ru.js" resource="ru" />
-		<jsScript file="controls/VariantStorageSaveView.js" />
-		<jsScript file="controls/rs/VariantStorageSaveView.rs_ru.js" resource="ru" />
-		<jsScript file="controls/VariantStorageOpenView.js" />
-		<jsScript file="controls/rs/VariantStorageOpenView.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridAjx.js" />
-		<jsScript file="controls/rs/GridAjx.rs_ru.js" resource="ru" />
-		<jsScript file="controls/TreeAjx.js" />
-		<jsScript file="controls/GridAjxDOCT.js" />
-		<jsScript file="controls/GridAjxMaster.js" />
-		<jsScript file="controls/GridCommandsAjx.js" />
-		<jsScript file="controls/rs/GridCommandsAjx.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridCommandsDOC.js" />
-		<jsScript file="controls/rs/GridCommandsDOC.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridPagination.js" />
-		<jsScript file="controls/rs/GridPagination.rs_ru.js" resource="ru" />
-		<jsScript file="controls/GridFilter.js" />
-		<jsScript file="controls/rs/GridFilter.rs_ru.js" resource="ru" />
-		<jsScript file="controls/EditPeriodDate.js" />
-		<jsScript file="controls/rs/EditPeriodDate.rs_ru.js" resource="ru" />
-		<jsScript file="controls/EditPeriodDateTime.js" />
-		<jsScript file="controls/ConstantGrid.js" />
-		<jsScript file="controls/rs/ConstantGrid.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonOK.js" />
-		<jsScript file="controls/rs/ButtonOK.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonSave.js" />
-		<jsScript file="controls/rs/ButtonSave.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ButtonCancel.js" />
-		<jsScript file="controls/rs/ButtonCancel.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewObjectAjx.js" />
-		<jsScript file="controls/rs/ViewObjectAjx.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewGridEditInlineAjx.js" />
-		<jsScript file="controls/rs/ViewGridEditInlineAjx.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewDOC.js" />
-		<jsScript file="controls/rs/ViewDOC.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowPrint.js" />
-		<jsScript file="controls/rs/WindowPrint.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowQuestion.js" />
-		<jsScript file="controls/rs/WindowQuestion.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowSearch.js" />
-		<jsScript file="controls/rs/WindowSearch.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowForm.js" />
-		<jsScript file="controls/rs/WindowForm.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowFormObject.js" />
-		<jsScript file="controls/rs/WindowFormObject.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowFormModalBS.js" />
-		<jsScript file="controls/rs/WindowFormModalBS.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowMessage.js" />
-		<jsScript file="controls/GridCellHeadDOCProcessed.js" />
-		<jsScript file="controls/GridCellHeadDOCDate.js" />
-		<jsScript file="controls/GridCellHeadDOCNumber.js" />
-		<jsScript file="controls/actb.js" />
-		<jsScript file="controls/rs/actb.rs_ru.js" resource="ru" />
-		<jsScript file="controls/RepCommands.js" />
-		<jsScript file="controls/rs/RepCommands.rs_ru.js" resource="ru" />
-		<jsScript file="controls/ViewReport.js" />
-		<jsScript file="controls/rs/ViewReport.rs_ru.js" resource="ru" />
-		<jsScript file="controls/PopUpMenu.js" />
-		<jsScript file="controls/PopOver.js" />
-		<jsScript file="controls/PeriodSelect.js" />
-		<jsScript file="controls/rs/PeriodSelect.rs_ru.js" resource="ru" />
-		<jsScript file="controls/WindowAbout.js" />
-		<jsScript file="controls/rs/WindowAbout.rs_ru.js" resource="ru" />
-		<jsScript file="controls/MainMenuTree.js" />
-		<jsScript file="controls/rs/MainMenuTree.rs_ru.js" resource="ru" />
-		<jsScript file="controls/BigFileUploader.js" />
-		<jsScript file="controls/rs/BigFileUploader.rs_ru.js" resource="ru" />
-		<!--
-		<jsScript file="controls/BreadCrum.js"/>		
-		<jsScript file="controls/rs/BreadCrum.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/DataBinding.js"/>
+		<jsScript file="controls/Command.js"/>
+		<jsScript file="controls/CommandBinding.js"/>
+		<jsScript file="controls/Control.js"/>
+		<jsScript file="controls/rs/Control.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ControlContainer.js"/>
+		<jsScript file="controls/rs/ControlContainer.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/View.js"/>
+		<jsScript file="controls/ViewAjx.js"/>
+		<jsScript file="controls/rs/ViewAjx.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewAjxList.js"/>
+		<jsScript file="controls/Calculator.js"/>
+		<jsScript file="controls/rs/Calculator.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/Button.js"/>
+		<jsScript file="controls/ButtonCtrl.js"/>
+		<jsScript file="controls/ButtonEditCtrl.js"/>
+		<jsScript file="controls/rs/ButtonEditCtrl.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonCalc.js"/>
+		<jsScript file="controls/rs/ButtonCalc.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonCalendar.js"/>
+		<jsScript file="controls/rs/ButtonCalendar.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonClear.js"/>
+		<jsScript file="controls/rs/ButtonClear.rs_ru.js" resource="ru"/>
+		<!--<jsScript file="controls/ButtonCmd.js"/>-->
+		<jsScript file="custom_controls/ButtonCmd.js"/>
+		<jsScript file="controls/ButtonExpToExcel.js"/>
+		<jsScript file="controls/rs/ButtonExpToExcel.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonExpToPDF.js"/>
+		<jsScript file="controls/rs/ButtonExpToPDF.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonOpen.js"/>
+		<jsScript file="controls/rs/ButtonOpen.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonInsert.js"/>
+		<jsScript file="controls/rs/ButtonInsert.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonPrint.js"/>
+		<jsScript file="controls/rs/ButtonPrint.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonPrintList.js"/>
+		<jsScript file="controls/rs/ButtonPrintList.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonSelectRef.js"/>
+		<jsScript file="controls/rs/ButtonSelectRef.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonSelectDataType.js"/>
+		<jsScript file="controls/rs/ButtonSelectDataType.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonMakeSelection.js"/>
+		<jsScript file="controls/rs/ButtonMakeSelection.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonToggle.js"/>
+		<jsScript file="controls/Label.js"/>
+		<jsScript file="controls/Edit.js"/>
+		<jsScript file="controls/rs/Edit.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditRef.js"/>
+		<jsScript file="controls/EditRefMultyType.js"/>
+		<jsScript file="controls/rs/EditRefMultyType.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditString.js"/>
+		<jsScript file="controls/EditText.js"/>
+		<jsScript file="controls/EditNum.js"/>
+		<jsScript file="controls/EditInt.js"/>
+		<jsScript file="controls/EditFloat.js"/>
+		<jsScript file="controls/EditMoney.js"/>
+		<jsScript file="controls/EditPhone.js"/>
+		<jsScript file="controls/EditEmail.js"/>
+		<jsScript file="controls/EditPercent.js"/>
+		<jsScript file="controls/EditDate.js"/>
+		<jsScript file="controls/EditDateTime.js"/>
+		<jsScript file="controls/EditTime.js"/>
+		<jsScript file="controls/EditInterval.js"/>
+		<jsScript file="controls/EditPassword.js"/>
+		<jsScript file="controls/EditCheckBox.js"/>
+		<jsScript file="controls/EditContainer.js"/>
+		<jsScript file="controls/rs/EditContainer.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditRadioGroup.js"/>
+		<jsScript file="controls/EditRadio.js"/>
+		<jsScript file="controls/EditSelect.js"/>
+		<jsScript file="controls/EditSelectRef.js"/>
+		<!-- Cades Certificate box -->
+		<jsScript file="ext/cadesplugin/EditCertificateSelect.js"/>
+		<jsScript file="controls/rs/EditSelectRef.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditSelectOption.js"/>
+		<jsScript file="controls/EditSelectOptionRef.js"/>
+		<jsScript file="controls/EditRadioGroupRef.js"/>
+		<jsScript file="controls/rs/EditRadioGroupRef.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/PrintObj.js"/>
+		<jsScript file="controls/EditModalDialog.js"/>
+		<jsScript file="controls/rs/EditModalDialog.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditRef.js"/>
+		<jsScript file="controls/ControlForm.js"/>
+		<jsScript file="controls/HiddenKey.js"/>
+		<jsScript file="controls/EditJSON.js"/>
+		<!--<jsScript file="controls/EditHTML.js" />-->
+		<jsScript file="custom_controls/EditFile.js"/>
+		<jsScript file="controls/rs/EditFile.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditCompound.js"/>
+		<jsScript file="controls/rs/EditCompound.rs_ru.js" resource="ru"/>
+		<!-- <jsScript file="controls/EditJSONContainer.js" />
 		-->
+		<jsScript file="controls/ControlDate.js"/>
 		<!--
-		<jsScript file="controls/ButtonOrgSearch.js"/>	  
+		<jsScript file="controls/ViewMenu.js"/>
 		-->
+		<jsScript file="controls/GridColumn.js"/>
+		<jsScript file="controls/GridColumnBool.js"/>
+		<jsScript file="controls/GridColumnPhone.js"/>
+		<jsScript file="controls/GridColumnEmail.js"/>
+		<jsScript file="controls/GridColumnFloat.js"/>
+		<jsScript file="controls/GridColumnByte.js"/>
+		<jsScript file="controls/GridColumnDate.js"/>
+		<jsScript file="controls/GridColumnDateTime.js"/>
+		<jsScript file="controls/GridColumnEnum.js"/>
+		<jsScript file="controls/GridColumnRef.js"/>
+		<jsScript file="controls/GridCell.js"/>
+		<jsScript file="controls/GridCellHead.js"/>
+		<jsScript file="controls/GridCellPhone.js"/>
+		<jsScript file="controls/rs/GridCellPhone.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCellFoot.js"/>
+		<jsScript file="controls/GridHead.js"/>
+		<jsScript file="controls/GridRow.js"/>
+		<jsScript file="controls/GridFoot.js"/>
+		<jsScript file="controls/GridBody.js"/>
+		<jsScript file="controls/Grid.js"/>
+		<jsScript file="controls/rs/Grid.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/VariantStorage.js"/>
+		<jsScript file="controls/GridCommands.js"/>
+		<jsScript file="controls/GridCmd.js"/>
+		<jsScript file="controls/GridCmdContainer.js"/>
+		<jsScript file="controls/rs/GridCmdContainer.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdContainerAjx.js"/>
+		<jsScript file="controls/GridCmdContainerObj.js"/>
+		<jsScript file="controls/GridCmdInsert.js"/>
+		<jsScript file="controls/rs/GridCmdInsert.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdEdit.js"/>
+		<jsScript file="controls/rs/GridCmdEdit.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdCopy.js"/>
+		<jsScript file="controls/rs/GridCmdCopy.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdDelete.js"/>
+		<jsScript file="controls/rs/GridCmdDelete.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdColManager.js"/>
+		<jsScript file="controls/rs/GridCmdColManager.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdPrint.js"/>
+		<jsScript file="controls/rs/GridCmdPrint.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdRefresh.js"/>
+		<jsScript file="controls/rs/GridCmdRefresh.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdPrintObj.js"/>
+		<jsScript file="controls/GridCmdSearch.js"/>
+		<jsScript file="controls/rs/GridCmdSearch.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdExport.js"/>
+		<jsScript file="controls/rs/GridCmdExport.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdAllCommands.js"/>
+		<jsScript file="controls/rs/GridCmdAllCommands.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdDOCUnprocess.js"/>
+		<jsScript file="controls/rs/GridCmdDOCUnprocess.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdDOCShowActs.js"/>
+		<jsScript file="controls/rs/GridCmdDOCShowActs.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdRowUp.js"/>
+		<jsScript file="controls/rs/GridCmdRowUp.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdRowDown.js"/>
+		<jsScript file="controls/rs/GridCmdRowDown.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdFilter.js"/>
+		<jsScript file="controls/rs/GridCmdFilter.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdFilterView.js"/>
+		<jsScript file="controls/rs/GridCmdFilterView.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdFilterSave.js"/>
+		<jsScript file="controls/rs/GridCmdFilterSave.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCmdFilterOpen.js"/>
+		<jsScript file="controls/rs/GridCmdFilterOpen.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewGridColManager.js"/>
+		<jsScript file="controls/rs/ViewGridColManager.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewGridColParam.js"/>
+		<jsScript file="controls/rs/ViewGridColParam.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewGridColVisibility.js"/>
+		<jsScript file="controls/rs/ViewGridColVisibility.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewGridColOrder.js"/>
+		<jsScript file="controls/rs/ViewGridColOrder.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/VariantStorageSaveView.js"/>
+		<jsScript file="controls/rs/VariantStorageSaveView.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/VariantStorageOpenView.js"/>
+		<jsScript file="controls/rs/VariantStorageOpenView.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridAjx.js"/>
+		<jsScript file="controls/rs/GridAjx.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridJSON.js"/>
+		<jsScript file="controls/TreeAjx.js"/>
+		<jsScript file="controls/GridAjxDOCT.js"/>
+		<jsScript file="controls/GridAjxMaster.js"/>
+		<jsScript file="controls/GridCommandsAjx.js"/>
+		<jsScript file="controls/rs/GridCommandsAjx.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridCommandsDOC.js"/>
+		<jsScript file="controls/rs/GridCommandsDOC.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridPagination.js"/>
+		<jsScript file="controls/rs/GridPagination.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridFilterInfo.js"/>
+		<jsScript file="controls/GridFilter.js"/>
+		<jsScript file="controls/rs/GridFilter.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditPeriodDate.js"/>
+		<jsScript file="controls/rs/EditPeriodDate.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/EditPeriodDateTime.js"/>
+		<jsScript file="controls/ButtonOK.js"/>
+		<jsScript file="controls/rs/ButtonOK.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonSave.js"/>
+		<jsScript file="controls/rs/ButtonSave.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ButtonCancel.js"/>
+		<jsScript file="controls/rs/ButtonCancel.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewObjectAjx.js"/>
+		<jsScript file="controls/rs/ViewObjectAjx.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewGridEditInlineAjx.js"/>
+		<jsScript file="controls/rs/ViewGridEditInlineAjx.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewDOC.js"/>
+		<jsScript file="controls/rs/ViewDOC.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowPrint.js"/>
+		<jsScript file="controls/rs/WindowPrint.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowQuestion.js"/>
+		<jsScript file="controls/rs/WindowQuestion.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowSearch.js"/>
+		<jsScript file="controls/rs/WindowSearch.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowForm.js"/>
+		<jsScript file="controls/rs/WindowForm.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowFormObject.js"/>
+		<jsScript file="controls/rs/WindowFormObject.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowFormModalBS.js"/>
+		<jsScript file="controls/rs/WindowFormModalBS.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowMessage.js"/>
+		<jsScript file="controls/WindowTempMessage.js"/>
+		<jsScript file="controls/GridCellHeadDOCProcessed.js"/>
+		<jsScript file="controls/GridCellHeadDOCDate.js"/>
+		<jsScript file="controls/GridCellHeadDOCNumber.js"/>
+		<jsScript file="controls/actb.js"/>
+		<jsScript file="controls/rs/actb.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/RepCommands.js"/>
+		<jsScript file="controls/rs/RepCommands.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ViewReport.js"/>
+		<jsScript file="controls/rs/ViewReport.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/PopUpMenu.js"/>
+		<jsScript file="controls/PopOver.js"/>
+		<jsScript file="controls/PeriodSelect.js"/>
+		<jsScript file="controls/rs/PeriodSelect.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/WindowAbout.js"/>
+		<jsScript file="controls/rs/WindowAbout.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/MainMenuTree.js"/>
+		<jsScript file="controls/rs/MainMenuTree.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/ConstantGrid.js"/>
+		<jsScript file="controls/rs/ConstantGrid.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/Captcha.js"/>
+		<jsScript file="controls/ViewTemplate.js"/>
+		<jsScript file="controls/ToolTip.js"/>
 		<!-- **** Forms *** -->
-		<jsScript file="forms/ViewList_Form.js" />
-		<jsScript file="forms/MainMenuConstructor_Form.js" />
-		<jsScript file="forms/User_Form.js" />
-		<jsScript file="forms/UserList_Form.js" />
-		<!-- **** Controllers && Models *** -->
-		<jsScript file="controllers/User_Controller.js" />
+		<jsScript file="forms/ViewList_Form.js"/>
+		<jsScript file="forms/MainMenuConstructor_Form.js"/>
+		<jsScript file="forms/User_Form.js"/>
+		<jsScript file="forms/UserList_Form.js"/>
+		<jsScript file="forms/Bank_Form.js"/>
+		<jsScript file="forms/BankList_Form.js"/>
+		<jsScript file="forms/MailForSending_Form.js"/>
+		<jsScript file="forms/DepartmentDialog_Form.js"/>
+		<jsScript file="forms/EmployeeDialog_Form.js"/>
+		<jsScript file="forms/EmployeeList_Form.js"/>
+		<jsScript file="forms/DepartmentList_Form.js"/>
+		<jsScript file="forms/PostList_Form.js"/>
+		<jsScript file="forms/EmailTemplate_Form.js"/>
+		<jsScript file="forms/ShortMessage_Form.js"/>
+		<jsScript file="forms/UserCatalogMetadataDialog_Form.js"/>
+		<jsScript file="forms/UserCatalogDataDialog_Form.js"/>
+		<jsScript file="forms/DocTemplateDialog_Form.js"/>
+		<jsScript file="forms/DocumentDialog_Form.js"/>
+		<jsScript file="forms/EmployeeDialog_Form.js"/>
+		<jsScript file="forms/DocTemplateList_Form.js"/>
 		<!-- **** Views *** -->
-		<jsScript file="views/Login_View.js" />
-		<jsScript file="views/MainMenuConstructorList_View.js" />
-		<jsScript file="views/MainMenuConstructor_View.js" />
-		<jsScript file="views/ViewList_View.js" />
-		<jsScript file="views/About_View.js" />
-		<jsScript file="views/ConstantList_View.js" />
-		<jsScript file="views/UserList_View.js" />
-		<jsScript file="views/UserDialog_View.js" />
-		<jsScript file="views/UserProfile_View.js" />
-		<jsScript file="tmpl/App.templates.js" compressed="FALSE" standalone="FALSE" />
-		<jsScript file="custom_controls/Applaw_tmpl.js" />
-		<jsScript file="custom_controls/AppCustom.js" />
-		<jsScript file="custom_controls/ViewSectionSelect.js" />
-		<jsScript file="custom_controls/ViewEditRef.js" />
-		<jsScript file="custom_controls/DOCCommands.js" />
-		<jsScript file="custom_controls/DOCNumberEdit.js" />
-		<jsScript file="custom_controls/DOCDateEdit.js" />
-		<jsScript file="custom_controls/UserNameEdit.js" />
-		<jsScript file="custom_controls/UserEditRef.js" />
-		<jsScript file="custom_controls/rs_common_ru.js" />
-		<jsScript file="custom_controls/rs_ru.js" resource="ru" />
-		<jsScript file="views/rs_ru.js" />
-		<jsScript file="views/rs_common_ru.js" resource="ru" />
+		<jsScript file="forms/UserDialog_Form.js"/>
+		<jsScript file="views/Login_View.js"/>
+		<jsScript file="views/PasswordRecovery_View.js"/>
+		<jsScript file="views/Registration_View.js"/>
+		<jsScript file="views/MainMenuConstructorList_View.js"/>
+		<jsScript file="views/MainMenuConstructor_View.js"/>
+		<jsScript file="views/ViewList_View.js"/>
+		<jsScript file="views/UserProfile_View.js"/>
+		<jsScript file="views/About_View.js"/>
+		<jsScript file="views/Bank_View.js"/>
+		<jsScript file="views/BankList_View.js"/>
+		<jsScript file="views/ConstantList_View.js"/>
+		<jsScript file="views/UserList_View.js"/>
+		<jsScript file="views/UserDialog_View.js"/>
+		<jsScript file="views/TimeZoneLocale_View.js"/>
+		<jsScript file="views/MailForSendingList_View.js"/>
+		<jsScript file="views/MailForSending_View.js"/>
+		<jsScript file="views/EmailTemplateList_View.js"/>
+		<jsScript file="views/rs/EmailTemplateList_View.rs_ru.js" resource="ru"/>
+		<jsScript file="views/EmailTemplate_View.js"/>
+		<jsScript file="views/rs/EmailTemplate_View.rs_ru.js" resource="ru"/>
+		<jsScript file="views/ViewBankAcc.js"/>
+		<jsScript file="views/HolidayList_View.js"/>
+		<jsScript file="views/DepartmentList_View.js"/>
+		<jsScript file="views/rs/DepartmentList_View.rs_ru.js"/>
+		<jsScript file="views/DepartmentDialog_View.js"/>
+		<jsScript file="views/rs/DepartmentDialog_View.rs_ru.js"/>
+		<jsScript file="views/EmployeeList_View.js"/>
+		<jsScript file="views/rs/EmployeeList_View.rs_ru.js"/>
+		<jsScript file="views/EmployeeDialog_View.js"/>
+		<jsScript file="views/rs/EmployeeDialog_View.rs_ru.js"/>
+		<jsScript file="views/PostList_View.js"/>
+		<jsScript file="views/ReminderList_View.js"/>
+		<jsScript file="views/Reminder_View.js"/>
+		<jsScript file="views/ProjectManager_View.js"/>
+		<jsScript file="views/UserCatalogMetadataDialog_View.js"/>
+		<jsScript file="views/UserCatalogMetadataList_View.js"/>
+		<jsScript file="views/UserCatalogDataDialog_View.js"/>
+		<jsScript file="views/UserCatalogDataList_View.js"/>
+		<jsScript file="views/DocTemplateList_View.js"/>
+		<jsScript file="views/DocTemplateDialog_View.js"/>
+		<jsScript file="views/ContactList_View.js"/>
+		<jsScript file="views/DocumentList_View.js"/>
+		<jsScript file="views/DocumentDialog_View.js"/>
+		<jsScript file="views/DataTypeFieldAliasList_View.js"/>
+		<jsScript file="tmpl/App.templates.js" compressed="FALSE" standalone="FALSE"/>
+		<jsScript file="custom_controls/App.enums.js"/>
+		<jsScript file="custom_controls/App.predefinedItems.js"/>
+		<jsScript file="custom_controls/ErrorControl.js"/>
+		<jsScript file="custom_controls/AppLawTmpl.js"/>
+		<jsScript file="custom_controls/ButtonOrgSearch.js"/>
+		<jsScript file="custom_controls/rs/ButtonOrgSearch.rs_ru.js" resource="ru"/>
+		<jsScript file="custom_controls/ViewSectionSelect.js"/>
+		<jsScript file="custom_controls/ViewEditRef.js"/>
+		<jsScript file="custom_controls/UserEdit.js"/>
+		<jsScript file="custom_controls/UserEditRef.js"/>
+		<jsScript file="custom_controls/UserNameEdit.js"/>
+		<jsScript file="custom_controls/UserPwdEdit.js"/>
+		<jsScript file="custom_controls/rs/UserPwdEdit.rs_ru.js"/>
+		<jsScript file="custom_controls/Pagination.js"/>
+		<jsScript file="custom_controls/BankEditRef.js"/>
+		<jsScript file="custom_controls/EditBankAcc.js"/>
+		<jsScript file="custom_controls/EditOGRN.js"/>
+		<jsScript file="custom_controls/EditINN.js"/>
+		<jsScript file="custom_controls/EditKPP.js"/>
+		<jsScript file="custom_controls/DepartmentSelect.js"/>
+		<jsScript file="custom_controls/DepartmentEditRef.js"/>
+		<jsScript file="custom_controls/EmployeeEditRef.js"/>
+		<jsScript file="custom_controls/EmployeeListGrid.js"/>
+		<jsScript file="custom_controls/EditContactList.js"/>
+		<jsScript file="custom_controls/EditContact.js"/>
+		<jsScript file="custom_controls/ShortMessage.js"/>
+		<jsScript file="custom_controls/EditColorPalette.js"/>
+		<jsScript file="custom_controls/UserCatalogMetadataSelect.js"/>
+		<jsScript file="custom_controls/PermissionEditRef.js"/>
+		<jsScript file="custom_controls/AccessPermissionGrid.js"/>
+		<jsScript file="custom_controls/DocAttrEventGrid.js"/>
+		<jsScript file="custom_controls/PostEditRef.js"/>
+		<jsScript file="custom_controls/DocTemplateEditRef.js"/>
+		<jsScript file="custom_controls/DocTemplateFieldContainer.js"/>
+		<jsScript file="custom_controls/CollectionFieldContainer.js"/>
+		<jsScript file="custom_controls/FieldGroupContainer.js"/>
+		<jsScript file="custom_controls/DocumentFieldValueContainer.js"/>
+		<jsScript file="custom_controls/DocTemplateFieldEdit.js"/>
+		<jsScript file="custom_controls/CollectionFieldEdit.js"/>
+		<jsScript file="custom_controls/CollectionGrid.js"/>
+		<jsScript file="custom_controls/FieldGroupEdit.js"/>
+		<jsScript file="custom_controls/FieldGroup.js"/>
+		<jsScript file="custom_controls/DocumentFieldContainer.js"/>
+		<jsScript file="custom_controls/EgrulSearchData_View.js"/>
+		<jsScript file="custom_controls/EgrulSearchDataEdit.js"/>
+		<jsScript file="custom_controls/UserCatalogFieldGrid.js"/>
+		<jsScript file="custom_controls/UserCatalogDataEdit.js"/>
+		<jsScript file="views/rs_ru.js"/>
+		<jsScript file="views/rs_common_ru.js"/>
+		<jsScript file="controllers/Constant_Controller.js"/>
+		<jsScript file="controllers/Enum_Controller.js"/>
+		<jsScript file="controllers/MainMenuConstructor_Controller.js"/>
+		<jsScript file="controllers/MainMenuContent_Controller.js"/>
+		<jsScript file="controllers/View_Controller.js"/>
+		<jsScript file="controllers/VariantStorage_Controller.js"/>
+		<jsScript file="controllers/About_Controller.js"/>
+		<jsScript file="models/TimeZoneLocale_Model.js"/>
+		<jsScript file="models/User_Model.js"/>
+		<jsScript file="models/UserList_Model.js"/>
+		<jsScript file="models/UserDialog_Model.js"/>
+		<jsScript file="models/UserProfile_Model.js"/>
+		<jsScript file="models/ConstantList_Model.js"/>
+		<jsScript file="models/View_Model.js"/>
+		<jsScript file="models/ViewList_Model.js"/>
+		<jsScript file="models/ViewSectionList_Model.js"/>
+		<jsScript file="models/MainMenuConstructor_Model.js"/>
+		<jsScript file="models/MainMenuConstructorList_Model.js"/>
+		<jsScript file="models/MainMenuContent_Model.js"/>
+		<jsScript file="models/VariantStorage_Model.js"/>
+		<jsScript file="models/VariantStorageList_Model.js"/>
+		<jsScript file="models/About_Model.js"/>
+		<jsScript file="enum_controls/Enum_locales.js"/>
+		<jsScript file="enum_controls/Enum_role_types.js"/>
+		<jsScript file="enum_controls/Enum_data_types.js"/>
+		<jsScript file="controllers/Post_Controller.js"/>
+		<jsScript file="controllers/Contact_Controller.js"/>
+		<jsScript file="controllers/Department_Controller.js"/>
+		<jsScript file="controllers/Employee_Controller.js"/>
+		<jsScript file="models/Post_Model.js"/>
+		<jsScript file="models/Employee_Model.js"/>
+		<jsScript file="models/EmployeeDialog_Model.js"/>
+		<jsScript file="models/EmployeeList_Model.js"/>
+		<jsScript file="models/Department_Model.js"/>
+		<jsScript file="models/DepartmentDialog_Model.js"/>
+		<jsScript file="models/DepartmentList_Model.js"/>
+		<jsScript file="models/Contact_Model.js"/>
+		<jsScript file="controllers/ShortMessageRecipientState_Controller.js"/>
+		<jsScript file="controllers/ShortMessage_Controller.js"/>
+		<jsScript file="models/ShortMessageRecipientState_Model.js"/>
+		<jsScript file="models/ShortMessageRecipientCurrentState_Model.js"/>
+		<jsScript file="models/ShortMessage_Model.js"/>
+		<jsScript file="models/ShortMessageList_Model.js"/>
+		<jsScript file="models/ShortMessageChat_Model.js"/>
+		<jsScript file="models/RecipientPicture_Model.js"/>
+		<jsScript file="models/ShortMessageRecipientList_Model.js"/>
+		<jsScript file="controllers/Captcha_Controller.js"/>
+		<jsScript file="controllers/User_Controller.js"/>
+		<jsScript file="controllers/EmployeeLocalList_Controller.js"/>
+		<jsScript file="controllers/Bank_Controller.js"/>
+		<jsScript file="models/Bank_Model.js"/>
+		<jsScript file="models/BankList_Model.js"/>
+		<jsScript file="enum_controls/EnumGridColumn_locales.js"/>
+		<jsScript file="enum_controls/EnumGridColumn_role_types.js"/>
+		<jsScript file="enum_controls/EnumGridColumn_data_types.js"/>
+		<jsScript file="controllers/UserCatalogMetadata_Controller.js"/>
+		<jsScript file="models/UserCatalogMetadata_Model.js"/>
+		<jsScript file="models/UserCatalogMetadataList_Model.js"/>
+		<jsScript file="models/UserCatalogData_Model.js"/>
+		<jsScript file="controllers/UserCatalogData_Controller.js"/>
+		<jsScript file="models/UserCatalogDataList_Model.js"/>
+		<jsScript file="models/UserCatalogField_Model.js"/>
+		<jsScript file="models/DocTemplate_Model.js"/>
+		<jsScript file="models/DocTemplateList_Model.js"/>
+		<jsScript file="models/DocTemplateDialog_Model.js"/>
+		<jsScript file="controllers/DocTemplate_Controller.js"/>
+		<jsScript file="controllers/AccessPermission_Controller.js"/>
+		<jsScript file="models/AccessPermission_Model.js"/>
+		<jsScript file="controllers/MailForSending_Controller.js"/>
+		<jsScript file="controllers/TimeZoneLocale_Controller.js"/>
+		<jsScript file="controllers/Holiday_Controller.js"/>
+		<jsScript file="controllers/ProjectManager_Controller.js"/>
+		<jsScript file="models/MailForSending_Model.js"/>
+		<jsScript file="models/MailForSendingList_Model.js"/>
+		<jsScript file="models/MailForSendingAttachment_Model.js"/>
+		<jsScript file="models/Holiday_Model.js"/>
+		<jsScript file="enum_controls/Enum_email_types.js"/>
+		<jsScript file="enum_controls/EnumGridColumn_email_types.js"/>
+		<jsScript file="controllers/DocTemplateField_Controller.js"/>
+		<jsScript file="models/DocTemplateField_Model.js"/>
+		<jsScript file="models/Document_Model.js"/>
+		<jsScript file="controllers/Document_Controller.js"/>
+		<jsScript file="models/DocumentList_Model.js"/>
+		<jsScript file="models/DocumentDialog_Model.js"/>
+		<jsScript file="controllers/EgrulSearchData_Controller.js"/>
+		<jsScript file="models/EgrulSearchData_Model.js"/>
+		<jsScript file="controllers/UserCatalogField_Controller.js"/>
+		<jsScript file="models/UserCatalogMetadataDialog_Model.js"/>
+		<jsScript file="models/EmployeeLocalList_Model.js"/>
+		<jsScript file="controllers/DocAttrEvent_Controller.js"/>
+		<jsScript file="models/DocAttrEvent_Model.js"/>
+		<jsScript file="models/MainMenuConstructorDialog_Model.js"/>
+		<jsScript file="models/DataTypeFieldAlias_Model.js"/>
+		<jsScript file="controllers/DataTypeFieldAlias_Controller.js"/>
 	</jsScripts>
 	<cssScripts>
-		<cssScript file="ext/bootstrap-datepicker/bootstrap-datepicker.standalone.min.css" compressed="TRUE" standalone="TRUE" />
-		<cssScript file="ext/startbootstrap-sb-admin-2-1.0.8/bower_components/bootstrap/dist/css/bootstrap.min.css" compressed="TRUE" standalone="TRUE" />
-		<cssScript file="ext/startbootstrap-sb-admin-2-1.0.8/bower_components/metisMenu/dist/metisMenu.min.css" standalone="TRUE" />
-		<cssScript file="ext/startbootstrap-sb-admin-2-1.0.8/dist/css/timeline.css" standalone="TRUE" />
-		<cssScript file="ext/startbootstrap-sb-admin-2-1.0.8/dist/css/sb-admin-2.css" standalone="TRUE" />
-		<cssScript file="ext/startbootstrap-sb-admin-2-1.0.8/bower_components/morrisjs/morris.css" standalone="TRUE" />
-		<cssScript file="ext/startbootstrap-sb-admin-2-1.0.8/bower_components/font-awesome/css/font-awesome.min.css" compressed="TRUE" standalone="TRUE" />
-		<cssScript file="custom-css/style.css" standalone="TRUE" />
+		<cssScript file="assets/css/icons/icomoon/styles.css" compressed="TRUE" standalone="TRUE"/>
+		<cssScript file="assets/css/bootstrap.min.css" compressed="TRUE" standalone="TRUE"/>
+		<cssScript file="assets/css/core.min.css" compressed="TRUE" standalone="TRUE"/>
+		<cssScript file="assets/css/components.min.css" compressed="TRUE" standalone="TRUE"/>
+		<cssScript file="assets/css/colors.min.css" compressed="TRUE" standalone="TRUE"/>
+		<cssScript file="assets/css/icons/fontawesome/styles.min.css" compressed="TRUE" standalone="TRUE"/>
+		<cssScript file="custom-css/easyTree.css" compressed="FALSE" standalone="TRUE"/>
+		<cssScript file="ext/bootstrap-datepicker/bootstrap-datepicker.standalone.min.css" compressed="TRUE" standalone="TRUE"/>
+		<cssScript file="custom-css/style.css" standalone="TRUE"/>
+		<cssScript file="custom-css/print.css" standalone="TRUE"/>
 	</cssScripts>
 </metadata>

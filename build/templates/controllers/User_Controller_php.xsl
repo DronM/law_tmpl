@@ -27,18 +27,22 @@ require_once(FRAME_WORK_PATH.'basic_classes/ParamsSQL.php');
 require_once(FRAME_WORK_PATH.'basic_classes/ModelVars.php');
 
 require_once('common/PwdGen.php');
-require_once('functions/CustomEmailSender.php');
+require_once('functions/LawTmplEmailSender.php');
+require_once('controllers/Captcha_Controller.php');
 
 class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 
 	const PWD_LEN = 6;
 	const ER_USER_NOT_DEFIND = "Пользователь не определен!@1000";
 	const ER_NO_EMAIL = "Не задан адрес электронный почты!@1001";
-	const ER_LOGIN_TAKEN = "Имя пользователя занято.";
-	const ER_EMAIL_TAKEN = "Есть такой адрес электронной почты.";
+	const ER_LOGIN_TAKEN = "Имя пользователя занято.@1002";
+	const ER_NAME_OR_EMAIL_TAKEN = "Логин или адрес электронной почты заняты.@1003";
+	const ER_WRONG_CAPTCHA = "Неверный код с картинки.@1004";
+	const ER_BANNED = "Доступ запрещен!@1005";
+	const ER_REG = "Ошибка регистрации пользователя!@1006";
 
-	public function __construct($dbLinkMaster=NULL){
-		parent::__construct($dbLinkMaster);<xsl:apply-templates/>
+	public function __construct($dbLinkMaster=NULL,$dbLink=NULL){
+		parent::__construct($dbLinkMaster,$dbLink);<xsl:apply-templates/>
 	}
 		
 	<xsl:call-template name="extra_methods"/>
@@ -57,7 +61,7 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		if (!strlen($email)){
 			throw new Exception(User_Controller::ER_NO_EMAIL);
 		}
-		$new_pwd = '159753';//gen_pwd(self::PWD_LEN);
+		$new_pwd = DEF_NEW_USER_PWD;//gen_pwd(self::PWD_LEN);
 		$pm->setParamValue('pwd',$new_pwd);
 		
 		$model_id = $this->getInsertModelId();
@@ -75,6 +79,8 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 				'values'=>$fields)
 			)
 		);
+		
+		$this->update_session_vars($pm);
 			
 	}
 	
@@ -88,6 +94,12 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		}		
 	}
 	public function logout(){
+		$this->getDbLinkMaster()->query(sprintf(
+		"UPDATE logins
+		SET
+			date_time_out=now()::timestamp
+		WHERE session_id='%s'",session_id()));
+	
 		$this->setLogged(FALSE);
 	}
 	
@@ -102,16 +114,47 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		
 		$_SESSION['user_id']		= $ar['id'];
 		$_SESSION['user_name']		= $ar['name'];
+		$_SESSION['user_name_full']	= $ar['name_full'];
 		$_SESSION['role_id']		= $ar['role_id'];
 		$_SESSION['locale_id'] 		= $ar['locale_id'];
-		$_SESSION['user_time_locale'] 	= $ar['user_time_locale'];		
+		$_SESSION['user_time_locale'] 	= $ar['user_time_locale'];
+		$_SESSION['color_palette'] 	= $ar['color_palette'];
+						
+		if ($ar['role_id']!='client'){
+			$_SESSION['employees_ref'] = $ar['employees_ref'];
+			$_SESSION['departments_ref'] = $ar['departments_ref'];
+			$_SESSION['recipient_states_ref'] = $ar['recipient_states_ref'];
+		}
 		
 		//global filters				
+		$_SESSION['global_employee_id'] = json_decode($ar['employees_ref'])->keys->id;
+		<xsl:for-each select="/metadata/models/model/globalFilter[@id='employee_id']">
+		<xsl:variable name="model_id" select="concat(../@id,'_Model')"/>
+		<xsl:variable name="field_id">
+			<xsl:choose>
+				<xsl:when test="@fieldId">'<xsl:value-of select="@fieldId"/>'</xsl:when>
+				<xsl:otherwise>'employee_id'</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>			
+		$model = new <xsl:value-of select="$model_id"/>($this->getDbLink());
+		$filter = new ModelWhereSQL();
+		$field = clone $model->getFieldById(<xsl:value-of select="$field_id"/>);
+		$field->setValue($_SESSION['global_employee_id']);
+		$filter->addField($field,'=');
+		GlobalFilter::set('<xsl:value-of select="$model_id"/>',$filter);
+		</xsl:for-each>
+		
+		$model = new ShortMessageRecipientList_Model($this->getDbLink());
+		$filter = new ModelWhereSQL();
+		$field = clone $model->getFieldById('recipient_id');
+		$field->setValue($_SESSION['global_employee_id']);
+		$filter->addField($field,'&lt;&gt;');
+		GlobalFilter::set('ShortMessageRecipientList_Model',$filter);
 		
 		$log_ar = $this->getDbLinkMaster()->query_first(
 			sprintf("SELECT pub_key FROM logins
-			WHERE session_id='%s' AND user_id ='%s' AND date_time_out IS NULL",
-			session_id(),$ar['id'])
+			WHERE session_id='%s' AND user_id =%d AND date_time_out IS NULL",
+			session_id(),intval($ar['id']))
 		);
 		if (!$log_ar['pub_key']){
 			//no user login
@@ -120,21 +163,21 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 			
 			$log_ar = $this->getDbLinkMaster()->query_first(
 				sprintf("UPDATE logins SET 
-					user_id = '%s',
+					user_id = %d,
 					pub_key = '%s'
 				WHERE session_id='%s' AND user_id IS NULL
 				RETURNING id",
-				$ar['id'],$this->pub_key,session_id())
+				intval($ar['id']),$this->pub_key,session_id())
 			);				
 			if (!$log_ar['id']){
 				//нет вообще юзера
 				$log_ar = $this->getDbLinkMaster()->query_first(
 					sprintf("INSERT INTO logins
 					(date_time_in,ip,session_id,pub_key,user_id)
-					VALUES('%s','%s','%s','%s','%s')
+					VALUES('%s','%s','%s','%s',%d)
 					RETURNING id",
 					date('Y-m-d H:i:s'),$_SERVER["REMOTE_ADDR"],
-					session_id(),$this->pub_key,$ar['id'])
+					session_id(),$this->pub_key,intval($ar['id']))
 				);								
 			}
 			$_SESSION['LOGIN_ID'] = $ar['id'];			
@@ -143,6 +186,16 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 			//user logged
 			$this->pub_key = trim($log_ar['pub_key']);
 		}
+		
+		if ($ar['role_id']=='client'){
+			//custom session duration
+			$sess_len = CLIENT_SESSION_EXP_SEC;
+		}
+		else{
+			$sess_len = SESSION_EXP_SEC;
+		}
+		$_SESSION['sess_len'] = $sess_len;
+		$_SESSION['sess_discard_after'] = time() + $sess_len;
 	}
 	
 	private function do_login($pm){		
@@ -151,15 +204,18 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 			sprintf(
 			"SELECT 
 				u.*
-			FROM user_view AS u
+			FROM users_view AS u
 			WHERE (u.name=%s OR u.email=%s) AND u.pwd=md5(%s)",
 			$this->getExtDbVal($pm,'name'),
 			$this->getExtDbVal($pm,'name'),
 			$this->getExtDbVal($pm,'pwd')
 			));
 			
-		if (!is_array($ar) || !count($ar)){
+		if (!is_array($ar) || !count($ar) || !intval($ar['id'])){
 			throw new Exception(ERR_AUTH);
+		}
+		else if ($ar['banned']=='t'){
+			throw new Exception(self::ER_BANNED);
 		}
 		else{
 			$this->set_logged($ar);
@@ -193,19 +249,19 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		
 		if (defined('PARAM_TOKEN')){
 			if ($this->getExtVal($pm,'rememberMe')){
-				setcookie(PARAM_TOKEN,$access_token,time()+SESSION_EXP_SEC,'expert72',$_SERVER['HTTP_HOST']);
+				setcookie(PARAM_TOKEN,$access_token,time()+SESSION_EXP_SEC,'law_tmpl',$_SERVER['HTTP_HOST']);
 			}
 			else{
-				setcookie(PARAM_TOKEN,NULL,-1,'expert72',$_SERVER['HTTP_HOST']);
+				setcookie(PARAM_TOKEN,NULL,-1,'law_tmpl',$_SERVER['HTTP_HOST']);
 			}
 		}
 	}
 	
 	public function login($pm){		
 		$this->do_login($pm);
-		$this->login_ext($pm);
+		//$this->login_ext($pm);
 	}
-
+	
 	public function login_refresh($pm){
 		$p = new ParamsSQL($pm,$this->getDbLink());
 		$p->addAll();
@@ -254,9 +310,10 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 			
 			$link->query(sprintf(
 			"UPDATE logins
-				SET set_date_time=now()::timestamp,
-					session_id='%s',
-					pub_key='%s'
+			SET
+				set_date_time=now()::timestamp,
+				session_id='%s',
+				pub_key='%s'
 			WHERE id=%d",$new_sess_id,$pub_key,$ar['id']));
 			
 			$link->query('COMMIT');
@@ -293,7 +350,7 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		
 	private function pwd_notify($userId,$pwd){
 		//email
-		CustomEmailSender::addEMail(
+		LawTmplEmailSender::regMail(
 			$this->getDbLinkMaster(),
 			sprintf("email_reset_pwd(%d,%s)",
 				$userId,
@@ -306,7 +363,7 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 	
 	private function email_confirm_notify($userId,$key){
 		//email
-		CustomEmailSender::addEMail(
+		LawTmplEmailSender::regMail(
 			$this->getDbLinkMaster(),
 			sprintf("email_user_email_conf(%d,%s)",
 				$userId,$key
@@ -317,30 +374,39 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 	}
 	
 	public function password_recover($pm){		
-		$ar = $this->getDbLink()->query_first(sprintf(
-		"SELECT id FROM users WHERE email=%s",
-		$this->getExtDbVal($pm,'email')
-		));
-		if (!is_array($ar) || !count($ar)){
-			throw new Exception('Адрес электронной почты не найден!');
-		}		
-		
-		$pwd = "'".gen_pwd(self::PWD_LEN)."'";
 		try{
-			$this->getDbLinkMaster()->query('BEGIN');
+			$this->check_captcha($pm);	
+		
+			$ar = $this->getDbLink()->query_first(sprintf(
+			"SELECT id FROM users WHERE email=%s",
+			$this->getExtDbVal($pm,'email')
+			));
+			if (!is_array($ar) || !count($ar)){
+				throw new Exception('Адрес электронной почты не найден!');
+			}		
+		
+			$pwd = "'".gen_pwd(self::PWD_LEN)."'";
+		
+			try{		
+				$this->getDbLinkMaster()->query('BEGIN');
 			
-			$this->getDbLinkMaster()->query(sprintf(
-				"UPDATE users SET pwd=md5(%s)
-				WHERE id=%d",
-				$pwd,$ar['id'])
-			);
-			$this->pwd_notify($ar['id'],$pwd);
+				$this->getDbLinkMaster()->query(sprintf(
+					"UPDATE users SET pwd=md5(%s)
+					WHERE id=%d",
+					$pwd,$ar['id'])
+				);
+				$this->pwd_notify($ar['id'],$pwd);
 			
-			$this->getDbLinkMaster()->query('COMMIT');
+				$this->getDbLinkMaster()->query('COMMIT');
+			}
+			catch(Exception $e){
+				$this->getDbLinkMaster()->query('ROLLBACK');
+				throw $e;		
+			}
 		}
-		catch(Exception $e){
-			$this->getDbLinkMaster()->query('ROLLBACK');
-			throw new Exception($e);		
+		catch(Exception $e2){
+			$this->addModel(Captcha_Controller::makeModel());
+			throw $e2;				
 		}
 	}
 	
@@ -357,71 +423,112 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		);		
 	}
 	
+	private function check_captcha($pm){
+		if (!isset($_SESSION['captcha'])){
+			throw new Exception('Captcha is not generated!');
+		}
+		if ($_SESSION['captcha']!=$this->getExtVal($pm,'captcha_key')){
+			throw new Exception(self::ER_WRONG_CAPTCHA);
+		}
+	}
+	
 	public function register($pm){
 		/*
-		1) Проверить почту
-		2) занести в users
-		3) Подтверждение письма
-		4) Отправить письмо для подтверждения мыла. после подтверждения можно заходить через мыло
-		5) авторизовать
+		1) Проверить капчу
+		2) Проверить почту
+		3) занести в users
+		4) Подтверждение письма
+		5) Отправить письмо для подтверждения мыла. после подтверждения можно заходить через мыло
+		6) авторизовать
 		*/
-		
-		$ar = $this->field_check($pm,'email');
-		if (count($ar) &amp;&amp; $ar['ex']=='t'){
-			throw new Exception(self::ER_EMAIL_TAKEN);
-		}
-		
+						
 		try{
-			$this->getDbLinkMaster()->query('BEGIN');
+			$this->check_captcha($pm);
 			
-			$inserted_id_ar = $this->getDbLinkMaster()->query_first(sprintf(
-			"INSERT INTO users (role_id,name,pwd,email,pers_data_proc_agreement,time_zone_locale_id)
-			values ('client'::role_types,%s,md5(%s),%s,TRUE,1)
-			RETURNING id",
-			$this->getExtDbVal($pm,'name'),
-			$this->getExtDbVal($pm,'pwd'),
-			$this->getExtDbVal($pm,'email')
+			//$ar = $this->field_check($pm,'email','name');
+			$ar = $this->getDbLink()->query_first(sprintf(
+				"SELECT TRUE AS ex FROM users WHERE name=%s OR email=%s",
+				$this->getExtDbVal($pm,'name'),$this->getExtDbVal($pm,'email')
 			));
 
-			$ar_email_key = $this->getDbLinkMaster()->query_first(sprintf(
-				"INSERT INTO user_email_confirmations (key,user_id)
-				values (md5(CURRENT_TIMESTAMP::text),%d)
-				RETURNING key",
-				$inserted_id_ar['id']
-			));
-	
-			ExpertEmailSender::addEMail(
-				$this->getDbLinkMaster(),
-				sprintf("email_new_account(%d,%s)",
-					$inserted_id_ar['id'],$this->getExtDbVal($pm,'pwd')
-				),
-				NULL,
-				'reset_pwd'
-			);
-		
-			$this->email_confirm_notify($inserted_id_ar['id'],"'".$ar_email_key['key']."'");
-		
-			$ar = $this->getDbLink()->query_first(
-				sprintf(
-				"SELECT 
-					u.*
-				FROM user_view AS u
-				WHERE u.id=%d",
-				$inserted_id_ar['id']
-				));
-		
-			$this->set_logged($ar);
+			if ($this->getExtVal($pm,'pers_data_proc_agreement')!='1'){
+				throw new Exception("Нет согласия на обработку персональных данных!");
+			}
+
+			if (count($ar) &amp;&amp; $ar['ex']=='t'){
+				throw new Exception(self::ER_NAME_OR_EMAIL_TAKEN);
+			}
 			
-			$this->getDbLinkMaster()->query('COMMIT');
-		}
-		catch(Exception $e){
-			$this->getDbLinkMaster()->query('ROLLBACK');
-			throw new Exception($e);		
+			try{
+				$this->getDbLinkMaster()->query('BEGIN');
+			
+				$inserted_id_ar = $this->getDbLinkMaster()->query_first(sprintf(
+				"INSERT INTO users (role_id,name,pwd,email,name_full,pers_data_proc_agreement,time_zone_locale_id)
+				values ('client'::role_types,%s,md5(%s),%s,%s,TRUE,1)
+				RETURNING id",
+				$this->getExtDbVal($pm,'name'),
+				$this->getExtDbVal($pm,'pwd'),
+				$this->getExtDbVal($pm,'email'),
+				$this->getExtDbVal($pm,'name_full')
+				));
+
+				if (!is_array($inserted_id_ar) || !count($inserted_id_ar) || !intval($inserted_id_ar['id'])){
+					throw new Exception(self::ER_REG);
+				}
+
+				$ar_email_key = $this->getDbLinkMaster()->query_first(sprintf(
+					"INSERT INTO user_email_confirmations (key,user_id)
+					values (md5(CURRENT_TIMESTAMP::text),%d)
+					RETURNING key",
+					$inserted_id_ar['id']
+				));
+	
+				LawTmplEmailSender::regMail(
+					$this->getDbLinkMaster(),
+					sprintf("email_new_account(%d,%s)",
+						$inserted_id_ar['id'],$this->getExtDbVal($pm,'pwd')
+					),
+					NULL,
+					'reset_pwd'
+				);
+		
+				$this->email_confirm_notify($inserted_id_ar['id'],"'".$ar_email_key['key']."'");
+		
+				//From same server!!!!
+				$ar = $this->getDbLinkMaster()->query_first(
+					sprintf(
+					"SELECT 
+						u.*
+					FROM users_view AS u
+					WHERE u.id=%d",
+					$inserted_id_ar['id']
+					));
+
+				$this->set_logged($ar);
+			
+				$this->getDbLinkMaster()->query('COMMIT');
+			}
+			catch(Exception $e){
+				$this->getDbLinkMaster()->query('ROLLBACK');
+				throw new Exception($e);		
+			}
 		}				
+		catch(Exception $e2){
+			$this->addModel(Captcha_Controller::makeModel());
+			throw new Exception($e2);		
+		}
+		
 	}
 
-	private function field_check($pm,$field){
-		return $this->getDbLink()->query_first(sprintf("SELECT TRUE AS ex FROM users WHERE ".$field."=%s",$this->getExtDbVal($pm,$field)));
+	private function field_check($pm,$field1,$field2=NULL){
+		$cond = sprintf('"%s"=%s',$field1,$this->getExtDbVal($pm,$field1));
+		/*
+		if (!is_null($field2)){
+			$cond.= sprintf(' AND %s=%s',$field2,$this->getExtDbVal($pm,$field2));
+		}
+		throw new Exception("SELECT TRUE AS ex FROM users WHERE ".$cond);
+		*/
+		return $this->getDbLink()->query_first("SELECT TRUE AS ex FROM users WHERE ".$cond);
 	}
 	
 	public function name_check($pm){
@@ -466,13 +573,78 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		if (!$_SESSION['user_id']){
 			throw new Exception(self::ER_USER_NOT_DEFIND);	
 		}
-		$m = new UserDialog_Model($this->getDbLink());		
+		$m = new UserProfile_Model($this->getDbLink());		
 		$f = $m->getFieldById('id');
 		$f->setValue($_SESSION['user_id']);		
 		$where = new ModelWhereSQL();
 		$where->addField($f,'=');
 		$m->select(FALSE,$where,null,null,null,null,null,null,true);		
 		$this->addModel($m);
+	}
+	
+	public function update($pm){
+	
+		parent::update($pm);
+		
+		$new_name = $pm->getParamValue('name');
+		if (isset($new_name)){
+			//New name
+			/*
+			if (file_exists($dir =
+					FILE_STORAGE_DIR.DIRECTORY_SEPARATOR.
+					$_SESSION['user_name']
+				)
+			){
+				rename($dir,FILE_STORAGE_DIR.DIRECTORY_SEPARATOR.$new_name);
+			}
+			*/			
+			$_SESSION['user_name'] = $new_name;
+		}
+		
+		$this->update_session_vars($pm);
+	}
+	
+	public function hide($pm){
+		if ($_SESSION['role_id']!='admin'){
+			throw new Exception('Действие запрещено!');	
+		}
+	
+		$pref = "'Удален_'";
+
+		$ar = $this->getDbLinkMaster()->query_first(sprintf(
+			"SELECT substring(name,1,length(%s))=%s AS deleted FROM users WHERE id=%d",
+			$pref,
+			$pref,
+			$this->getExtDbVal($pm,'id')
+		));
+	
+		if (count($ar) &amp;&amp; $ar['deleted']=='t' ){
+			throw new Exception('Уже удален!');	
+		}
+		
+		$this->getDbLinkMaster()->query(sprintf(
+			"UPDATE users
+			SET
+				name=%s||name,
+				--pwd = md5(now()::text),
+				banned = TRUE
+			WHERE id=%d",
+			$pref,
+			$this->getExtDbVal($pm,'id')
+		));
+	}
+	
+	private function update_session_vars($pm){
+		$session_vars = ['color_palette','cades_load_timeout','cades_chunk_size'];
+		
+		foreach($session_vars as $id){
+			$val = $pm->getParamValue($id);		
+			if (isset($val)){
+				$_SESSION[$id] = $val;
+			}
+		
+		}
+			
 	}
 	
 </xsl:template>

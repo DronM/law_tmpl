@@ -1,0 +1,39 @@
+<div id="{{id}}" class="panel panel-flat">
+	<div id="{{id}}:cmd-cont">
+
+		<div id="{{id}}:cmdOk"/>
+		<div id="{{id}}:cmdSave"/>
+		<div id="{{id}}:cmdCancel"/>
+	</div>
+
+	<div class="panel-heading">
+		<h3 class="panel-title">{{HEAD_TITLE}}</h3>
+	</div>
+	
+	<div id="{{id}}:user_id"/>
+	<div id="{{id}}:name"/>
+
+	<div class="tabbable">
+		<ul class="nav nav-tabs nav-tabs-highlight">				
+			<li class="active">
+				<a href="#fields" data-toggle="tab" aria-expanded="true">
+					Структура полей</a>
+			</li>
+			<li class=""><a href="#values" data-toggle="tab" aria-expanded="false">Значения</a></li>
+		</ul>
+	</div>
+
+	<div class="tab-content dialogForm">
+		<div class="tab-pane fade in active" id="fields">
+		
+			<div id="{{id}}:fields"/>		
+		</div>
+
+		<div class="tab-pane fade in" id="values">
+			<div id="{{id}}:field_values"/>
+			
+		</div>
+		
+	</div>
+
+</div>

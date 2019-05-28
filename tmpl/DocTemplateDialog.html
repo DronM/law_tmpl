@@ -1,0 +1,62 @@
+<div id="{{id}}" class="panel panel-flat">
+	<div id="{{id}}:cmd">
+		<div id="{{id}}:cmdOk"/>
+		<div id="{{id}}:cmdSave"/>
+		<div id="{{id}}:cmdCancel"/>
+	</div>
+
+	<div class="panel-heading">
+		<h3 class="panel-title">{{HEAD_TITLE}}</h3>
+	</div>
+
+
+	<div class="tabbable">
+		<ul class="nav nav-tabs nav-tabs-highlight">				
+			<li class="active">
+				<a href="#common" data-toggle="tab" aria-expanded="true">
+					Общие данные</a>
+			</li>
+			<li class=""><a href="#attributes" data-toggle="tab" aria-expanded="false">Атрибуты</a></li>
+			<li class=""><a href="#permissions" data-toggle="tab" aria-expanded="false">Права доступа</a></li>
+			<li class=""><a href="#user_functions" data-toggle="tab" aria-expanded="false">Пользовательские функции</a></li>
+		</ul>
+	</div>
+
+	<div class="tab-content dialogForm">
+		<div class="tab-pane fade in active" id="common">
+		
+			<div id="{{id}}:name"/>		
+		
+			<div id="{{id}}:document_prefix"/>		
+
+			<div id="{{id}}:template_file"/>
+		
+			<div id="{{id}}:comment_text"/>
+		
+			<div id="{{id}}:employees_ref"/>
+		</div>
+
+		<div class="tab-pane fade in" id="attributes">
+			<div id="{{id}}:fields"/>
+			
+		</div>
+		
+		<div class="tab-pane fade in" id="permissions">
+			<h6>Доступность шаблона для других сотрудников</h6>
+			
+			<div id="{{id}}:for_all_employees"/>
+			
+			<div id="{{id}}:permissions"/>
+		
+		</div>
+		<div class="tab-pane fade in" id="user_functions">
+			<h4>Пользовательские функции</h4>
+			<p>Задаются в виде структуры ключ : значение</p>
+			<p>{ИМЯ_ФУНКЦИИ1:function(){}, ИМЯ_ФУНКЦИИ2:function(){}}</p>
+			<p>Функции вызываются из события через userFunctions.ИМЯ_ФУНКЦИИ1() с передачей параметров</p>
+			<div id="{{id}}:user_functions"/>
+		</div>
+		
+	</div>
+	
+</div>	

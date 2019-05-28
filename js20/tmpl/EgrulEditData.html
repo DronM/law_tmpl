@@ -1,0 +1,22 @@
+<div>
+	{{#sections}}
+	<div class="panel fieldPanel panel-odd">
+		<div class="panel-body">
+			<h5 class="panel-title">{{descr}}</h5>
+			<div>Идентификатор для шаблона: <strong>{{id}}</strong></div>
+		
+			<table>
+				<tbody>
+					{{#rows}}
+					<tr>
+						<td><strong>{{id}}</strong></td>
+						<td>{{descr}}</td>
+						<td>{{value}}</td>
+					</tr>
+					{{/rows}}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	{{/sections}}
+</div>

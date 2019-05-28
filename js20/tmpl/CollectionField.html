@@ -1,0 +1,42 @@
+<div id="{{id}}" class="{{panelClass}}">
+
+	<div class="panel-heading">
+		<h6 class="panel-title">
+			<span class="text-semibold app-client-header attr-id">{{title}}</span>
+			
+			<a class="heading-elements-toggle">
+				<i class="icon-more"></i>
+			</a>
+		</h6>				
+		<div class="heading-elements">
+			<ul class="icons-list">
+				<li><a id="{{id}}:cmdToggle" data-action="collapse" class="" title="Свернуть/развернуть"></a></li>
+				{{#cmdClose}}
+				<li><a id="{{id}}:cmdMoveUp" data-action="move_up" title="Передвинуть вверх"></a></li>
+				<li><a id="{{id}}:cmdMoveDown" data-action="move_down" title="Передвинуть вниз"></a></li>
+				<li><a id="{{id}}:cmdClose" data-action="close" title="Удалить"></a></li>
+				{{/cmdClose}}
+				
+			</ul>
+		</div>
+	</div>
+	
+	<div class="panel-body" style="display: block;">		
+			
+		<div id="{{id}}:user_id">
+		</div>
+		<div id="{{id}}:comment_text">
+		</div>
+
+		<div id="{{id}}:data_type">
+		</div>
+		<div id="{{id}}:data_attr_cont">
+		</div>
+		
+		<div class="testCont">
+			<div id="{{id}}:test">
+			</div>
+		</div>
+	</div>	
+</div>
+

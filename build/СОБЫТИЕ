@@ -1,0 +1,9 @@
+change
+
+console.log(this.getValue().getKeys().id)
+var gr1_vis = (this.getValue().getKeys()=="1");
+var gr2_vis = (this.getValue().getKeys()=="2");
+fields.getElement("ГрВидПретензии1").setVisible(gr1_vis);
+fields.getElement("ГрВидПретензии2").setVisible(gr2_vis);
+
+fields.getElement("ПроцентыСт395").setVisible(this.getValue());

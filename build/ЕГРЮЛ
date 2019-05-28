@@ -1,0 +1,95 @@
+1) Открытие страницы
+Запрос:
+GET / HTTP/1.1
+Host: egrul.nalog.ru
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:63.0) Gecko/20100101 Firefox/63.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: ru,en-US;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+Ответ:
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 28 Nov 2018 08:31:27 GMT
+Content-Type: text/html;charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Keep-Alive: timeout=50
+Server_Cache: HIT
+Server_Node: front11.egrul.nalog.ru
+Server_Rule: egrul_web
+Content-Encoding: gzip
+
+Ответ неверного
+{"ERRORS":{"captcha":["Цифры с картинки введены неверно"]}}
+
+
+POST / HTTP/1.1
+Host: egrul.nalog.ru
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:63.0) Gecko/20100101 Firefox/63.0
+Accept: application/json, text/javascript, */*; q=0.01
+Accept-Language: ru,en-US;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://egrul.nalog.ru/
+Content-Type: application/x-www-form-urlencoded
+X-Requested-With: XMLHttpRequest
+Content-Length: 261
+Connection: keep-alive
+Cookie: last_visit=1542339336993::1542357336993; _ym_uid=1542357338960838677; _ym_d=1542357338; _ga=GA1.2.1777371327.1542357338; JSESSIONID=10835A09F24AD1917FAB619367ED4793; _ym_visorc_23729197=b; _ym_isad=2
+
+
+Запрос новой каптчи
+https://egrul.nalog.ru/static/captcha.html?1543391837157
+
+Поиск данных
+POST / HTTP/1.1
+Host: egrul.nalog.ru
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:63.0) Gecko/20100101 Firefox/63.0
+Accept: application/json, text/javascript, */*; q=0.01
+Accept-Language: ru,en-US;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://egrul.nalog.ru/
+Content-Type: application/x-www-form-urlencoded
+X-Requested-With: XMLHttpRequest
+Content-Length: 197
+Connection: keep-alive
+Cookie: last_visit=1542339336993::1542357336993; _ym_uid=1542357338960838677; _ym_d=1542357338; _ga=GA1.2.1777371327.1542357338; JSESSIONID=F2C3C9745D9471CF57ACD7FCD7EF1CD7; _ym_visorc_23729197=b; _ym_isad=2
+
+Ответ JSON 
+{
+	"query":{
+		"captcha":"161983",
+		"ogrninnfl":null,
+		"fam":null,
+		"nam":null,
+		"otch":null,
+		"region":null,
+		"ogrninnul":"7207019191",
+		"namul":null,
+		"regionul":null,
+		"ul":true,
+		"kind":"ul",
+		"searchByOgrn":true,
+		"nameEq":false,
+		"searchByOgrnip":true
+	},
+	"rows":[
+		{"T":"A9834070EA717B64B6E40D3A8960270F7DB1BD2ACC9FCF93D914009ADBE255F8B2EA770C076AB7A6581049CE58287A25BCCE9C51535444EC993F36B91CE8C63F",
+		"INN":"7207019191",
+		"NAME":"ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"ГПИМЯСОМОЛПРОМ\"",
+		"OGRN":"1177232031382",
+		"ADRESTEXT":"626380, ОБЛАСТЬ ТЮМЕНСКАЯ, РАЙОН ИСЕТСКИЙ, СЕЛО ИСЕТСКОЕ, УЛИЦА ЧКАЛОВА, ДОМ 1, ОФИС 10",
+		"CNT":"1",
+		"DTREG":"27.10.2017",
+		"KPP":"720701001"
+		}]}
+Файл	
+https://egrul.nalog.ru/download/A9834070EA717B64B6E40D3A8960270F7DB1BD2ACC9FCF93D914009ADBE255F8B2EA770C076AB7A6581049CE58287A25BCCE9C51535444EC993F36B91CE8C63F
+	
+pdftotext /home/andrey/www/htdocs/law_tmpl/build/1177232031382_996518503427575.pdf /home/andrey/www/htdocs/law_tmpl/build/111.txt	
+
+{"query":{"captcha":"793759","ogrninnfl":null,"fam":null,"nam":null,"otch":null,"region":null,"ogrninnul":"7207019191","namul":null,"regionul":null,"ul":true,"kind":"ul","searchByOgrn":true,"nameEq":false,"searchByOgrnip":true},"rows":[{"T":"EA1BFB357D41A7E72D9F6D04169A0C43E2AE3B50B0609CB02684D979FF15F14D78E75E83759882D19B29A8B34609054D7A6D2F4ED3424EA9408409CE5AF9A9D667BFA565D7D61A84B233F3DB6047F4A1","INN":"7207019191","NAME":"ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"ГПИМЯСОМОЛПРОМ\"","OGRN":"1177232031382","ADRESTEXT":"626380, ОБЛАСТЬ ТЮМЕНСКАЯ, РАЙОН ИСЕТСКИЙ, СЕЛО ИСЕТСКОЕ, УЛИЦА ЧКАЛОВА, ДОМ 1, ОФИС 10","CNT":"1","DTREG":"27.10.2017","KPP":"720701001"}]}
+
+https://egrul.nalog.ru/download/EA1BFB357D41A7E72D9F6D04169A0C43E2AE3B50B0609CB02684D979FF15F14D78E75E83759882D19B29A8B34609054D7A6D2F4ED3424EA9408409CE5AF9A9D667BFA565D7D61A84B233F3DB6047F4A1
