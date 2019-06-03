@@ -24,7 +24,7 @@ class DataTypeFieldAlias_Model extends ModelSQL{
 		$f_opts = array();
 		$f_opts['primaryKey'] = TRUE;
 		$f_opts['id']="data_type";
-				
+						
 		$f_data_type=new FieldSQLEnum($this->getDbLink(),$this->getDbName(),$this->getTableName(),"data_type",$f_opts);
 		$this->addField($f_data_type);
 		//********************
@@ -34,7 +34,7 @@ class DataTypeFieldAlias_Model extends ModelSQL{
 		$f_opts['primaryKey'] = TRUE;
 		$f_opts['length']=100;
 		$f_opts['id']="field";
-				
+						
 		$f_field=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"field",$f_opts);
 		$this->addField($f_field);
 		//********************
@@ -43,7 +43,7 @@ class DataTypeFieldAlias_Model extends ModelSQL{
 		$f_opts = array();
 		$f_opts['length']=100;
 		$f_opts['id']="alias";
-				
+						
 		$f_alias=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"alias",$f_opts);
 		$this->addField($f_alias);
 		//********************

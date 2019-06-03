@@ -21,7 +21,7 @@ class UserCatalogField_Model extends {
 		//*** Field id ***
 		$f_opts = array();
 		$f_opts['id']="id";
-				
+						
 		$f_id=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"id",$f_opts);
 		$this->addField($f_id);
 		//********************
@@ -29,7 +29,7 @@ class UserCatalogField_Model extends {
 		//*** Field descr ***
 		$f_opts = array();
 		$f_opts['id']="descr";
-				
+						
 		$f_descr=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"descr",$f_opts);
 		$this->addField($f_descr);
 		//********************

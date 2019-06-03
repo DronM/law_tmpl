@@ -23,7 +23,7 @@ function DocumentDialog_View(id,options){
 	
 		options.model = new DocumentDialog_Model();
 		//options.model.setFieldValue("field_values",options.field_values);
-		options.model.setFieldValue("user_functions",options.userFunctions);
+		//options.model.setFieldValue("user_functions",options.userFunctions);
 		options.model.recInsert();
 	
 		options.template = window.getApp().getTemplate("DocumentTest");
@@ -206,9 +206,11 @@ DocumentDialog_View.prototype.renderTemplate = function(templateFields,values,to
 		var ind = 0;
 		for(var i=0;i<templateFields.length;i++){
 			if (attr_types[templateFields[i].data_type]){
-				var attr_vals = templateFields[i].data_attr_cont
+				var attr_vals = templateFields[i].data_attr_cont;
 				attr_vals.labelCaption = templateFields[i].user_id+":";
+				attr_vals.commentText = templateFields[i].comment_text;
 				attr_vals.id = this.getId()+":"+templateFields[i].user_id;				
+				
 				var edit_instance_params = attr_types[templateFields[i].data_type].getInstanceParams(attr_vals,this,userFunctions);
 				//edit_instance_params.value = templateFields[i].
 				var edit_instance_constr = eval(edit_instance_params.func);

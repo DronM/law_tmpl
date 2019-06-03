@@ -80,7 +80,7 @@ function DocTemplateList_View(id,options){
 		"focus":true
 	}));		
 }
-extend(DocTemplateList_View,ViewAjx);
+extend(DocTemplateList_View,ViewAjxList);
 
 /* Constants */
 

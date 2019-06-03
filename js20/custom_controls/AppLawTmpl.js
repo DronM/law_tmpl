@@ -106,14 +106,13 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					
 				]
 				,"getInstanceParams":function(attrVals){
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.value = attrVals.defValue;
 					var res = {
 						"func":null,
 						"funcColumn":"GridColumnFloat",
 						"funcField":null,
-						"options":{
-							"labelCaption":attrVals.labelCaption,
-							"value":attrVals.defValue
-						}
+						"options":inst_opts
 					};
 					res.options.precision = 2;
 					res.func = "EditMoney";
@@ -168,14 +167,13 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					
 				]
 				,"getInstanceParams":function(attrVals){
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.value = attrVals.defValue;
 					var res = {
 						"func":null,
 						"funcColumn":"GridColumn",
 						"funcField":null,
-						"options":{
-							"labelCaption":attrVals.labelCaption,
-							"value":attrVals.defValue
-						}
+						"options":inst_opts
 					};
 					if (attrVals.numberType=='int'){
 						res.func = "EditInt";
@@ -218,14 +216,16 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					}										
 				]
 				,"getInstanceParams":function(attrVals){
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.value = attrVals.defValue;
+					inst_opts.maxLength = attrVals.stringLength;
+					inst_opts.editMask = attrVals.editMask;
+					
 					return ({
 						"func":"EditString",
 						"funcColumn":"GridColumn",
 						"funcField":"FieldString",						
 						"options":{
-							"value":attrVals.defValue,
-							"maxLength":attrVals.stringLength,
-							"editMask":attrVals.editMask,
 							"labelCaption":attrVals.labelCaption						
 						}
 					});
@@ -250,14 +250,13 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					}										
 				]
 				,"getInstanceParams":function(attrVals){
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.value = attrVals.defValue;
 					return ({
 						"func":"EditText",
 						"funcColumn":"GridColumn",
 						"funcField":"FieldString",						
-						"options":{
-							"value":attrVals.defValue,
-							"labelCaption":attrVals.labelCaption						
-						}
+						"options":inst_opts
 					});
 				}														
 			}			
@@ -301,16 +300,15 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 								
 							}
 						}
-					}					
+					}
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.value = attrVals.defValue;
+					inst_opts.events = this.m_userEvents;
 					return ({
 						"func":"EditCheckBox",
 						"funcColumn":"GridColumnBool",
 						"funcField":"EditCheckBox",						
-						"options":{
-							"value":attrVals.defValue,
-							"labelCaption":attrVals.labelCaption,
-							"events":this.m_userEvents
-						}
+						"options":inst_opts
 					});
 				}														
 			}			
@@ -511,17 +509,16 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					else if (attrVals.defValue=="current_year_end"){
 						def = DateHelper.yearEnd();
 					}
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.editMask = attrVals.editMask;
+					inst_opts.dateFormat = attrVals.dateFormat;
+					inst_opts.value = def;
 					
 					return ({
 						"func":"EditDateTime",
 						"funcColumn":"GridColumnDateTime",
 						"funcField":"FieldDateTime",												
-						"options":{
-							"labelCaption":attrVals.labelCaption,
-							"editMask":attrVals.editMask,
-							"dateFormat":attrVals.dateFormat,
-							"value":def
-						}
+						"options":inst_opts
 					});
 				}																					
 			}
@@ -538,13 +535,12 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					}				
 				]				
 				,"getInstanceParams":function(attrVals){
+					var inst_opts = self.getInstanceOptions(attrVals);
 					return ({
 						"func":"EditPhone",
 						"funcColumn":"GridColumn",
 						"funcField":"FieldString",
-						"options":{
-							"labelCaption":attrVals.labelCaption
-						}
+						"options":inst_opts
 					});
 				}																									
 			}
@@ -554,13 +550,12 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 				"template":null,
 				"attributes":null
 				,"getInstanceParams":function(attrVals){
+					var inst_opts = self.getInstanceOptions(attrVals);
 					return ({
 						"func":"EgrulSearchDataEdit",
 						"funcColumn":"GridColumn",
 						"funcField":"FieldJSON",						
-						"options":{
-							"labelCaption":attrVals.labelCaption
-						}
+						"options":inst_opts
 					});
 				}
 			}	
@@ -590,16 +585,16 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					}									
 				]
 				,"getInstanceParams":function(attrVals){
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.fields = attrVals.fields;
+					inst_opts.header = attrVals.header;
+					inst_opts.visible = attrVals.visible;
+					
 					return ({
 						"func":"FieldGroup",
 						"funcColumn":"GridColumn",
 						"funcField":"FieldJSON",						
-						"options":{
-							"labelCaption":attrVals.labelCaption,
-							"fields":attrVals.fields,
-							"header":attrVals.header,
-							"visible":attrVals.visible
-						}
+						"options":inst_opts
 					});
 				}
 			}						
@@ -616,15 +611,15 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					}				
 				]
 				,"getInstanceParams":function(attrVals,formContext,userFunctions){
+					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.fields = attrVals.fields;
+					inst_opts.userFunctions = userFunctions;
+					
 					return ({
 						"func":"CollectionGrid",
 						"funcColumn":"GridColumn",
 						"funcField":"FieldJSON",
-						"options":{
-							"labelCaption":attrVals.labelCaption,
-							"fields":attrVals.fields,
-							"userFunctions":userFunctions
-						}
+						"options":inst_opts
 					});
 				}
 			}						
@@ -687,19 +682,18 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 								
 								}
 							}					
-						
+							var inst_opts = self.getInstanceOptions(attrVals);
+							inst_opts.mdFields = this.mdFields;
+							inst_opts.mdUserId = this.mdUserId;
+							inst_opts.mdName = this.mdName;
+							inst_opts.mdId = this.mdId;
+							inst_opts.events = this.m_userEvent;
+							
 							return ({
 								"func":"UserCatalogDataEdit",
 								"funcColumn":"GridColumn",
 								"funcField":"FieldJSON",						
-								"options":{
-									"labelCaption":attrVals.labelCaption,
-									"mdFields":this.mdFields,
-									"mdUserId":this.mdUserId,
-									"mdName":this.mdName,
-									"mdId":this.mdId,
-									"events":this.m_userEvents
-								}
+								"options":inst_opts
 							});
 						}
 				
@@ -711,6 +705,16 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 	
 	return this.m_templateAttrTypes;
 }	
+
+AppLawTmpl.prototype.getInstanceOptions = function(attrVals){
+	var res = {
+		"labelCaption":attrVals.labelCaption
+	};
+	if(attrVals.commentText&&attrVals.commentText.length){
+		res.title = attrVals.commentText;
+	}
+	return res;
+}
 
 AppLawTmpl.prototype.magnify = function(dir){
 	this.currFFZoom = this.currFFZoom? this.currFFZoom : 1;

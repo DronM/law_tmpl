@@ -1,31 +1,30 @@
--- VIEW: documents_dialog
+-- View: users_view
 
-DROP VIEW documents_dialog;
+-- DROP VIEW users_view;
 
-CREATE OR REPLACE VIEW documents_dialog AS
+CREATE OR REPLACE VIEW users_view AS
 	SELECT
-		d.id,
-		d.date_time,
-		employees_ref(empl) AS employees_ref,
-		d.comment_text,
-		d.field_values,
-		doc_templates_ref(tmpl) AS doc_templates_ref,
-		d.doc_number,
-		d.doc_template_id,
-		d.permissions,
-		d.for_all_employees,
-		d.permission_ar,		
-		tmpl.for_all_employees AS tmpl_for_all_employees,
-		tmpl.permissions AS tmpl_permissions,
-		(d.document_data IS NOT NULL) AS document_data_exists,
-		employees_ref(empl2) AS document_gen_employees_ref,
-		d.document_gen_date
+		u.id,
+		u.name,
+		u.locale_id,
+		u.color_palette,
+		u.role_id,
+		u.email,
 		
-	FROM documents AS d
-	LEFT JOIN employees AS empl ON empl.id=d.employee_id
-	LEFT JOIN doc_templates AS tmpl ON tmpl.id=d.doc_template_id
-	LEFT JOIN employees AS empl2 ON empl2.id=d.document_gen_employee_id
+		tzl.name AS user_time_locale,
+		employees_ref(emp) AS employees_ref,
+		departments_ref(dep) AS departments_ref,
+		(emp.id=dep.boss_employee_id) department_boss,
+		
+		CASE WHEN st.id IS NULL THEN pdfn_short_message_recipient_states_free()
+		ELSE short_message_recipient_states_ref(st)
+		END AS recipient_states_ref
+	FROM users u
+	LEFT JOIN time_zone_locales tzl ON tzl.id=u.time_zone_locale_id
+	LEFT JOIN employees emp ON emp.user_id=u.id
+	LEFT JOIN departments dep ON dep.id=emp.department_id
+	LEFT JOIN short_message_recipient_current_states cur_st ON cur_st.recipient_id=emp.id
+	LEFT JOIN short_message_recipient_states st ON st.id=cur_st.recipient_state_id
 	;
 	
-ALTER VIEW documents_dialog OWNER TO law_tmpl;
-
+ALTER VIEW users_view OWNER TO law_tmpl;

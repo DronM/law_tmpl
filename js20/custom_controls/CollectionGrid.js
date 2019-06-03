@@ -107,15 +107,27 @@ function CollectionGrid(id,options){
 				if(event_list && event_list.rows && event_list.rows.length){
 					inst_params[fields[i].user_id].options = inst_params[fields[i].user_id].options || {};
 					inst_params[fields[i].user_id].options.events = inst_params[fields[i].user_id].options.events || {};
+					
+					var event_rec;
+					if(event_list.rows.length){
+						console.log("Event for "+fields[i].user_id)
+					}
 					for(var k=0;k<event_list.rows.length;k++){
 						/**
 						 * user function context:
 						 *	this - edit control context
 						 *	grid - current grid
 						 *	userFunctions
-						 */					
-						inst_params[fields[i].user_id].options.events[event_list.rows[k].fields.id] =
-							(function(funcCode,grid,userFunctions){
+						 */
+						if(event_list.rows[k].fields.id=="onValueChange"
+						||event_list.rows[k].fields.id=="onSelect"){
+							event_rec = inst_params[fields[i].user_id].options;
+						}
+						else{
+							event_rec = inst_params[fields[i].user_id].options.events;
+						}
+						event_rec[event_list.rows[k].fields.id] =
+							(function(funcCode,grid,userFunctions){								
 								return (function(event){
 									eval(funcCode);
 								});

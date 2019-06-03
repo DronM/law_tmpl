@@ -4,7 +4,7 @@
 function DocTemplateEditRef(id,options){
 	options = options || {};	
 	if (options.labelCaption!=""){
-		options.labelCaption = options.labelCaption || "Сотрудник:";
+		options.labelCaption = options.labelCaption || "Шаблон:";
 	}
 	options.cmdInsert = (options.cmdInsert!=undefined)? options.cmdInsert:false;
 	

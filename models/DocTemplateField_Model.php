@@ -22,7 +22,7 @@ class DocTemplateField_Model extends {
 		$f_opts = array();
 		$f_opts['primaryKey'] = TRUE;
 		$f_opts['id']="user_id";
-				
+						
 		$f_user_id=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"user_id",$f_opts);
 		$this->addField($f_user_id);
 		//********************

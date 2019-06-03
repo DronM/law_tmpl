@@ -23,7 +23,7 @@ class DocAttrEvent_Model extends {
 		$f_opts = array();
 		$f_opts['primaryKey'] = TRUE;
 		$f_opts['id']="id";
-				
+						
 		$f_id=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"id",$f_opts);
 		$this->addField($f_id);
 		//********************
@@ -31,7 +31,7 @@ class DocAttrEvent_Model extends {
 		//*** Field func ***
 		$f_opts = array();
 		$f_opts['id']="func";
-				
+						
 		$f_func=new FieldSQLText($this->getDbLink(),$this->getDbName(),$this->getTableName(),"func",$f_opts);
 		$this->addField($f_func);
 		//********************

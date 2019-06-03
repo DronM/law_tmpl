@@ -112,7 +112,7 @@ class ViewBase extends ViewHTMLXSLT {
 			$this->getVarModel()->addField(new Field('recipient_states_ref',DT_STRING));
 		}
 		if (isset($_SESSION['role_id'])){
-			$this->getVarModel()->addField(new Field('user_name_full',DT_STRING));
+			//$this->getVarModel()->addField(new Field('user_name_full',DT_STRING));
 			//user attrs
 			$this->getVarModel()->addField(new Field('color_palette',DT_STRING));
 			
@@ -152,7 +152,7 @@ class ViewBase extends ViewHTMLXSLT {
 		
 			$this->setVarValue('role_id',$_SESSION['role_id']);
 			$this->setVarValue('user_name',$_SESSION['user_name']);
-			$this->setVarValue('user_name_full',$_SESSION['user_name_full']);
+			//$this->setVarValue('user_name_full',$_SESSION['user_name_full']);
 			$this->setVarValue('locale_id',$_SESSION['locale_id']);
 			$this->setVarValue('curDate',round(microtime(true) * 1000));
 			//$this->setVarValue('token',$_SESSION['token']);

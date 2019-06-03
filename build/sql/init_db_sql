@@ -4,7 +4,12 @@ CREATE USER law_tmpl WITH PASSWORD '159753';
 CREATE DATABASE law_tmpl OWNER law_tmpl;
 GRANT ALL PRIVILEGES ON DATABASE law_tmpl TO law_tmpl;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO law_tmpl;
+
+
+pg_dump -U law_tmpl -F c -f /home/andrey/tkk.dump law_tmpl
 */
+
+
 
 -- Table: logins
 

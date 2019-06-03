@@ -13,7 +13,7 @@ function EgrulSearchData_View(id,options){
 		var ac_model = new EgrulSearchData_Model();
 		var ac_contr = new EgrulSearchData_Controller();
 		this.addElement(new EditString(id+":name",{
-			"buttonOpen":new ButtonOrgSearch(id+":name:cmd-search"),
+			"buttonOpen":new ButtonOrgSearch(id+":name:cmd-search",{"viewContext":this}),
 			"attrs":{"autofocus":"true"},
 			"labelCaption":"Наименование:",
 			"placeholder":"ИНН,наименование или ОГРН организации/ИП",

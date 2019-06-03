@@ -1,5 +1,5 @@
 <?php
-require("PHPMailer_5.2.4/class.phpmailer.php");
+require("common/PHPMailer_5.2.4/class.phpmailer.php");
 
 class EmailSender {
 	public static function addEMail(

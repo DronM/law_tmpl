@@ -283,6 +283,10 @@ class <xsl:value-of select="@id"/>_Controller extends <xsl:value-of select="@par
 		
 	}	
 
+	public function get_object($pm){
+		parent::get_object($pm);
+	}
+
 </xsl:template>
 
 </xsl:stylesheet>

@@ -4,7 +4,13 @@
 
 CREATE OR REPLACE VIEW users_view AS
 	SELECT
-		u.*,
+		u.id,
+		u.name,
+		u.locale_id,
+		u.color_palette,
+		u.role_id,
+		u.email,
+		
 		tzl.name AS user_time_locale,
 		employees_ref(emp) AS employees_ref,
 		departments_ref(dep) AS departments_ref,

@@ -26,7 +26,7 @@ class UserCatalogMetadata_Model extends ModelSQL{
 		$f_opts['primaryKey'] = TRUE;
 		$f_opts['autoInc']=TRUE;
 		$f_opts['id']="id";
-				
+						
 		$f_id=new FieldSQLInt($this->getDbLink(),$this->getDbName(),$this->getTableName(),"id",$f_opts);
 		$this->addField($f_id);
 		//********************
@@ -35,7 +35,7 @@ class UserCatalogMetadata_Model extends ModelSQL{
 		$f_opts = array();
 		$f_opts['length']=100;
 		$f_opts['id']="user_id";
-				
+						
 		$f_user_id=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"user_id",$f_opts);
 		$this->addField($f_user_id);
 		//********************
@@ -43,7 +43,7 @@ class UserCatalogMetadata_Model extends ModelSQL{
 		//*** Field name ***
 		$f_opts = array();
 		$f_opts['id']="name";
-				
+						
 		$f_name=new FieldSQLText($this->getDbLink(),$this->getDbName(),$this->getTableName(),"name",$f_opts);
 		$this->addField($f_name);
 		//********************
@@ -52,7 +52,7 @@ class UserCatalogMetadata_Model extends ModelSQL{
 		$f_opts = array();
 		$f_opts['id']="fields";
 		$f_opts['retAfterInsert']=TRUE;
-				
+						
 		$f_fields=new FieldSQLJSON($this->getDbLink(),$this->getDbName(),$this->getTableName(),"fields",$f_opts);
 		$this->addField($f_fields);
 		//********************

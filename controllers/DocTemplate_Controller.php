@@ -497,6 +497,10 @@ class DocTemplate_Controller extends ControllerSQL{
 		
 	}	
 
+	public function get_object($pm){
+		parent::get_object($pm);
+	}
+
 
 }
 ?>

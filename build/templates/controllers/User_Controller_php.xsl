@@ -114,7 +114,7 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 		
 		$_SESSION['user_id']		= $ar['id'];
 		$_SESSION['user_name']		= $ar['name'];
-		$_SESSION['user_name_full']	= $ar['name_full'];
+		//$_SESSION['user_name_full']	= $ar['name_full'];
 		$_SESSION['role_id']		= $ar['role_id'];
 		$_SESSION['locale_id'] 		= $ar['locale_id'];
 		$_SESSION['user_time_locale'] 	= $ar['user_time_locale'];
@@ -205,7 +205,8 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 			"SELECT 
 				u.*
 			FROM users_view AS u
-			WHERE (u.name=%s OR u.email=%s) AND u.pwd=md5(%s)",
+			LEFT JOIN users ON users.id=u.id
+			WHERE (users.name=%s OR users.email=%s) AND users.pwd=md5(%s)",
 			$this->getExtDbVal($pm,'name'),
 			$this->getExtDbVal($pm,'name'),
 			$this->getExtDbVal($pm,'pwd')
@@ -463,13 +464,12 @@ class <xsl:value-of select="@id"/>_Controller extends ControllerSQL{
 				$this->getDbLinkMaster()->query('BEGIN');
 			
 				$inserted_id_ar = $this->getDbLinkMaster()->query_first(sprintf(
-				"INSERT INTO users (role_id,name,pwd,email,name_full,pers_data_proc_agreement,time_zone_locale_id)
-				values ('client'::role_types,%s,md5(%s),%s,%s,TRUE,1)
+				"INSERT INTO users (role_id,name,pwd,email,pers_data_proc_agreement,time_zone_locale_id)
+				values ('client'::role_types,%s,md5(%s),%s,TRUE,1)
 				RETURNING id",
 				$this->getExtDbVal($pm,'name'),
 				$this->getExtDbVal($pm,'pwd'),
-				$this->getExtDbVal($pm,'email'),
-				$this->getExtDbVal($pm,'name_full')
+				$this->getExtDbVal($pm,'email')
 				));
 
 				if (!is_array($inserted_id_ar) || !count($inserted_id_ar) || !intval($inserted_id_ar['id'])){

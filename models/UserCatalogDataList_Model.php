@@ -24,7 +24,7 @@ class UserCatalogDataList_Model extends ModelSQL{
 		$f_opts['primaryKey'] = TRUE;
 		$f_opts['autoInc']=TRUE;
 		$f_opts['id']="id";
-				
+						
 		$f_id=new FieldSQLInt($this->getDbLink(),$this->getDbName(),$this->getTableName(),"id",$f_opts);
 		$this->addField($f_id);
 		//********************
@@ -32,7 +32,7 @@ class UserCatalogDataList_Model extends ModelSQL{
 		//*** Field user_catalog_metadata_id ***
 		$f_opts = array();
 		$f_opts['id']="user_catalog_metadata_id";
-				
+						
 		$f_user_catalog_metadata_id=new FieldSQLInt($this->getDbLink(),$this->getDbName(),$this->getTableName(),"user_catalog_metadata_id",$f_opts);
 		$this->addField($f_user_catalog_metadata_id);
 		//********************
@@ -40,7 +40,7 @@ class UserCatalogDataList_Model extends ModelSQL{
 		//*** Field field_values ***
 		$f_opts = array();
 		$f_opts['id']="field_values";
-				
+						
 		$f_field_values=new FieldSQLJSONB($this->getDbLink(),$this->getDbName(),$this->getTableName(),"field_values",$f_opts);
 		$this->addField($f_field_values);
 		//********************

@@ -7,7 +7,7 @@ function EgrulSearchDataEdit(id,options){
 	
 	options.viewClass = EgrulSearchData_View;
 	//options.viewTemplate = "EgrulSearchDataEdit";
-	options.labelCaption = "ЕГРЮЛ:";
+	options.labelCaption = (options.labelCaption==undefined)? "ЕГРЮЛ:":options.labelCaption;
 	options.headTitle = "Редактирование данных ЕГРЮЛ";
 	
 	EgrulSearchDataEdit.superclass.constructor.call(this,id,options);

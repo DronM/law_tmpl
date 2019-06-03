@@ -4,7 +4,8 @@
 	<versions>
 		<version dateOpen="2018-10-08 08:10:07">1.001</version>
 		<version dateOpen="2018-10-08 08:10:07" dateClose="2019-05-28 15:05:10">1.001 
-		<lastBuild>2019-05-28 15:10:51</lastBuild></version>
+		<lastBuild>2019-06-03 10:53:38</lastBuild></version>
+		<version dateOpen="2019-05-29 06:05:17" dateClose="2019-06-03 10:06:53">1.002</version>
 	</versions>
 	<!--
 	<globalFilters>
@@ -74,6 +75,7 @@
 			<field id="color_palette" dataType="Text" length="" alias="Цветовая схема"/>
 			<field id="phone_cel" dataType="String" length="10"/>
 			<field id="time_zone_locale_id" dataType="Int" refTable="time_zone_locales" refField="id"/>
+			<field id="banned" dataType="Bool"/>
 			<index id="users_name_index">
 				<field id="name" unique="TRUE"/>
 			</index>
@@ -501,12 +503,12 @@
 			<field id="id" dataType="Int" primaryKey="TRUE" required="FALSE" autoInc="TRUE"/>
 			<field id="name" dataType="String" length="100" alias="Наименование"/>
 			<field id="comment_text" dataType="Text" alias="Комментарий"/>
-			<field id="employees_ref" dataType="JSON"/>
+			<field id="employees_ref" dataType="JSON" noValueOnCopy="TRUE"/>
 			<field id="permissions" dataType="JSON"/>
 			<field id="fields" dataType="JSON"/>
 			<field id="for_all_employees" dataType="Bool" defaultValue="FALSE"/>
-			<field id="document_prefix" dataType="String" length="10"/>
-			<field id="template_file" dataType="JSONB"/>
+			<field id="document_prefix" dataType="String" length="10" noValueOnCopy="TRUE"/>
+			<field id="template_file" dataType="JSONB" noValueOnCopy="TRUE"/>
 			<field id="user_functions" dataType="Text"/>
 		</model>
 		<model id="AccessPermission" parentJS="ModelJSON" virtual="TRUE" server="FALSE">

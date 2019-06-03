@@ -46,7 +46,7 @@ ButtonOrgSearch.prototype.doSearch = function(){
 	if (!q || !q.length){
 		throw new Error("Не задан параметр поиска!");
 	}
-	var pm = (new ClientSearch_Controller()).getPublicMethod("search");
+	var pm = (new EgrulSearchData_Controller()).getPublicMethod("search");
 	pm.setFieldValue("query",q);
 	
 	this.setEnabled(false);

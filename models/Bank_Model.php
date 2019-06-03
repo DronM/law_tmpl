@@ -27,7 +27,7 @@ class Bank_Model extends ModelSQL{
 		$f_opts['autoInc']=FALSE;
 		$f_opts['length']=9;
 		$f_opts['id']="bik";
-				
+						
 		$f_bik=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"bik",$f_opts);
 		$this->addField($f_bik);
 		//********************
@@ -36,7 +36,7 @@ class Bank_Model extends ModelSQL{
 		$f_opts = array();
 		$f_opts['length']=9;
 		$f_opts['id']="codegr";
-				
+						
 		$f_codegr=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"codegr",$f_opts);
 		$this->addField($f_codegr);
 		//********************
@@ -44,7 +44,7 @@ class Bank_Model extends ModelSQL{
 		//*** Field name ***
 		$f_opts = array();
 		$f_opts['id']="name";
-				
+						
 		$f_name=new FieldSQLText($this->getDbLink(),$this->getDbName(),$this->getTableName(),"name",$f_opts);
 		$this->addField($f_name);
 		//********************
@@ -53,7 +53,7 @@ class Bank_Model extends ModelSQL{
 		$f_opts = array();
 		$f_opts['length']=20;
 		$f_opts['id']="korshet";
-				
+						
 		$f_korshet=new FieldSQLString($this->getDbLink(),$this->getDbName(),$this->getTableName(),"korshet",$f_opts);
 		$this->addField($f_korshet);
 		//********************
@@ -61,7 +61,7 @@ class Bank_Model extends ModelSQL{
 		//*** Field adres ***
 		$f_opts = array();
 		$f_opts['id']="adres";
-				
+						
 		$f_adres=new FieldSQLText($this->getDbLink(),$this->getDbName(),$this->getTableName(),"adres",$f_opts);
 		$this->addField($f_adres);
 		//********************
@@ -69,7 +69,7 @@ class Bank_Model extends ModelSQL{
 		//*** Field gor ***
 		$f_opts = array();
 		$f_opts['id']="gor";
-				
+						
 		$f_gor=new FieldSQLText($this->getDbLink(),$this->getDbName(),$this->getTableName(),"gor",$f_opts);
 		$this->addField($f_gor);
 		//********************
@@ -77,7 +77,7 @@ class Bank_Model extends ModelSQL{
 		//*** Field tgroup ***
 		$f_opts = array();
 		$f_opts['id']="tgroup";
-				
+						
 		$f_tgroup=new FieldSQLBool($this->getDbLink(),$this->getDbName(),$this->getTableName(),"tgroup",$f_opts);
 		$this->addField($f_tgroup);
 		//********************
