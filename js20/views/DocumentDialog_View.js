@@ -207,9 +207,10 @@ DocumentDialog_View.prototype.renderTemplate = function(templateFields,values,to
 		for(var i=0;i<templateFields.length;i++){
 			if (attr_types[templateFields[i].data_type]){
 				var attr_vals = templateFields[i].data_attr_cont;
-				attr_vals.labelCaption = templateFields[i].user_id+":";
-				attr_vals.commentText = templateFields[i].comment_text;
-				attr_vals.id = this.getId()+":"+templateFields[i].user_id;				
+				
+				attr_vals.id = this.getId()+":"+templateFields[i].user_id;
+				attr_vals.labelCaption = templateFields[i].user_label;
+				attr_vals.commentText = templateFields[i].comment_text;				
 				
 				var edit_instance_params = attr_types[templateFields[i].data_type].getInstanceParams(attr_vals,this,userFunctions);
 				//edit_instance_params.value = templateFields[i].
@@ -219,8 +220,6 @@ DocumentDialog_View.prototype.renderTemplate = function(templateFields,values,to
 					edit_instance_params.options
 				);
 				field_values_ctrl.addElement(edit_instance);//edit_cont
-				//templateFields[i].comment_text
-				//templateFields[i].user_id
 				ind++;
 			}
 		}

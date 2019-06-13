@@ -123,6 +123,21 @@ function DocTemplateDialog_View(id,options){
 extend(DocTemplateDialog_View,ViewObjectAjx);
 
 
+DocTemplateDialog_View.prototype.validate = function(cmd,validate_res){
+	DocTemplateDialog_View.superclass.validate.call(this,cmd,validate_res);
+	
+	var funcs = this.getElement("user_functions").getValue();
+	if(funcs){
+		try{
+			eval('('+funcs+')');
+		}
+		catch(e){
+			this.getElement("user_functions").setNotValid(e.message);
+			validate_res.incorrect_vals = true;
+		}
+	}
+}
+
 DocTemplateDialog_View.prototype.collapseGroup = function(groupCtrl){
 	var elem_list = groupCtrl.m_container.getElements();
 	for(var elem_id in elem_list){		

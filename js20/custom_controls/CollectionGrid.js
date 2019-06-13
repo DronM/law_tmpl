@@ -18,7 +18,7 @@ function Collection_Model(options){
 	options = options || {};
 	
 	options.fields = options.fields || {};
-	options.fields.id = new FieldInt("id",{"primaryKey":true,"autoInc":true});
+	options.fields.id = new FieldInt("id",{"primaryKey":true,"autoInc":true});	
 	options.sequences = {"id":0};
 	
 	Collection_Model.superclass.constructor.call(this,"Collection_Model",options);
@@ -46,7 +46,7 @@ function CollectionGrid(id,options){
 	
 	pm_insert.addField(new FieldInt("id",{"primaryKey":true,"autoInc":true}));
 	pm_update.addField(new FieldInt("id",{"primaryKey":true,"autoInc":true}));
-	pm_update.addField(new FieldInt("old_id"));
+	pm_update.addField(new FieldInt("old_id",{"primaryKey":true,"autoInc":true}));
 	pm_delete.addField(new FieldInt("id",{"primaryKey":true,"required":true}));
 	pm_getList.addField(new FieldInt(contr.PARAM_COUNT));
 	pm_getList.addField(new FieldInt(contr.PARAM_FROM));
@@ -57,8 +57,8 @@ function CollectionGrid(id,options){
 	pm_getList.addField(new FieldString(contr.PARAM_ORD_FIELDS));
 	pm_getList.addField(new FieldString(contr.PARAM_ORD_DIRECTS));
 	pm_getList.addField(new FieldString(contr.PARAM_FIELD_SEP));
-	pm_getList.addField(new FieldInt("id"));
-	pm_getObject.addField(new FieldInt("id"));
+	pm_getList.addField(new FieldInt("id",{"primaryKey":true,"autoInc":true}));
+	pm_getObject.addField(new FieldInt("id",{"primaryKey":true,"autoInc":true}));
 
 	//totals
 	var foot_elements = null;	
@@ -80,6 +80,29 @@ function CollectionGrid(id,options){
 			
 			model_fields[fields[i].user_id] = new field_constr(fields[i].user_id);			
 			
+			inst_params[fields[i].user_id].options.labelCaption = "";
+			
+			//data aligning			
+			if(inst_params[fields[i].user_id].func=="EditMoney"
+			||inst_params[fields[i].user_id].func=="EditNum"
+			||inst_params[fields[i].user_id].func=="EditInt"
+			||inst_params[fields[i].user_id].func=="EditFloat"
+			){
+				inst_params[fields[i].user_id].colAlign = "right";
+			}
+			else if(inst_params[fields[i].user_id].funcField=="FieldDate"
+			||inst_params[fields[i].user_id].func=="EditDate"
+			||inst_params[fields[i].user_id].func=="EditDateTime"
+			||inst_params[fields[i].user_id].func=="EditCheckBox"
+			){
+				inst_params[fields[i].user_id].colAlign = "center";
+			}
+			else{
+				inst_params[fields[i].user_id].colAlign = "left";
+			}
+			//Head title
+			inst_params[fields[i].user_id].colCaption = fields[i].user_label || fields[i].comment_text || fields[i].user_id;
+			
 			pm_insert.addField(new field_constr(fields[i].user_id));
 			pm_update.addField(new field_constr(fields[i].user_id));
 			pm_getList.addField(new field_constr(fields[i].user_id));
@@ -87,12 +110,21 @@ function CollectionGrid(id,options){
 			
 			//totals
 			if(foot_elements && fields[i].column_total){
+				var col_class;
+				var col_opts = {"id":"tot_"+fields[i].user_id};
+				if(inst_params[fields[i].user_id].func=="EditFloat"||inst_params[fields[i].user_id].func=="EditMoney"){
+					col_class = GridColumnFloat;
+					col_opts.precision = "2";
+				}
+				else{
+					col_class = GridColumn;
+				}
 				foot_elements.push(
 					new GridCellFoot(id+":features_grid:foot:tot_"+fields[i].user_id,{
 						"attrs":{"align":"right"},
 						"calcOper":"sum",
 						"calcFieldId":fields[i].user_id,
-						"gridColumn":new GridColumn({"id":"tot_"+fields[i].user_id})
+						"gridColumn":new col_class(col_opts)
 					})						
 				);
 			}
@@ -105,13 +137,13 @@ function CollectionGrid(id,options){
 			if(foot_elements && fields[i].event_list){
 				var event_list = CommonHelper.unserialize(fields[i].event_list);
 				if(event_list && event_list.rows && event_list.rows.length){
-					inst_params[fields[i].user_id].options = inst_params[fields[i].user_id].options || {};
+					inst_params[fields[i].user_id].options = inst_params[fields[i].user_id].options || {};					
 					inst_params[fields[i].user_id].options.events = inst_params[fields[i].user_id].options.events || {};
 					
 					var event_rec;
-					if(event_list.rows.length){
+					/*if(event_list.rows.length){
 						console.log("Event for "+fields[i].user_id)
-					}
+					}*/
 					for(var k=0;k<event_list.rows.length;k++){
 						/**
 						 * user function context:
@@ -163,7 +195,8 @@ function CollectionGrid(id,options){
 		var col_constr = eval(inst_params[f_id].funcColumn);
 		grid_elements.push(
 			new GridCellHead(id+":head:"+f_id,{
-				"value":f_id,
+				"value":inst_params[f_id].colCaption,
+				"colAttrs":{"align":inst_params[f_id].colAlign},
 				"columns":[
 					new col_constr({
 						"field":model.getField(f_id),

@@ -107,7 +107,6 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 				]
 				,"getInstanceParams":function(attrVals){
 					var inst_opts = self.getInstanceOptions(attrVals);
-					inst_opts.value = attrVals.defValue;
 					var res = {
 						"func":null,
 						"funcColumn":"GridColumnFloat",
@@ -134,7 +133,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Целое",
 									"checked":true,
-									"value":"int",
+									"value":"number_type_int",
 									"name":"number_type",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
@@ -146,7 +145,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							,{"elementClass":"EditRadio",
 							"elementOptions":{
 									"labelCaption":"Дробное",
-									"value":"float",
+									"value":"number_type_float",
 									"name":"number_type",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
@@ -168,14 +167,13 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 				]
 				,"getInstanceParams":function(attrVals){
 					var inst_opts = self.getInstanceOptions(attrVals);
-					inst_opts.value = attrVals.defValue;
 					var res = {
 						"func":null,
 						"funcColumn":"GridColumn",
 						"funcField":null,
 						"options":inst_opts
 					};
-					if (attrVals.numberType=='int'){
+					if (attrVals.numberType=="number_type_int"){
 						res.func = "EditInt";
 						res.funcField = "FieldInt";
 					}
@@ -217,7 +215,6 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 				]
 				,"getInstanceParams":function(attrVals){
 					var inst_opts = self.getInstanceOptions(attrVals);
-					inst_opts.value = attrVals.defValue;
 					inst_opts.maxLength = attrVals.stringLength;
 					inst_opts.editMask = attrVals.editMask;
 					
@@ -225,9 +222,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 						"func":"EditString",
 						"funcColumn":"GridColumn",
 						"funcField":"FieldString",						
-						"options":{
-							"labelCaption":attrVals.labelCaption						
-						}
+						"options":inst_opts
 					});
 				}														
 			}
@@ -251,7 +246,6 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 				]
 				,"getInstanceParams":function(attrVals){
 					var inst_opts = self.getInstanceOptions(attrVals);
-					inst_opts.value = attrVals.defValue;
 					return ({
 						"func":"EditText",
 						"funcColumn":"GridColumn",
@@ -302,7 +296,6 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 						}
 					}
 					var inst_opts = self.getInstanceOptions(attrVals);
-					inst_opts.value = attrVals.defValue;
 					inst_opts.events = this.m_userEvents;
 					return ({
 						"func":"EditCheckBox",
@@ -344,7 +337,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 									"labelCaption":"Пустое значение",
 									"checked":true,
 									"value":"not_selected",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -356,7 +349,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Текущая дата",
 									"value":"current_date",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -368,7 +361,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Дата документа",
 									"value":"document_date",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -380,7 +373,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Начало недели",
 									"value":"current_week",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -392,7 +385,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Конец недели",
 									"value":"current_week_end",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -404,7 +397,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Начало месяца",
 									"value":"current_month",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -416,7 +409,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Конец месяца",
 									"value":"current_month_end",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -428,7 +421,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Начало квартала",
 									"value":"current_quarter",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -440,7 +433,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Конец квартала",
 									"value":"current_quarter_end",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -452,7 +445,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Начало года",
 									"value":"current_year",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -464,7 +457,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							"elementOptions":{
 									"labelCaption":"Конец года",
 									"value":"current_year_end",
-									"name":"number_type",
+									"name":"date_def_val",
 									"labelAlign":"right",
 									"labelClassName":window.getBsCol(9),
 									"editContClassName":"input-group "+window.getBsCol(12),
@@ -708,11 +701,14 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 
 AppLawTmpl.prototype.getInstanceOptions = function(attrVals){
 	var res = {
-		"labelCaption":attrVals.labelCaption
+		"labelCaption":(attrVals.labelCaption||attrVals.commentText||attrVals.id)+":"
 	};
 	if(attrVals.commentText&&attrVals.commentText.length){
 		res.title = attrVals.commentText;
+		res.placeholder = attrVals.commentText;
 	}
+	res.value = attrVals.defValue;
+	
 	return res;
 }
 

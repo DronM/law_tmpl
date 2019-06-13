@@ -15,7 +15,7 @@ function DocTemplateFieldEdit(id,options){
 	options = options || {};	
 	
 	this.m_mainView = options.mainView;
-console.log("DocTemplateFieldEdit options.mainView="+options.mainView)	
+//console.log("DocTemplateFieldEdit options.mainView="+options.mainView)	
 	var self = this;
 	
 	this.m_baseAddElement = options.addElement;
@@ -28,7 +28,7 @@ console.log("DocTemplateFieldEdit options.mainView="+options.mainView)
 		this.addElement(new EditString(id+":user_id",{
 			"labelCaption":"Идентификатор:",
 			"placeholder":"Идентификатор атрибута",
-			"title":"Идентификатор может состоять из букв русского или латинского алфавитов, цифр, нажнего подчеркивания.",
+			"title":"Идентификатор, как он задан в шаблоне. Может состоять из букв русского или латинского алфавитов, цифр, нажнего подчеркивания.",
 			"editContClassName":editContClassName,
 			"labelClassName":labelClassName,
 			"regExpression":window.getApp().getUserIdRegExp(),
@@ -38,6 +38,15 @@ console.log("DocTemplateFieldEdit options.mainView="+options.mainView)
 					this.validate();
 				}
 			}
+		}));
+
+		this.addElement(new EditString(id+":user_label",{
+			"labelCaption":"Представление:",
+			"placeholder":"Представление атрибута",
+			"title":"Как атрибут будет представлен в форме ввода",
+			"editContClassName":editContClassName,
+			"labelClassName":labelClassName,
+			"maxLength":"250"
 		}));
 
 		this.addElement(new EditText(id+":comment_text",{
@@ -187,11 +196,12 @@ DocTemplateFieldEdit.prototype.testAttrClick = function(){
 	}
 	var attr_types = window.getApp().getTemplateAttrTypes();
 	var attr_vals = this.getElement("data_attr_cont").getValueJSON();
-	attr_vals.labelCaption = this.getElement("user_id").getValue()+":";
-	attr_vals.id = "testAttr";				
+	attr_vals.labelCaption = this.getElement("user_label").getValue();
+	attr_vals.commentText = this.getElement("comment_text").getValue();	
+	attr_vals.id = this.getElement("user_id").getValue();//"testAttr";				
 	var edit_instance_params = attr_types[dt].getInstanceParams(attr_vals,null,this.m_mainView.getElement("user_functions").getValue());
 	var edit_constr  = eval(edit_instance_params.func);
-	var edit_instance = new edit_constr("testView:test",edit_instance_params.options);
+	var edit_instance = new edit_constr("testView:test",CommonHelper.clone(edit_instance_params.options));
 	
 	var btn_cont = this.getElement("test");
 	btn_cont.closeSelect = function(){
@@ -249,8 +259,15 @@ DocTemplateFieldEdit.prototype.setDataType = function(dataType){
 		for(var i=0;i<selected_type.attributes.length;i++){
 			var attr_elem = selected_type.attributes[i];
 			if (attr_elem.attrOptions.attrOptionsElements){
+				var radio_name = "";
+				if(attr_elem.attrClass=="EditRadioGroup"){
+					radio_name = CommonHelper.uniqid();
+				}
 				attr_elem.attrOptions.elements = [];
 				for(var k=0;k<attr_elem.attrOptions.attrOptionsElements.length;k++){
+					if(attr_elem.attrOptions.attrOptionsElements[k].elementClass=="EditRadio"){
+						attr_elem.attrOptions.attrOptionsElements[k].elementOptions["name"]=radio_name;
+					}
 					var constr = eval(attr_elem.attrOptions.attrOptionsElements[k].elementClass);
 					attr_elem.attrOptions.elements.push(
 						new constr(

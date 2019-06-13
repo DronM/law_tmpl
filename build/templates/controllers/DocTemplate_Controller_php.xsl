@@ -88,7 +88,7 @@ class <xsl:value-of select="@id"/>_Controller extends <xsl:value-of select="@par
 				$pm->setParamValue('employee_id',$ref->keys->id);
 			}
 		}
-		$file_id = $this->save_template_file($pm);
+		//$file_id = $this->save_template_file($pm);
 		try{
 			$file_id = $this->save_template_file($pm);
 			parent::insert($pm);
