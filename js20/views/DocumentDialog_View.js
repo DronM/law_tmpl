@@ -269,7 +269,7 @@ DocumentDialog_View.prototype.getDocument = function(){
 				self.getDocument();
 			});
 		}
-		else if(res){//error
+		else if(res && descr && descr.length){//error
 			throw Error(descr);
 		}
 	});	
