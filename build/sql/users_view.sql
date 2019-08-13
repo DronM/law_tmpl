@@ -10,6 +10,7 @@ CREATE OR REPLACE VIEW users_view AS
 		u.color_palette,
 		u.role_id,
 		u.email,
+		u.banned, 
 		
 		tzl.name AS user_time_locale,
 		employees_ref(emp) AS employees_ref,

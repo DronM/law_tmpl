@@ -4,10 +4,11 @@
 	<versions>
 		<version dateOpen="2018-10-08 08:10:07">1.001</version>
 		<version dateOpen="2018-10-08 08:10:07" dateClose="2019-05-28 15:05:10">1.001 
-		<lastBuild>2019-07-03 07:49:20</lastBuild></version>
+		<lastBuild>2019-08-13 07:45:26</lastBuild></version>
 		<version dateOpen="2019-05-29 06:05:17" dateClose="2019-06-03 10:06:53">1.002</version>
 		<version dateOpen="2019-06-13 09:06:09" dateClose="2019-06-13 13:06:06">1.003</version>
 		<version dateOpen="2019-07-03 07:07:46" dateClose="2019-07-03 07:07:49">1.004</version>
+		<version dateOpen="2019-08-08 15:08:39" dateClose="2019-08-13 07:08:45">1.005</version>
 	</versions>
 	<!--
 	<globalFilters>
@@ -77,7 +78,7 @@
 			<field id="color_palette" dataType="Text" length="" alias="Цветовая схема"/>
 			<field id="phone_cel" dataType="String" length="10"/>
 			<field id="time_zone_locale_id" dataType="Int" refTable="time_zone_locales" refField="id"/>
-			<field id="banned" dataType="Bool"/>
+			<field id="banned" dataType="Bool" defaultValue="FALSE"/>
 			<index id="users_name_index">
 				<field id="name" unique="TRUE"/>
 			</index>
@@ -89,6 +90,7 @@
 			<field id="phone_cel" dataType="String" length="50" alias="Телефон"/>
 			<field id="role_id" dataType="Enum" enumId="role_types"/>
 			<field id="create_dt" dataType="DateTimeTZ"/>
+			<field id="banned" dataType="Bool" defaultValue="FALSE"/>
 		</model>
 		<model id="UserDialog" parent="ModelSQL" dataTable="users_view" virtual="TRUE">
 			<field id="id" dataType="Int" primaryKey="TRUE" alias="Код"/>
@@ -774,13 +776,11 @@
 			<publicMethod id="login">
 				<field id="name" dataType="String" alias="Имя пользователя" length="50" required="TRUE"/>
 				<field id="pwd" dataType="Password" alias="Пароль" length="50" required="TRUE"/>
-				<!--<field id="rememberMe" dataType="Bool" alias="Запомнить меня" defaultValue="FALSE" />-->
+				<field id="width_type" dataType="String" length="2"/>
 			</publicMethod>
-			<!--
 			<publicMethod id="login_refresh">
-				<field id="refresh_token" dataType="String" required="true" length="50" />
+				<field id="refresh_token" dataType="String" required="true" length="50"/>
 			</publicMethod>
-			-->
 			<publicMethod id="logout"/>
 			<publicMethod id="logout_html"/>
 			<publicMethod id="email_confirm">
@@ -1113,6 +1113,7 @@
 		<jsScript file="core/CommonHelper.js"/>
 		<jsScript file="core/DOMHelper.js"/>
 		<jsScript file="core/DateHelper.js" jsDoc="FALSE"/>
+		<jsScript file="core/CookieManager.js"/>
 		<jsScript file="core/EventHelper.js"/>
 		<jsScript file="core/FatalException.js"/>
 		<jsScript file="core/DbException.js"/>
@@ -1293,6 +1294,8 @@
 		<jsScript file="controls/GridBody.js"/>
 		<jsScript file="controls/Grid.js"/>
 		<jsScript file="controls/rs/Grid.rs_ru.js" resource="ru"/>
+		<jsScript file="controls/GridSearchInf.js"/>
+		<jsScript file="controls/rs/GridSearchInf.rs_ru.js" resource="ru"/>
 		<jsScript file="controls/VariantStorage.js"/>
 		<jsScript file="controls/GridCommands.js"/>
 		<jsScript file="controls/GridCmd.js"/>

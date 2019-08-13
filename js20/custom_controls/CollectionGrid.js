@@ -265,8 +265,8 @@ extend(CollectionGrid,GridJSON);
  * Сложные типы!!! ToDo
  */
 CollectionGrid.prototype.getFormattedValue = function(){
-	console.log("CollectionGrid.prototype.getFormattedValue")
-	console.dir(this.getModel());
+	//console.log("CollectionGrid.prototype.getFormattedValue")
+	//console.dir(this.getModel());
 	
 	var res = [];
 	var body_node = this.getBody().getNode();

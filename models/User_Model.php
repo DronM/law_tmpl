@@ -128,6 +128,7 @@ class User_Model extends ModelSQL{
 		
 		//*** Field banned ***
 		$f_opts = array();
+		$f_opts['defaultValue']='FALSE';
 		$f_opts['id']="banned";
 						
 		$f_banned=new FieldSQLBool($this->getDbLink(),$this->getDbName(),$this->getTableName(),"banned",$f_opts);

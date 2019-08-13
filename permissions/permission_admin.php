@@ -88,6 +88,8 @@ $permissions = array();
 				
 					$permissions['User_Controller_login']=TRUE;
 				
+					$permissions['User_Controller_login_refresh']=TRUE;
+				
 					$permissions['User_Controller_logout']=TRUE;
 				
 					$permissions['User_Controller_logout_html']=TRUE;

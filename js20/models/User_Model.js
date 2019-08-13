@@ -138,6 +138,7 @@ function User_Model(options){
 	
 	var filed_options = {};
 	filed_options.primaryKey = false;	
+	filed_options.defValue = true;
 	
 	filed_options.autoInc = false;	
 	

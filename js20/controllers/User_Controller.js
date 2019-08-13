@@ -35,6 +35,7 @@ function User_Controller(options){
 	this.add_register();
 	this.add_name_check();
 	this.add_login();
+	this.add_login_refresh();
 	this.add_logout();
 	this.add_logout_html();
 	this.add_email_confirm();
@@ -258,6 +259,9 @@ extend(User_Controller,ControllerObjServer);
 	var f_opts = {};
 	
 	pm.addField(new FieldDateTimeTZ("create_dt",f_opts));
+	var f_opts = {};
+	
+	pm.addField(new FieldBool("banned",f_opts));
 }
 
 			User_Controller.prototype.addGetObject = function(){
@@ -431,11 +435,35 @@ extend(User_Controller,ControllerObjServer);
 		pm.addField(new FieldPassword("pwd",options));
 	
 				
+	
+	var options = {};
+	
+		options.maxlength = "2";
+	
+		pm.addField(new FieldString("width_type",options));
+	
 			
 	this.addPublicMethod(pm);
 }
 
+			User_Controller.prototype.add_login_refresh = function(){
+	var opts = {"controller":this};	
+	var pm = new PublicMethodServer('login_refresh',opts);
+	
+				
+	
+	var options = {};
+	
+		options.required = true;
+	
+		options.maxlength = "50";
+	
+		pm.addField(new FieldString("refresh_token",options));
+	
 			
+	this.addPublicMethod(pm);
+}
+
 			User_Controller.prototype.add_logout = function(){
 	var opts = {"controller":this};	
 	var pm = new PublicMethodServer('logout',opts);

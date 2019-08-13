@@ -4,7 +4,12 @@
 
 CREATE OR REPLACE VIEW users_list AS 
 	SELECT
-	 	u.*
+	 	u.id,
+	 	u.name,
+	 	u.role_id,
+	 	u.email,
+	 	u.create_dt,
+	 	u.banned
  	FROM users AS u
 	ORDER BY u.name;
 

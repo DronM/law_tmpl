@@ -132,6 +132,7 @@ class ViewBase extends ViewHTMLXSLT {
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'core/CommonHelper.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'core/DOMHelper.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'core/DateHelper.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'core/CookieManager.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'core/EventHelper.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'core/FatalException.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'core/DbException.js'));
@@ -531,6 +532,16 @@ class ViewBase extends ViewHTMLXSLT {
 	(!isset($_SESSION['locale_id']) && DEF_LOCALE=='ru')
 	){
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controls/rs/Grid.rs_ru.js'));
+	}
+
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controls/GridSearchInf.js'));
+		
+	if (
+	(isset($_SESSION['locale_id']) && $_SESSION['locale_id']=='ru')
+	||
+	(!isset($_SESSION['locale_id']) && DEF_LOCALE=='ru')
+	){
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controls/rs/GridSearchInf.rs_ru.js'));
 	}
 
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controls/VariantStorage.js'));
@@ -1298,24 +1309,30 @@ class ViewBase extends ViewHTMLXSLT {
 				$script_id = VERSION;
 			}			
 		}
-		
-		$this->getVarModel()->addField(new Field('role_id',DT_STRING));
-		$this->getVarModel()->addField(new Field('user_name',DT_STRING));
+				
 		if (isset($_SESSION['role_id']) && $_SESSION['role_id']!='client'){
 			$this->getVarModel()->addField(new Field('employees_ref',DT_STRING));
 			$this->getVarModel()->addField(new Field('departments_ref',DT_STRING));
 			$this->getVarModel()->addField(new Field('recipient_states_ref',DT_STRING));
 		}
+		
 		if (isset($_SESSION['role_id'])){
+			$this->getVarModel()->addField(new Field('role_id',DT_STRING));
+			$this->getVarModel()->addField(new Field('user_name',DT_STRING));
+		
 			//$this->getVarModel()->addField(new Field('user_name_full',DT_STRING));
 			//user attrs
 			$this->getVarModel()->addField(new Field('color_palette',DT_STRING));
 			
-			if (defined('CUSTOM_APP_UPLOAD_SERVER')){
-				$this->getVarModel()->addField(new Field('custom_app_upload_server',DT_STRING));
+			if(isset($_SESSION['token'])){
+				$this->getVarModel()->addField(new Field('token',DT_STRING));
+				if(defined('SESSION_EXP_SEC') && intval(SESSION_EXP_SEC)){
+					$this->getVarModel()->addField(new Field('tokenr',DT_STRING));					
+				}	
+				$this->getVarModel()->addField(new Field('tokenExpires',DT_STRING));
 			}
 		}
-		
+				
 		
 		$this->getVarModel()->insert();
 		$this->setVarValue('scriptId',$script_id);
@@ -1350,8 +1367,14 @@ class ViewBase extends ViewHTMLXSLT {
 			//$this->setVarValue('user_name_full',$_SESSION['user_name_full']);
 			$this->setVarValue('locale_id',$_SESSION['locale_id']);
 			$this->setVarValue('curDate',round(microtime(true) * 1000));
-			//$this->setVarValue('token',$_SESSION['token']);
-			//$this->setVarValue('tokenr',$_SESSION['tokenr']);
+			
+			if(isset($_SESSION['token'])){
+				$this->setVarValue('token',$_SESSION['token']);
+				if(defined('SESSION_EXP_SEC') && intval(SESSION_EXP_SEC)){
+					$this->setVarValue('tokenr',$_SESSION['tokenr']);					
+				}
+				$this->setVarValue('tokenExpires',date('Y-m-d H:i:s',$_SESSION['tokenExpires']));
+			}			
 			
 			$this->setVarValue('employees_ref',$_SESSION['employees_ref']);
 			$this->setVarValue('departments_ref',$_SESSION['departments_ref']);

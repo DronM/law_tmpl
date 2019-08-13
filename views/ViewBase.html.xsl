@@ -199,7 +199,7 @@
 <!--************* Window instance ******************** -->
 <xsl:template name="initAppWin">	
 	var applicationWin = new AppWin({
-		"bsCol":("col-"+$('#users-device-size').find('div:visible').first().attr('id')+"-"),
+		"widthType":$("#users-device-size").find("div:visible").first().attr("id"),
 		"app":application
 		<!--
 		<xsl:if test="not(/document/model[@id='ModelServResponse']/row/result='0')">
@@ -291,7 +291,7 @@
 					<xsl:for-each select="*">
 					<li>
 					    <a href="index.php?c={@c}&amp;f={@f}&amp;t={@t}{$TOKEN}"
-					    onclick="window.getApp().showMenuItem(this,'{@c}','{@f}','{@t}{$TOKEN}');return false;"
+					    onclick="window.getApp().showMenuItem(this,'{@c}','{@f}','{@t}');return false;"
 					    defaultItem="{@default='true'}">
 					    <xsl:if test="@glyphclass"><i class="{@glyphclass}"></i></xsl:if>
 					    <xsl:value-of select="@descr"/> </a>
@@ -305,7 +305,7 @@
 			<!-- one level-->
 			<li>
 			    <a href="index.php?c={@c}&amp;f={@f}&amp;t={@t}{$TOKEN}"
-			    onclick="window.getApp().showMenuItem(this,'{@c}','{@f}','{@t}{$TOKEN}',null,'{@viewdescr}');return false;"
+			    onclick="window.getApp().showMenuItem(this,'{@c}','{@f}','{@t}',null,'{@viewdescr}');return false;"
 			    defaultItem="{@default='true'}">
 			    <xsl:if test="@glyphclass and string-length(@glyphclass) &gt; 0 and not(@glyphclass='null')"><i class="{@glyphclass}"></i></xsl:if>
 			    	<span><xsl:value-of select="@descr"/></span>
@@ -333,7 +333,7 @@
 		<xsl:otherwise>
 			<li>
 			    <a href="index.php?c={@c}&amp;f={@f}&amp;t={@t}{$TOKEN}"
-			    onclick="window.getApp().showMenuItem(this,'{@c}','{@f}','{@t}{$TOKEN}');return false;"
+			    onclick="window.getApp().showMenuItem(this,'{@c}','{@f}','{@t}');return false;"
 			    defaultItem="{@default='true'}">
 			    <xsl:if test="@glyphclass"><i class="{@glyphclass}"></i></xsl:if>
 			    <xsl:value-of select="@descr"/> </a>
@@ -495,7 +495,7 @@ throw Error(CommonHelper.longString(function () {/*
 	<!-- Main navbar -->
 	<div class="navbar navbar-inverse">
 		<xsl:choose>
-		<xsl:when test="/document/model[@id='ModelVars']/row/role_id=''">
+		<xsl:when test="not(/document/model[@id='ModelVars']/row/role_id) or /document/model[@id='ModelVars']/row/role_id=''">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="index.php"><xsl:value-of select="/document/model[@id='Page_Model']/row[1]/PAGE_HEAD_TITLE_GUEST"/>
 			</a>
@@ -535,13 +535,13 @@ throw Error(CommonHelper.longString(function () {/*
 					<ul class="dropdown-menu dropdown-menu-right">
 						<li>
 							<a href="index.php?c=User_Controller&amp;f=get_profile&amp;t=UserProfile{$TOKEN}"
-							onclick="window.getApp().showMenuItem(this,'User_Controller','get_profile','UserProfile{$TOKEN}',null,'Профиль');return false;">
+							onclick="window.getApp().showMenuItem(this,'User_Controller','get_profile','UserProfile',null,'Профиль');return false;">
 							<i class="icon-user-plus"></i> Профиль
 							</a>
 						</li>					        
 						
 						<li class="divider"></li>
-						<li><a href="index.php?c=User_Controller&amp;f=logout_html{$TOKEN}" onclick="window.getApp().quit()"><i class="icon-switch2"></i> Выход</a></li>
+						<li><a href="#" onclick="window.getApp().quit()"><i class="icon-switch2"></i> Выход</a></li>
 					</ul>
 				</li>				
 			</ul>
