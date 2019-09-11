@@ -342,6 +342,16 @@ $permissions = array();
 				
 					$permissions['DataTypeFieldAlias_Controller_get_object']=TRUE;
 				
+					$permissions['MultipleChoiceList_Controller_insert']=TRUE;
+				
+					$permissions['MultipleChoiceList_Controller_update']=TRUE;
+				
+					$permissions['MultipleChoiceList_Controller_delete']=TRUE;
+				
+					$permissions['MultipleChoiceList_Controller_get_object']=TRUE;
+				
+					$permissions['MultipleChoiceList_Controller_get_list']=TRUE;
+				
 return array_key_exists($contrId.'_'.$methId,$permissions);
 }
 ?>

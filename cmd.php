@@ -98,13 +98,10 @@ try{
 	){		
 		throw new Exception(ERR_AUTH_EXP);
 	}		
-/*if($sess_found){
-	throw new Exception('died='.$sess_inf['died'].' expired='.$sess_inf['expired']);
-}*/
 	if(
 	(
 		($sess_found && ($sess_inf['died']=='t' || $sess_inf['expired']=='t'))
-		|| (!$sess_found && isset($_SESSION['token']))
+		//|| (!$sess_found && isset($_SESSION['token']))
 	)
 	&& !isset($_REQUEST[PARAM_METHOD])
 	){

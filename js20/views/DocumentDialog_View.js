@@ -192,7 +192,25 @@ function DocumentDialog_View(id,options){
 }
 extend(DocumentDialog_View,ViewObjectAjx);
 
+DocumentDialog_View.prototype.getEditInstance = function(templateField,containerId,userFunctions){
+	var attr_types = window.getApp().getTemplateAttrTypes();
+	
+	var attr_vals = templateField.data_attr_cont;	
+	attr_vals.id = this.getId()+":"+templateField.user_id;
+	attr_vals.labelCaption = templateField.user_label;
+	attr_vals.commentText = templateField.comment_text;				
+	
+	var edit_instance_params = attr_types[templateField.data_type].getInstanceParams(attr_vals,this,userFunctions);
+	//edit_instance_params.value = templateField.
+	var edit_instance_constr = eval(edit_instance_params.func);
+	var edit_instance = new edit_instance_constr(
+		containerId+":"+templateField.user_id,
+		edit_instance_params.options
+	);
+	return edit_instance;
+}
 DocumentDialog_View.prototype.renderTemplate = function(templateFields,values,toDOM,userFunctions){
+	this.m_userFunctions = userFunctions? eval('('+userFunctions+')'):null;
 	/*if(!templateFields){
 		throw new Error("Данный шаблон не содержит атрибутов!");
 	}*/
@@ -201,11 +219,12 @@ DocumentDialog_View.prototype.renderTemplate = function(templateFields,values,to
 	field_values_ctrl.clear();	
 	
 	if(templateFields){
-
+		//var app = window.getApp();
 		var attr_types = window.getApp().getTemplateAttrTypes();
 		var ind = 0;
 		for(var i=0;i<templateFields.length;i++){
 			if (attr_types[templateFields[i].data_type]){
+				/*
 				var attr_vals = templateFields[i].data_attr_cont;
 				
 				attr_vals.id = this.getId()+":"+templateFields[i].user_id;
@@ -219,14 +238,18 @@ DocumentDialog_View.prototype.renderTemplate = function(templateFields,values,to
 					field_values_ctrl.getId()+":"+templateFields[i].user_id,
 					edit_instance_params.options
 				);
+				*/
+				var edit_instance = this.getEditInstance(templateFields[i],field_values_ctrl.getId(),this.m_userFunctions);
 				field_values_ctrl.addElement(edit_instance);//edit_cont
 				ind++;
 			}
 		}
 	}
 		
-	if(toDOM)
-		field_values_ctrl.toDOM();		
+	if(toDOM){
+		field_values_ctrl.toDOM();
+		this.initUserFunctions();
+	}		
 }
 
 DocumentDialog_View.prototype.get_formatted_value = function(control){
@@ -357,6 +380,13 @@ DocumentDialog_View.prototype.iniDocumentInf = function(m){
 	});
 }
 
+DocumentDialog_View.prototype.initUserFunctions = function(){
+	if(this.m_userFunctions && this.m_userFunctions.init){		
+		var field_values = this.getElement("field_values");
+		this.m_userFunctions.init(field_values);
+	}
+}
+
 DocumentDialog_View.prototype.onGetData = function(resp,cmd){
 
 	DocumentDialog_View.superclass.onGetData.call(this,resp,cmd);
@@ -366,5 +396,6 @@ DocumentDialog_View.prototype.onGetData = function(resp,cmd){
 		this.iniDocumentInf(m);
 	}
 
+	this.initUserFunctions();
 }
 

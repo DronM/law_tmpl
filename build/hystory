@@ -7,6 +7,10 @@
 ControllerObjServer.prototype.download остался косяк, приходит заполненный contentDocument
 
 
+1.005 13/08/19
+1) Secured sessions
+
+
 - редактирование строки в диалоге
 
 - Глобальные функции

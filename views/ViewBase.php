@@ -1166,6 +1166,7 @@ class ViewBase extends ViewHTMLXSLT {
 
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/ViewSectionSelect.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/ViewEditRef.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/StaticText.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/UserEdit.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/UserEditRef.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/UserNameEdit.js'));
@@ -1205,6 +1206,7 @@ class ViewBase extends ViewHTMLXSLT {
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/EgrulSearchDataEdit.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/UserCatalogFieldGrid.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/UserCatalogDataEdit.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/MultipleChoiceListGrid.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'views/rs_ru.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'views/rs_common_ru.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/Constant_Controller.js'));
@@ -1301,6 +1303,8 @@ class ViewBase extends ViewHTMLXSLT {
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/MainMenuConstructorDialog_Model.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/DataTypeFieldAlias_Model.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/DataTypeFieldAlias_Controller.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/MultipleChoiceList_Model.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/MultipleChoiceList_Controller.js'));
 	
 			if (isset($_SESSION['scriptId'])){
 				$script_id = $_SESSION['scriptId'];

@@ -29,7 +29,9 @@ extend(Collection_Model,ModelJSON);
 function CollectionGrid(id,options){
 	options = options || {};	
 	
-	this.m_userFunctions = options.userFunctions? eval('('+options.userFunctions+')'):null;
+	this.m_userFunctions = options.userFunctions;//? eval('('+options.userFunctions+')'):null;
+	
+	//options.navigateMouse = false;
 	
 	var fields = (typeof(options.fields)=="object")? options.fields:CommonHelper.unserialize(options.fields);
 	var attr_types = window.getApp().getTemplateAttrTypes();
@@ -96,6 +98,54 @@ function CollectionGrid(id,options){
 			||inst_params[fields[i].user_id].func=="EditCheckBox"
 			){
 				inst_params[fields[i].user_id].colAlign = "center";
+			}
+			else if(inst_params[fields[i].user_id].func=="FieldGroup"){
+				inst_params[fields[i].user_id].formatFunction = (function(){
+					return function(fields,cell){
+						console.log(fields)
+						var res = "";
+						for(var id in fields){
+							if(id=="id")continue;
+							
+							res+= (res=="")? "":String.fromCharCode(10);
+							
+							var v = fields[id].getValue();
+							console.log("V=")
+							console.log(v)
+							v_str = "";
+							for(var v_id in v){
+								v_str+= (v_str=="")? "":String.fromCharCode(10);
+								if(v[v_id]!=undefined && typeof(v[v_id])=="object" && v[v_id].m_descr){
+									v_str+= v[v_id].m_descr;
+								}
+								else if(v[v_id]!=undefined){
+									if(v[v_id].substring(0,1)=="{" && v[v_id].substring(v[v_id].length-1)=="}"){
+										var v_o = CommonHelper.unserialize(v[v_id]);
+										for(var v_o_id in v_o){
+											if(v_o[v_o_id]!=undefined){
+												v_str+= (v_str=="")? "":String.fromCharCode(10);
+												v_str+= v_o[v_o_id];
+											}
+										}
+									}
+									else{
+										v_str+= v[v_id];
+									}
+								}
+								
+							}
+							res+= v_str;
+						}
+						var cell_n = cell.getNode();
+						var c_tag = document.createElement("SPAN");
+						c_tag.textContent = res;
+						cell_n.appendChild(c_tag);
+						
+						return "";
+					}
+				})();
+				
+				inst_params[fields[i].user_id].colAlign = "left";
 			}
 			else{
 				inst_params[fields[i].user_id].colAlign = "left";
@@ -201,7 +251,8 @@ function CollectionGrid(id,options){
 					new col_constr({
 						"field":model.getField(f_id),
 						"ctrlClass":eval(inst_params[f_id].func),
-						"ctrlOptions":inst_params[f_id].options
+						"ctrlOptions":inst_params[f_id].options,
+						"formatFunction":inst_params[f_id].formatFunction
 					})							
 				]
 			})

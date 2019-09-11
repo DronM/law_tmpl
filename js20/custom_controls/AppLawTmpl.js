@@ -90,10 +90,82 @@ AppLawTmpl.prototype.setColorClass = function(v){
 }
 
 AppLawTmpl.prototype.getTemplateAttrTypes = function(){
+	var self = this;
 	if (!this.m_templateAttrTypes){
 		this.m_templateAttrTypes = {
+			//Статический текст
+			"staticText":{
+				"descr":"Статический текст",
+				"template":"dtStaticText",
+				"attributes":[
+					{"id":"htmlTagName",
+					"attrClass":EditString,
+					"attrOptions":{
+						"labelCaption":"HTML тэг:",
+						"value":"DIV"
+						}
+					}
+					,{"id":"htmlClassName",
+					"attrClass":EditString,
+					"attrOptions":{
+						"labelCaption":"HTML класс:",
+						"value":"alert alert-info alert-styled-left alert-bordered"
+						}
+					}					
+				]
+				,"getInstanceParams":function(attrVals){
+					var inst_opts = {
+						"tagName":attrVals.htmlTagName,
+						"caption":attrVals.labelCaption,
+						"className":attrVals.htmlClassName,
+						"value":attrVals.labelCaption
+					};
+					return ({
+						"func":"StaticText",
+						"funcColumn":"GridColumn",
+						"funcField":"StaticText",						
+						"options":inst_opts
+					});
+				}														
+			}			
+			//Кнопка
+			,"button":{
+				"descr":"Кнопка",
+				"template":"dtButton",
+				"attributes":[
+					{"id":"onClick",
+					"attrClass":EditString,
+					"attrOptions":{
+						"labelCaption":"Обработчик:"
+						}
+					}
+				
+				]
+				,"getInstanceParams":function(attrVals,formContext,userFunctions){
+					var inst_opts = {
+						"caption":attrVals.labelCaption,
+						/**
+						 * В обработчике кнопки доступны:
+						 * 	- fields
+						 *	- userFunctions
+						 */
+						"onClick":(function(onClick,fields,userFunctions){
+							return function(){
+								eval(onClick);
+							}
+						})(attrVals.onClick,formContext.getElement("field_values"),userFunctions)
+					};
+					return ({
+						"func":"ButtonCmd",
+						"funcColumn":"GridColumn",
+						"funcField":"ButtonCmd",						
+						"options":inst_opts
+					});
+				}														
+			}			
+		
 			//Сумма
-			"money":{
+			,"money":{
 				"descr":"Сумма",
 				"template":null,
 				"attributes":[
@@ -102,8 +174,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					"attrOptions":{
 						"labelCaption":"Значение по умолчанию:"
 						}
-					}
-					
+					}					
 				]
 				,"getInstanceParams":function(attrVals){
 					var inst_opts = self.getInstanceOptions(attrVals);
@@ -163,10 +234,17 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 						"labelCaption":"Значение по умолчанию:"
 						}
 					}
-					
+					,{"id":"events",
+					"attrClass":"DocAttrEventGrid",
+					"attrOptions":{
+						"labelCaption":"Список событий"
+						}
+					}															
 				]
-				,"getInstanceParams":function(attrVals){
+				,"getInstanceParams":function(attrVals,formContext,userFunctions){
+					self.assignUserEvents(this,attrVals,formContext,userFunctions);
 					var inst_opts = self.getInstanceOptions(attrVals);
+					inst_opts.events = this.m_userEvents;
 					var res = {
 						"func":null,
 						"funcColumn":"GridColumn",
@@ -211,13 +289,20 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					"attrOptions":{
 						"labelCaption":"Значение по умолчанию:"
 						}
-					}										
+					}
+					,{"id":"events",
+					"attrClass":"DocAttrEventGrid",
+					"attrOptions":{
+						"labelCaption":"Список событий"
+						}
+					}																														
 				]
-				,"getInstanceParams":function(attrVals){
+				,"getInstanceParams":function(attrVals,formContext,userFunctions){
+					self.assignUserEvents(this,attrVals,formContext,userFunctions);
 					var inst_opts = self.getInstanceOptions(attrVals);
 					inst_opts.maxLength = attrVals.stringLength;
 					inst_opts.editMask = attrVals.editMask;
-					
+					inst_opts.events = this.m_userEvents;
 					return ({
 						"func":"EditString",
 						"funcColumn":"GridColumn",
@@ -244,7 +329,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 						}
 					}										
 				]
-				,"getInstanceParams":function(attrVals){
+				,"getInstanceParams":function(attrVals,formContext,userFunctions){
 					var inst_opts = self.getInstanceOptions(attrVals);
 					return ({
 						"func":"EditText",
@@ -273,19 +358,16 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 					}										
 					
 				]
-				,"getInstanceParams":function(attrVals,formContext){
+				,"getInstanceParams":function(attrVals,formContext,userFunctions){
+					self.assignUserEvents(this,attrVals,formContext,userFunctions);
+					/*
 					this.m_userEvents = undefined;
 					if(attrVals.events&&attrVals.events.length&&formContext){
 						var ev_o = CommonHelper.unserialize(attrVals.events);
 						if(!CommonHelper.isEmpty(ev_o)&&ev_o.rows&&ev_o.rows.length){
-							var self = this;
 							var m = new ModelJSON({"data":ev_o});
 							this.m_userEvents = {};
 							while(m.getNextRow()){
-								/**
-								 * user function context:
-								 *	 fields - collection of all fields
-								 */
 								this.m_userEvents[m.getFieldValue("id")] = (function(fields,func){
 									return (function(event){
 										eval(func);
@@ -295,12 +377,64 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 							}
 						}
 					}
+					*/
 					var inst_opts = self.getInstanceOptions(attrVals);
 					inst_opts.events = this.m_userEvents;
 					return ({
 						"func":"EditCheckBox",
 						"funcColumn":"GridColumnBool",
 						"funcField":"EditCheckBox",						
+						"options":inst_opts
+					});
+				}														
+			}			
+			//Переключатель
+			,"multipleChoice":{
+				"descr":"Множественный выбор",
+				"template":"dtMultipleChoice",
+				"attributes":[
+					{"id":"values",
+					"attrClass":MultipleChoiceListGrid,
+					"attrOptions":{
+						}
+					}
+					,{"id":"events",
+					"attrClass":"DocAttrEventGrid",
+					"attrOptions":{
+						"labelCaption":"Список событий"
+						}
+					}										
+				]
+				,"getInstanceParams":function(attrVals,formContext,userFunctions){
+					var inst_opts = {};
+					inst_opts.elements = [];
+					var val_o = CommonHelper.unserialize(attrVals.values);
+					if(!val_o.rows){
+						throw new Error("Row attribute not found!");
+					}
+					for(var i=0;i<val_o.rows.length;i++){
+						self.assignUserEvents(this,attrVals,formContext,userFunctions);
+						inst_opts.elements.push(
+							new EditRadio(attrVals.id+":"+val_o.rows[i].fields.id,{
+								"name":attrVals.id,
+								"value":val_o.rows[i].fields.id,
+								"labelCaption":val_o.rows[i].fields.caption,
+								"checked":(i==0),
+								"events":this.m_userEvents
+							})
+						);
+					}
+					/*
+					var inst_opts = {
+						"tagName":attrVals.htmlTagName,
+						"caption":attrVals.labelCaption,
+						"className":attrVals.htmlClassName
+					};
+					*/
+					return ({
+						"func":"EditRadioGroup",
+						"funcColumn":"GridColumn",
+						"funcField":"EditRadioGroup",						
 						"options":inst_opts
 					});
 				}														
@@ -577,11 +711,13 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 						}
 					}									
 				]
-				,"getInstanceParams":function(attrVals){
+				,"getInstanceParams":function(attrVals,formContext,userFunctions){
 					var inst_opts = self.getInstanceOptions(attrVals);
 					inst_opts.fields = attrVals.fields;
 					inst_opts.header = attrVals.header;
 					inst_opts.visible = attrVals.visible;
+					inst_opts.formContext = formContext;
+					inst_opts.userFunctions = userFunctions;
 					
 					return ({
 						"func":"FieldGroup",
@@ -618,8 +754,7 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 			}						
 		};
 		
-		//user defined catalogs
-		var self = this;
+		//user defined catalogs		
 		(new UserCatalogMetadata_Controller()).getPublicMethod("get_list").run({
 			"async":false,
 			"ok":function(resp){
@@ -641,47 +776,32 @@ AppLawTmpl.prototype.getTemplateAttrTypes = function(){
 								}
 							}										
 						]	
-						,"getInstanceParams":function(attrVals,formContext){
-							this.m_userEvents = undefined;
-							if(attrVals.events && formContext){
-								var self = this;
-								var m = new ModelJSON({"data":CommonHelper.unserialize(attrVals.events)});
-								this.m_userEvents = {};
-								while(m.getNextRow()){
-									this.m_userEvents[m.getFieldValue("id")] = (function(fields,func){
-										return (function(e){
-											var ref_id = this.getValue().getKeys().id;
-											this.getFieldValue = function(fieldId){
-												var res;
-												if(!this.models||!this.models[ref_id]){
-													var contr = new UserCatalogData_Controller();
-													var pm = contr.getPublicMethod("get_object");
-													pm.setFieldValue("id",ref_id);													
-													var fn_cont = this;
-													pm.run(
-													{"async":false,
-													"ok":function(resp){
-														if(!fn_cont.models)fn_cont.models={};
-														fn_cont.models[ref_id] = resp.getModel("UserCatalogData_Model");
-														fn_cont.models[ref_id].getNextRow();
-													}
-													});
-												}
-												return (this.models&&this.models[ref_id]&&this.models[ref_id].getRowCount())? this.models[ref_id].getFieldValue("field_values")[fieldId]:null;
-											}
-											eval(func);
-										});
-									}(formContext.getElement("field_values"),m.getFieldValue("func")));
+						,"getInstanceParams":function(attrVals,formContext,userFunctions){
+							
+							self.assignUserEvents(this,attrVals,formContext,userFunctions)
+							/*
+							if(attrVals.events&&attrVals.events.length&&formContext){
+								var ev_o = CommonHelper.unserialize(attrVals.events);
+								if(!CommonHelper.isEmpty(ev_o)&&ev_o.rows&&ev_o.rows.length){
+									var m = new ModelJSON({"data":ev_o});
+									this.m_userEvents = {};
+									while(m.getNextRow()){
+										this.m_userEvents[m.getFieldValue("id")] = (function(fields,func){
+											return (function(event){
+												eval(func);
+											});
+										}(formContext.getElement("field_values"),m.getFieldValue("func")));
 								
+									}
 								}
-							}					
+							}
+							*/
 							var inst_opts = self.getInstanceOptions(attrVals);
 							inst_opts.mdFields = this.mdFields;
 							inst_opts.mdUserId = this.mdUserId;
 							inst_opts.mdName = this.mdName;
 							inst_opts.mdId = this.mdId;
-							inst_opts.events = this.m_userEvent;
-							
+							inst_opts.events = this.m_userEvents;
 							return ({
 								"func":"UserCatalogDataEdit",
 								"funcColumn":"GridColumn",
@@ -754,4 +874,34 @@ AppLawTmpl.prototype.magnify = function(dir){
 
 AppLawTmpl.prototype.getUserIdRegExp = function(){
 	return /^([а-яА-Яa-zA-Z]|_)+([а-яА-Яa-zA-Z0-9]|_)*$/;
+}
+
+AppLawTmpl.prototype.assignUserEvents = function(context,attrVals,formContext,userFunctions){
+	//this.m_userEvents = undefined;
+	context.m_userEvents = undefined;
+	if(attrVals.events&&attrVals.events.length&&formContext){
+		var ev_o = CommonHelper.unserialize(attrVals.events);
+		if(!CommonHelper.isEmpty(ev_o)&&ev_o.rows&&ev_o.rows.length){
+			var m = new ModelJSON({"data":ev_o});
+			context.m_userEvents = {};
+			while(m.getNextRow()){
+				/**
+				 * user function context:
+				 *	fields - collection of all fields
+				 *	userFunctions - text of user defined functions
+				 */
+				context.m_userEvents[m.getFieldValue("id")] =
+					(function(funcCode,fields,userFunctions){
+						return (function(event){
+							eval(funcCode);
+						});
+					})(
+						m.getFieldValue("func"),//function code text
+						formContext.getElement("field_values"),//fields
+						userFunctions
+					);
+			}
+		}
+	}
+
 }

@@ -463,3 +463,8 @@ table,tr,td.noBorder{
 .testCont{
 	margin:15px 15px;	
 }
+
+#DocumentDialog\:field_values fieldset{
+	margin:10px 10px;
+	background-color: #f7e8e8;
+}

@@ -236,36 +236,50 @@ DocTemplateFieldContainer.prototype.createNewElement = function(){
 		}
 	}
 	ind++;
+//console.log("DocTemplateFieldContainer.prototype.createNewElement ID="+this.getId()+" IND="+ind)	
 	var id = CommonHelper.uniqid();//this.getId()+":container:"+ind;
 	opts.cmdClose = true;
 	opts.attrs = opts.attrs||{};
 	opts.attrs.ind=ind;
 	
 	self = this;	
-	opts.onClosePanel = function(e){
-		var cur_index = this.getAttr("ind");
-		//console.log("Looking for index "+cur_index)
-		var element = self.findElementByIndex(cur_index);
-		self.m_container.delElement(element.getName());
-		this.delDOM();
-		var elem_list = self.m_container.getElements();
-		for(var id in elem_list){
-			if (elem_list[id]){
-				var elem_ind = parseInt(elem_list[id].getAttr("ind"),10);
-				if ( elem_ind>=cur_index){
-					elem_ind--;
-					elem_list[id].setAttr("ind",elem_ind);
-					elem_list[id].setAttr("class",("panel "+self.m_panelClass+" panel-"+((elem_ind%2==0)? "even":"odd")));
+	opts.onClosePanel = (function(thisPanel){
+		return function(e){
+			var cur_index = this.getAttr("ind");
+			//console.log("Looking for index "+cur_index)
+			var element = thisPanel.findElementByIndex(cur_index);
+			thisPanel.m_container.delElement(element.getName());
+			this.delDOM();
+			var elem_list = thisPanel.m_container.getElements();
+			for(var id in elem_list){
+				if (elem_list[id]){
+					var elem_ind = parseInt(elem_list[id].getAttr("ind"),10);
+					if ( elem_ind>=cur_index){
+						elem_ind--;
+						elem_list[id].setAttr("ind",elem_ind);
+						elem_list[id].setAttr("class",("panel "+thisPanel.m_panelClass+" panel-"+((elem_ind%2==0)? "even":"odd")));
+					}
 				}
-			}
-		}		
-	}
-	opts.onMoveUp = function(element){
-		self.moveElementUp(element)
-	}
+			}		
+		}
+	})(this);
+	
+	opts.onMoveUp = (function(thisPanel){
+		return function(element){
+			thisPanel.moveElementUp(element);
+		}
+	})(this);
+	opts.onMoveDown = (function(thisPanel){
+		return function(element){
+			thisPanel.moveElementDown(element);
+		}
+	})(this);
+	
+	/*
 	opts.onMoveDown = function(element){
 		self.moveElementDown(element)
 	}
+	*/
 	
 	opts.templateOptions = opts.templateOptions || {};
 	
