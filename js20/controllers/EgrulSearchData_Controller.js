@@ -27,6 +27,7 @@ function EgrulSearchData_Controller(options){
 	this.addGetList();
 	this.addGetObject();
 	this.addComplete();
+	this.addUpdate();
 	this.add_search();
 		
 }
@@ -94,6 +95,64 @@ extend(EgrulSearchData_Controller,ControllerObjServer);
 	var pm = this.getComplete();
 	pm.addField(new FieldString("inn",f_opts));
 	pm.getField(this.PARAM_ORD_FIELDS).setValue("inn");	
+}
+
+			EgrulSearchData_Controller.prototype.addUpdate = function(){
+	EgrulSearchData_Controller.superclass.addUpdate.call(this);
+	var pm = this.getUpdate();
+	
+	var options = {};
+	options.primaryKey = true;
+	var field = new FieldString("inn",options);
+	
+	pm.addField(field);
+	
+	field = new FieldString("old_inn",{});
+	pm.addField(field);
+	
+	var options = {};
+	
+	var field = new FieldString("ogrn",options);
+	
+	pm.addField(field);
+	
+	var options = {};
+	
+	var field = new FieldText("name",options);
+	
+	pm.addField(field);
+	
+	var options = {};
+	
+	var field = new FieldJSON("data",options);
+	
+	pm.addField(field);
+	
+	var options = {};
+	
+	var field = new FieldInt("user_id",options);
+	
+	pm.addField(field);
+	
+	var options = {};
+	
+	var field = new FieldDateTimeTZ("create_dt",options);
+	
+	pm.addField(field);
+	
+	var options = {};
+	
+	var field = new FieldDateTimeTZ("update_dt",options);
+	
+	pm.addField(field);
+	
+	var options = {};
+	
+	var field = new FieldInt("update_count",options);
+	
+	pm.addField(field);
+	
+	
 }
 
 			EgrulSearchData_Controller.prototype.add_search = function(){

@@ -34,3 +34,5 @@ ContactList_View.prototype.HEAD_TITLE = "Контакты";
 DocumentList_View.prototype.HEAD_TITLE = "Журнал документов";
 
 DataTypeFieldAliasList_View.prototype.HEAD_TITLE = "Соответствия полей";
+
+RefinancingRateList_View.prototype.HEAD_TITLE = "Ставки рефинансирования";

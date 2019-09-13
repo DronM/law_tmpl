@@ -4,10 +4,25 @@ function EgrulSearchData_View(id,options){
 	
 	options.className = options.className || "form-group";
 	
+	this.m_id = id;
 	var self = this;
 	
 	options.addElement = function(){
-		var id = this.getId();
+		//var id = this.getId();
+
+		this.addElement(new Control(id+":update_dt","DIV",{
+		}));
+		
+		/*
+		this.addElement(new ButtonCmd(id+":refresh",{
+			"caption":"Обновить",
+			"title":"Обновить данные из базы ЕГРЮЛ",
+			//"visible":false,
+			"onClick":function(){
+				self.refreshData();
+			}
+		}));
+		*/
 		
 		//var bs = window.getBsCol(4);
 		var ac_model = new EgrulSearchData_Model();
@@ -27,13 +42,17 @@ function EgrulSearchData_View(id,options){
 			"acICase":"1",
 			"acMid":"1",
 			"acPublicMethod":ac_contr.getPublicMethod("complete"),
+			"onGetData":function(model){
+				if(model.getNextRow()){
+					self.onGetEGRULData(model.getFieldValue("data"),model.getFieldValue("update_dt"));
+				}			
+			},
 			"onSelect":function(f){
-				var fields = f.data.getValue();
-				for(var f_id in fields){
-					var el = self.getElement(f_id);
-					if(el)
-						el.setValue(fields[f_id]);
-				}
+				self.onGetEGRULData(f.data.getValue(),f.update_dt.getValue());
+			},
+			"onClear":function(){				
+				DOMHelper.hide(self.m_id+":update_cont");	
+				self.getElement("update_dt").setValue("");
 			}
 		}));
 	
@@ -51,16 +70,16 @@ function EgrulSearchData_View(id,options){
 		}));
 		
 		this.addElement(new EditString(id+":address_legal",{
-			"labelCaption":"АдресЮридический:",
+			"labelCaption":"Юридический адрес:",
 			"maxLength":"250"
 		}));
 		this.addElement(new EditString(id+":manager_name",{
-			"labelCaption":"РуководительФИО:",
+			"labelCaption":"ФИО руководителя:",
 			"maxLength":"250"
 		}));
 		
 		this.addElement(new EditString(id+":manager_post",{
-			"labelCaption":"РуководительДолжность:",
+			"labelCaption":"Должность руководителя:",
 			"maxLength":"250"
 		}));
 		
@@ -69,3 +88,27 @@ function EgrulSearchData_View(id,options){
 	
 }
 extend(EgrulSearchData_View,EditJSON);
+
+EgrulSearchData_View.prototype.refreshData = function(){
+	//alert("EgrulSearchData_View")
+	this.getElement("name").getButtonOpen().doSearch(true);
+}
+
+EgrulSearchData_View.prototype.toDOM = function(p){
+	EgrulSearchData_View.superclass.toDOM.call(this,p)
+	
+	if(this.getElement("update_dt").getValue()){
+		DOMHelper.show(self.m_id+":update_cont");
+	}
+}
+
+EgrulSearchData_View.prototype.onGetEGRULData = function(data,update_dt){
+	for(var f_id in data){
+		var el = this.getElement(f_id);
+		if(el)
+			el.setValue(data[f_id]);
+	}
+	this.getElement("update_dt").setValue(DateHelper.format(update_dt,"d/m/y"));
+	DOMHelper.show(this.m_id+":update_cont");
+
+}

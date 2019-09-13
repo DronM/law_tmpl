@@ -330,6 +330,8 @@ $permissions = array();
 				
 					$permissions['EgrulSearchData_Controller_complete']=TRUE;
 				
+					$permissions['EgrulSearchData_Controller_update']=TRUE;
+				
 					$permissions['EgrulSearchData_Controller_search']=TRUE;
 				
 					$permissions['DataTypeFieldAlias_Controller_insert']=TRUE;
@@ -351,6 +353,16 @@ $permissions = array();
 					$permissions['MultipleChoiceList_Controller_get_object']=TRUE;
 				
 					$permissions['MultipleChoiceList_Controller_get_list']=TRUE;
+				
+					$permissions['RefinancingRate_Controller_insert']=TRUE;
+				
+					$permissions['RefinancingRate_Controller_update']=TRUE;
+				
+					$permissions['RefinancingRate_Controller_delete']=TRUE;
+				
+					$permissions['RefinancingRate_Controller_get_list']=TRUE;
+				
+					$permissions['RefinancingRate_Controller_get_object']=TRUE;
 				
 return array_key_exists($contrId.'_'.$methId,$permissions);
 }

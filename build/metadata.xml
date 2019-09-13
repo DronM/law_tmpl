@@ -4,12 +4,13 @@
 	<versions>
 		<version dateOpen="2018-10-08 08:10:07">1.001</version>
 		<version dateOpen="2018-10-08 08:10:07" dateClose="2019-05-28 15:05:10">1.001 
-		<lastBuild>2019-09-11 11:21:39</lastBuild></version>
+		<lastBuild>2019-09-13 14:15:31</lastBuild></version>
 		<version dateOpen="2019-05-29 06:05:17" dateClose="2019-06-03 10:06:53">1.002</version>
 		<version dateOpen="2019-06-13 09:06:09" dateClose="2019-06-13 13:06:06">1.003</version>
 		<version dateOpen="2019-07-03 07:07:46" dateClose="2019-07-03 07:07:49">1.004</version>
 		<version dateOpen="2019-08-08 15:08:39" dateClose="2019-08-13 07:08:45">1.005</version>
 		<version dateOpen="2019-09-11 11:09:21" dateClose="2019-09-11 11:09:21">1.006</version>
+		<version dateOpen="2019-09-13 08:09:49" dateClose="2019-09-13 14:09:15">1.007</version>
 	</versions>
 	<!--
 	<globalFilters>
@@ -668,6 +669,13 @@
 			<field id="id" dataType="String" primaryKey="TRUE" autoInc="FALSE"/>
 			<field id="caption" dataType="String"/>
 		</model>
+		<model id="RefinancingRate" parent="ModelSQL" dataTable="refinancing_rates" virtual="FALSE">
+			<defaultOrder>
+				<field id="set_date" sortDirect="DESC"/>
+			</defaultOrder>
+			<field id="set_date" dataType="Date" primaryKey="TRUE"/>
+			<field id="rate" dataType="Float" length="5" precision="2"/>
+		</model>
 	</models>
 	<constants>
 		<constant id="doc_per_page_count" name="Количество документов на странице" descr="Количество документов на странице в журнале документов" dataType="Int" defaultValue="60" autoload="TRUE"/>
@@ -999,6 +1007,7 @@
 			<publicMethod id="get_list" modelId="EgrulSearchData"/>
 			<publicMethod id="get_object" modelId="EgrulSearchData"/>
 			<publicMethod id="complete" patternFieldId="inn" modelId="EgrulSearchData"/>
+			<publicMethod id="update" modelId="EgrulSearchData"/>
 			<publicMethod id="search">
 				<field id="query" dataType="String" length="250" required="TRUE"/>
 			</publicMethod>
@@ -1016,6 +1025,13 @@
 			<publicMethod id="delete" modelId="MultipleChoiceList"/>
 			<publicMethod id="get_object" modelId="MultipleChoiceList"/>
 			<publicMethod id="get_list" modelId="MultipleChoiceList"/>
+		</controller>
+		<controller id="RefinancingRate" parentId="ControllerSQL">
+			<publicMethod id="insert" modelId="RefinancingRate"/>
+			<publicMethod id="update" modelId="RefinancingRate"/>
+			<publicMethod id="delete" modelId="RefinancingRate"/>
+			<publicMethod id="get_list" modelId="RefinancingRate"/>
+			<publicMethod id="get_object" modelId="RefinancingRate"/>
 		</controller>
 	</controllers>
 	<permissions>
@@ -1036,6 +1052,7 @@
 		<view id="10010" c="Post_Controller" t="PostList" f="get_list" section="Справочники" descr="Должности"/>
 		<view id="10011" c="Contact_Controller" t="ContactList" f="get_list" section="Справочники" descr="Контакты"/>
 		<view id="10012" c="DataTypeFieldAlias_Controller" t="DataTypeFieldAliasList" f="get_list" section="Справочники" descr="Соответствия полей типам данных"/>
+		<view id="10013" c="RefinancingRate_Controller" t="RefinancingRateList" f="get_list" section="Справочники" descr="Ставки рефинансирования"/>
 		<view id="20001" c="Document_Controller" t="DocumentList" f="get_list" section="Журналы" descr="Документы"/>
 		<view id="50001" c="Reminder_Controller" t="ReminderList" f="get_list" section="Формы" descr="Напоминания"/>
 		<view id="50002" c="ProjectManager_Controller" t="ProjectManager" section="Формы" descr="Управление проектом"/>
@@ -1061,6 +1078,7 @@
 		<serverTemplate id="DocTemplateList"/>
 		<serverTemplate id="DocumentList"/>
 		<serverTemplate id="DataTypeFieldAliasList"/>
+		<serverTemplate id="RefinancingRateList"/>
 	</serverTemplates>
 	<jsTemplates>
 		<jsTemplate id="FatalException" file="tmpl/FatalException.html"/>
@@ -1090,6 +1108,7 @@
 		<jsTemplate id="DocTemplateTest" file="tmpl/DocTemplateTest.html"/>
 		<jsTemplate id="UserCatalogDataListFromMd" file="tmpl/UserCatalogDataListFromMd.html"/>
 		<jsTemplate id="FieldGroup" file="tmpl/FieldGroup.html"/>
+		<jsTemplate id="EgrulSearchData_View" file="tmpl/EgrulSearchData_View.html"/>
 	</jsTemplates>
 	<packages/>
 	<sqlScripts>
@@ -1497,6 +1516,7 @@
 		<jsScript file="views/DocumentList_View.js"/>
 		<jsScript file="views/DocumentDialog_View.js"/>
 		<jsScript file="views/DataTypeFieldAliasList_View.js"/>
+		<jsScript file="views/RefinancingRateList_View.js"/>
 		<jsScript file="tmpl/App.templates.js" compressed="FALSE" standalone="FALSE"/>
 		<jsScript file="custom_controls/App.enums.js"/>
 		<jsScript file="custom_controls/App.predefinedItems.js"/>
@@ -1645,6 +1665,8 @@
 		<jsScript file="controllers/DataTypeFieldAlias_Controller.js"/>
 		<jsScript file="models/MultipleChoiceList_Model.js"/>
 		<jsScript file="controllers/MultipleChoiceList_Controller.js"/>
+		<jsScript file="models/RefinancingRate_Model.js"/>
+		<jsScript file="controllers/RefinancingRate_Controller.js"/>
 	</jsScripts>
 	<cssScripts>
 		<cssScript file="assets/css/icons/icomoon/styles.css" compressed="TRUE" standalone="TRUE"/>

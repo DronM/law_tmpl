@@ -24,6 +24,9 @@ require_once(USER_CONTROLLERS_PATH.'Employee_Controller.php');
 require_once(USER_CONTROLLERS_PATH.'DocTemplate_Controller.php');
 require_once(FRAME_WORK_PATH.'basic_classes/ModelVars.php');
 
+//ShortName() user function
+require_once('common/short_name.php');
+
 use mustache\Mustache\Engine;
 include ABSOLUTE_PATH.'vendor/autoload.php';
 
@@ -342,9 +345,31 @@ class <xsl:value-of select="@id"/>_Controller extends <xsl:value-of select="@par
 				}				
 				*/
 				
+				//!!! user functions !!!
+				
+				//ShortName()
+				preg_match_all('/{{ShortName\((.*)\)}}/',$tmp_data,$matches);
+				if(is_array($matches) &amp;&amp; count($matches)>=2){
+					foreach($matches[1] as $v){
+						$sch = 'ShortName('.$v.')';
+						$k = md5($sch);
+						if(!isset($data[$k])){
+							$obj_ar = explode('.',$v);
+							$obj = &amp;$data;
+							foreach($obj_ar as $vr){
+								$obj = &amp;$obj[$vr];
+							}
+							$data[$k] = get_short_name($obj);
+							$tmp_data = str_replace($sch,$k,$tmp_data);
+						}
+					}
+				}
+				
+				//tables
 				self::handle_tables($data,$tmp_data);
 				
 				if(DEBUG){
+					file_put_contents(OUTPUT_PATH.'last_data.xml',var_export($data,TRUE));
 					file_put_contents(OUTPUT_PATH.'last_content_before.xml',$tmp_data);
 				}			
 				

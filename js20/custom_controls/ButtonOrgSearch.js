@@ -41,10 +41,13 @@ extend(ButtonOrgSearch,ButtonCtrl);
 
 
 /* public methods */
-ButtonOrgSearch.prototype.doSearch = function(){
-	var q = this.getEditControl().getValue();
-	if (!q || !q.length){
-		throw new Error("Не задан параметр поиска!");
+ButtonOrgSearch.prototype.doSearch = function(forceRefresh){
+	var q = this.m_viewContext.getElement("inn").getValue();
+	if(!q || !q.length){
+		q = this.getEditControl().getValue();
+		if (!q || !q.length){
+			throw new Error("Не задан параметр поиска!");
+		}
 	}
 	var pm = (new EgrulSearchData_Controller()).getPublicMethod("search");
 	pm.setFieldValue("query",q);

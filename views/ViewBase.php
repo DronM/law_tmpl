@@ -1149,6 +1149,7 @@ class ViewBase extends ViewHTMLXSLT {
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'views/DocumentList_View.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'views/DocumentDialog_View.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'views/DataTypeFieldAliasList_View.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'views/RefinancingRateList_View.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'tmpl/App.templates.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/App.enums.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'custom_controls/App.predefinedItems.js'));
@@ -1305,6 +1306,8 @@ class ViewBase extends ViewHTMLXSLT {
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/DataTypeFieldAlias_Controller.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/MultipleChoiceList_Model.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/MultipleChoiceList_Controller.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/RefinancingRate_Model.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/RefinancingRate_Controller.js'));
 	
 			if (isset($_SESSION['scriptId'])){
 				$script_id = $_SESSION['scriptId'];

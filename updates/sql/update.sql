@@ -517,3 +517,27 @@ CREATE OR REPLACE VIEW users_list AS
 	ORDER BY u.name;
 
 ALTER TABLE users_list OWNER TO law_tmpl;
+
+
+
+-- ******************* update 13/09/2019 08:49:54 ******************
+
+		CREATE TABLE refinancing_rates
+		(set_date date NOT NULL,rate  numeric(5,2),CONSTRAINT refinancing_rates_pkey PRIMARY KEY (set_date)
+		);
+		ALTER TABLE refinancing_rates OWNER TO law_tmpl;
+		
+
+-- ******************* update 13/09/2019 09:28:05 ******************
+
+		INSERT INTO views
+		(id,c,f,t,section,descr,limited)
+		VALUES (
+		'10013',
+		'RefinancingRate_Controller',
+		'get_list',
+		'RefinancingRateList',
+		'Справочники',
+		'Ставки рефинансирования',
+		FALSE
+		);

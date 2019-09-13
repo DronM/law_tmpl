@@ -2,6 +2,7 @@
 require_once(FRAME_WORK_PATH.'basic_classes/ControllerSQL.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldExtInt.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldExtString.php');
+require_once(FRAME_WORK_PATH.'basic_classes/FieldExtFloat.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldExtEnum.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldExtText.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldExtDate.php');
@@ -68,6 +69,54 @@ class EgrulSearchData_Controller extends ControllerSQL{
 		$pm->addParam(new FieldExtString('inn'));		
 		$this->addPublicMethod($pm);					
 		$this->setCompleteModelId('EgrulSearchData_Model');
+
+			
+		/* update */		
+		$pm = new PublicMethod('update');
+		
+		$pm->addParam(new FieldExtString('old_inn',array('required'=>TRUE)));
+		
+		$pm->addParam(new FieldExtInt('obj_mode'));
+		$param = new FieldExtString('inn'
+				,array(
+			));
+			$pm->addParam($param);
+		$param = new FieldExtString('ogrn'
+				,array(
+			));
+			$pm->addParam($param);
+		$param = new FieldExtText('name'
+				,array(
+			));
+			$pm->addParam($param);
+		$param = new FieldExtJSON('data'
+				,array(
+			));
+			$pm->addParam($param);
+		$param = new FieldExtInt('user_id'
+				,array(
+			));
+			$pm->addParam($param);
+		$param = new FieldExtDateTimeTZ('create_dt'
+				,array(
+			));
+			$pm->addParam($param);
+		$param = new FieldExtDateTimeTZ('update_dt'
+				,array(
+			));
+			$pm->addParam($param);
+		$param = new FieldExtInt('update_count'
+				,array(
+			));
+			$pm->addParam($param);
+		
+			$param = new FieldExtString('inn',array(
+			));
+			$pm->addParam($param);
+		
+		
+			$this->addPublicMethod($pm);
+			$this->setUpdateModelId('EgrulSearchData_Model');
 
 			
 		$pm = new PublicMethod('search');

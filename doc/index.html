@@ -35,6 +35,7 @@
 <li><a href="#MultipleChoiceList_Controller">MultipleChoiceList_Controller</a></li>
 <li><a href="#Post_Controller">Post_Controller</a></li>
 <li><a href="#ProjectManager_Controller">ProjectManager_Controller</a></li>
+<li><a href="#RefinancingRate_Controller">RefinancingRate_Controller</a></li>
 <li><a href="#ShortMessage_Controller">ShortMessage_Controller</a></li>
 <li><a href="#ShortMessageRecipientState_Controller">ShortMessageRecipientState_Controller</a></li>
 <li><a href="#TimeZoneLocale_Controller">TimeZoneLocale_Controller</a></li>
@@ -103,6 +104,7 @@
 <li><a href="#DataTypeFieldAlias_Model">DataTypeFieldAlias_Model</a></li>
 <li><a href="#EgrulSearchData_Model">EgrulSearchData_Model</a></li>
 <li><a href="#MultipleChoiceList_Model">MultipleChoiceList_Model</a></li>
+<li><a href="#RefinancingRate_Model">RefinancingRate_Model</a></li>
 </ul>
 <div class="section-title">Enumerations</div>
 <ul>
@@ -377,6 +379,7 @@
 <h2>get_list</h2>
 <a href="#EgrulSearchData_Model">Model: EgrulSearchData_Model</a><h2>get_object</h2>
 <a href="#EgrulSearchData_Model">Model: EgrulSearchData_Model</a><h2>complete</h2>
+<a href="#EgrulSearchData_Model">Model: EgrulSearchData_Model</a><h2>update</h2>
 <a href="#EgrulSearchData_Model">Model: EgrulSearchData_Model</a><h2>search</h2>
 <p>Arguments:</p>
 <div class="content_item content_item2">
@@ -583,6 +586,19 @@
 <h2>apply_sql</h2>
 <p>Arguments:</p>
 <div class="content_item content_item2"></div>
+</div>
+</div>
+<div id="RefinancingRate_Controller" class="content_box">
+<h1>RefinancingRate_Controller</h1>
+<div class="content_item">
+<p class="big"></p>
+<p>Методы:</p>
+<h2>insert</h2>
+<a href="#RefinancingRate_Model">Model: RefinancingRate_Model</a><h2>update</h2>
+<a href="#RefinancingRate_Model">Model: RefinancingRate_Model</a><h2>delete</h2>
+<a href="#RefinancingRate_Model">Model: RefinancingRate_Model</a><h2>get_list</h2>
+<a href="#RefinancingRate_Model">Model: RefinancingRate_Model</a><h2>get_object</h2>
+<a href="#RefinancingRate_Model">Model: RefinancingRate_Model</a>
 </div>
 </div>
 <div id="ShortMessage_Controller" class="content_box">
@@ -2392,6 +2408,24 @@
 <div>Required:</div>
 <div>Length:</div>
 <div>Precision:</div>
+</div>
+</div>
+<div id="RefinancingRate_Model" class="content_box">
+<h1>RefinancingRate_Model</h1>
+<div class="content_item">
+<p>Поля:</p>
+<h2>set_date</h2>
+<div>Type:Date</div>
+<div>Primary key:TRUE</div>
+<div>Required:</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>rate</h2>
+<div>Type:Float</div>
+<div>Primary key:</div>
+<div>Required:</div>
+<div>Length:5</div>
+<div>Precision:2</div>
 </div>
 </div>
 <div id="ShortMessage_Model" class="content_box">
