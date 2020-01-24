@@ -335,17 +335,18 @@ CollectionGrid.prototype.getFormattedValue = function(){
 	}
 	
 	//totals
-	var foot_node = this.getFoot().getNode();
-	var rows = foot_node.getElementsByTagName("tr");	
-	for(var i=0;i<rows.length;i++){
-		var cols = rows[i].getElementsByTagName("td");
-		var res_row = {};
-		for(var j=0;j<cols.length;j++){
-			res_row[field_ids[j]] = DOMHelper.getText(cols[j]);
+	if(this.getFoot()){
+		var foot_node = this.getFoot().getNode();
+		var rows = foot_node.getElementsByTagName("tr");	
+		for(var i=0;i<rows.length;i++){
+			var cols = rows[i].getElementsByTagName("td");
+			var res_row = {};
+			for(var j=0;j<cols.length;j++){
+				res_row[field_ids[j]] = DOMHelper.getText(cols[j]);
+			}
+			res.push(res_row);
 		}
-		res.push(res_row);
-	}
-	
+	}	
 	/*
 	var m = this.getModel();
 	var fields = m.getFields();

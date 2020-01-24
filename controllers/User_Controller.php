@@ -399,7 +399,7 @@ class User_Controller extends ControllerSQL{
 		if (!strlen($email)){
 			throw new Exception(User_Controller::ER_NO_EMAIL);
 		}
-		$new_pwd = DEF_NEW_USER_PWD;//gen_pwd(self::PWD_LEN);
+		$new_pwd = DEBUG? DEF_NEW_USER_PWD:gen_pwd(self::PWD_LEN);
 		$pm->setParamValue('pwd',$new_pwd);
 		
 		$model_id = $this->getInsertModelId();

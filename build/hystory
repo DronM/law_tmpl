@@ -10,6 +10,8 @@ ControllerObjServer.prototype.download остался косяк, приходи
 1.005 13/08/19
 1) Secured sessions
 
+1.008 24/01/20
+1) custom_controls/CollectionGrid.js, теперь ожно грид выводить и без подвала
 
 - редактирование строки в диалоге
 

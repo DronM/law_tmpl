@@ -16,10 +16,11 @@ function UserDialog_View(id,options){
 		
 		this.addElement(new UserNameEdit(id+":name"));	
 
-		this.addElement(new EditString(id+":name_full",{				
+		/*this.addElement(new EditString(id+":name_full",{				
 			"labelCaption":"ФИО пользователя:"
 		}));	
-
+		*/
+		
 		this.addElement(new Enum_role_types(id+":role",{
 			"labelCaption":"Роль:",
 			"required":true
@@ -74,7 +75,7 @@ function UserDialog_View(id,options){
 	var r_bd = [
 		new DataBinding({"control":this.getElement("id")}),
 		new DataBinding({"control":this.getElement("name")}),
-		new DataBinding({"control":this.getElement("name_full")}),
+		//new DataBinding({"control":this.getElement("name_full")}),
 		new DataBinding({"control":this.getElement("role"),"field":this.m_model.getField("role_id")}),
 		new DataBinding({"control":this.getElement("email")}),
 		new DataBinding({"control":this.getElement("email_confirmed")}),
@@ -93,7 +94,7 @@ function UserDialog_View(id,options){
 	//write
 	this.setWriteBindings([
 		new CommandBinding({"control":this.getElement("name")}),
-		new CommandBinding({"control":this.getElement("name_full")}),
+		//new CommandBinding({"control":this.getElement("name_full")}),
 		new CommandBinding({"control":this.getElement("role"),"fieldId":"role_id"}),
 		new CommandBinding({"control":this.getElement("email")}),
 		new CommandBinding({"control":this.getElement("phone_cel")}),

@@ -541,7 +541,7 @@ throw Error(CommonHelper.longString(function () {/*
 						</li>					        
 						
 						<li class="divider"></li>
-						<li><a href="#" onclick="window.getApp().quit()"><i class="icon-switch2"></i> Выход</a></li>
+						<li><a href="#" onclick="return window.getApp().quit()"><i class="icon-switch2"></i> Выход</a></li>
 					</ul>
 				</li>				
 			</ul>

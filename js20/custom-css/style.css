@@ -468,3 +468,9 @@ table,tr,td.noBorder{
 	margin:10px 10px;
 	background-color: #f7e8e8;
 }
+
+.table-header{
+	margin-top:10px;
+	text-weight:bolder;
+	font-size:120%;
+}
