@@ -20,9 +20,10 @@ try{
 	$dbLinkMaster->database	= DB_NAME;
 	$dbLinkMaster->productionConnectError = ERR_SQL_SERVER_CON;
 	$dbLinkMaster->productionSQLError = ERR_SQL_QUERY;	
-	if (defined('QUERY_SHOW'))$dbLinkMaster->showqueries = QUERY_SHOW;
-	if (defined('QUERY_LOG_FILE'))$dbLinkMaster->logfile = QUERY_LOG_FILE;
+	if (defined('QUERY_LOG'))$dbLinkMaster->logQueries = QUERY_LOG;
+	if (defined('QUERY_LOG_FILE'))$dbLinkMaster->logFile = QUERY_LOG_FILE;
 	if (defined('QUERY_EXPLAIN'))$dbLinkMaster->explain = QUERY_EXPLAIN;
+	$dbLinkMaster->detailedError = defined('DETAILED_ERROR')? DETAILED_ERROR:DEBUG;
 	$port = (defined('DB_PORT_MASTER'))? DB_PORT:NULL;
 	$dbLinkMaster->connect(DB_SERVER_MASTER,DB_USER,DB_PASSWORD,$port);
 	//$dbLinkMaster->set_error_verbosity((DEBUG)? PGSQL_ERRORS_VERBOSE:PGSQL_ERRORS_TERSE);

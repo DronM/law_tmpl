@@ -123,14 +123,6 @@ class UserDialog_Model extends ModelSQL{
 		$f_color_palette=new FieldSQLText($this->getDbLink(),$this->getDbName(),$this->getTableName(),"color_palette",$f_opts);
 		$this->addField($f_color_palette);
 		//********************
-		
-		//*** Field reminders_to_email ***
-		$f_opts = array();
-		$f_opts['id']="reminders_to_email";
-						
-		$f_reminders_to_email=new FieldSQLBool($this->getDbLink(),$this->getDbName(),$this->getTableName(),"reminders_to_email",$f_opts);
-		$this->addField($f_reminders_to_email);
-		//********************
 	$this->setLimitConstant('doc_per_page_count');
 	}
 

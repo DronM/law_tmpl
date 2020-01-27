@@ -40,10 +40,6 @@ function UserDialog_View(id,options){
 			"labelCaption":"Моб.телефон:"
 		}));
 
-		this.addElement(new EditText(id+":comment_text",{
-			"labelCaption":"Комментарий:"
-		}));
-
 		this.addElement(new EditCheckBox(id+":banned",{
 			"labelCaption":"Доступ запрещен:"
 		}));
@@ -61,10 +57,6 @@ function UserDialog_View(id,options){
 			}));		
 		}		
 		
-		this.addElement(new EditCheckBox(id+":reminders_to_email",{
-			"labelCaption":"Дублировать напоминания на электронную почту"
-		}));								
-		
 	}
 	
 	UserDialog_View.superclass.constructor.call(this,id,options);
@@ -80,10 +72,8 @@ function UserDialog_View(id,options){
 		new DataBinding({"control":this.getElement("email")}),
 		new DataBinding({"control":this.getElement("email_confirmed")}),
 		new DataBinding({"control":this.getElement("phone_cel")}),
-		new DataBinding({"control":this.getElement("comment_text")}),
 		new DataBinding({"control":this.getElement("banned")}),
 		new DataBinding({"control":this.getElement("color_palette")}),
-		new DataBinding({"control":this.getElement("reminders_to_email")})
 	];
 	/*
 	if (window.getApp().getServVars().role_id=="client1c"){
@@ -98,10 +88,8 @@ function UserDialog_View(id,options){
 		new CommandBinding({"control":this.getElement("role"),"fieldId":"role_id"}),
 		new CommandBinding({"control":this.getElement("email")}),
 		new CommandBinding({"control":this.getElement("phone_cel")}),
-		new CommandBinding({"control":this.getElement("comment_text")}),
 		new CommandBinding({"control":this.getElement("banned")}),
 		new CommandBinding({"control":this.getElement("color_palette")}),
-		new CommandBinding({"control":this.getElement("reminders_to_email")})
 	]);
 	
 }

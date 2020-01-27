@@ -342,7 +342,7 @@ class Document_Controller extends ControllerSQL{
 			$where->addExpression('permission_ar',
 				sprintf(
 				"(for_all_employees
-				employee_id=%d OR 'employees%s' =ANY (permission_ar) OR 'departments%d' =ANY (permission_ar)
+				OR employee_id=%d OR 'employees%s' =ANY (permission_ar) OR 'departments%d' =ANY (permission_ar)
 				)",
 				$_SESSION['global_employee_id'],
 				$_SESSION['global_employee_id'],

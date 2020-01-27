@@ -25,6 +25,7 @@
 <li><a href="#DocTemplateField_Controller">DocTemplateField_Controller</a></li>
 <li><a href="#Document_Controller">Document_Controller</a></li>
 <li><a href="#EgrulSearchData_Controller">EgrulSearchData_Controller</a></li>
+<li><a href="#EmailTemplate_Controller">EmailTemplate_Controller</a></li>
 <li><a href="#Employee_Controller">Employee_Controller</a></li>
 <li><a href="#EmployeeLocalList_Controller">EmployeeLocalList_Controller</a></li>
 <li><a href="#Enum_Controller">Enum_Controller</a></li>
@@ -105,6 +106,8 @@
 <li><a href="#EgrulSearchData_Model">EgrulSearchData_Model</a></li>
 <li><a href="#MultipleChoiceList_Model">MultipleChoiceList_Model</a></li>
 <li><a href="#RefinancingRate_Model">RefinancingRate_Model</a></li>
+<li><a href="#EmailTemplate_Model">EmailTemplate_Model</a></li>
+<li><a href="#EmailTemplateList_Model">EmailTemplateList_Model</a></li>
 </ul>
 <div class="section-title">Enumerations</div>
 <ul>
@@ -392,6 +395,17 @@
 <p>Length:250</p>
 </div>
 </div>
+</div>
+</div>
+<div id="EmailTemplate_Controller" class="content_box">
+<h1>EmailTemplate_Controller</h1>
+<div class="content_item">
+<p class="big"></p>
+<p>Методы:</p>
+<h2>update</h2>
+<a href="#EmailTemplate_Model">Model: EmailTemplate_Model</a><h2>get_list</h2>
+<a href="#EmailTemplateList_Model">Model: EmailTemplateList_Model</a><h2>get_object</h2>
+<a href="#EmailTemplate_Model">Model: EmailTemplate_Model</a>
 </div>
 </div>
 <div id="Employee_Controller" class="content_box">
@@ -1778,6 +1792,18 @@
 <div>Required:</div>
 <div>Length:</div>
 <div>Precision:</div>
+<h2>for_all_employees</h2>
+<div>Type:Bool</div>
+<div>Primary key:</div>
+<div>Required:</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>permission_ar</h2>
+<div>Type:Array</div>
+<div>Primary key:</div>
+<div>Required:</div>
+<div>Length:</div>
+<div>Precision:</div>
 </div>
 </div>
 <div id="EgrulSearchData_Model" class="content_box">
@@ -1828,6 +1854,72 @@
 <div>Precision:</div>
 <h2>update_count</h2>
 <div>Type:Int</div>
+<div>Primary key:</div>
+<div>Required:</div>
+<div>Length:</div>
+<div>Precision:</div>
+</div>
+</div>
+<div id="EmailTemplate_Model" class="content_box">
+<h1>EmailTemplate_Model</h1>
+<div class="content_item">
+<p>Поля:</p>
+<h2>id</h2>
+<div>Type:Int</div>
+<div>Primary key:TRUE</div>
+<div>Required:FALSE</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>email_type</h2>
+<div>Type:Enum</div>
+<div>Primary key:FALSE</div>
+<div>Required:TRUE</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>template</h2>
+<div>Type:Text</div>
+<div>Primary key:</div>
+<div>Required:TRUE</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>comment_text</h2>
+<div>Type:Text</div>
+<div>Primary key:</div>
+<div>Required:TRUE</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>mes_subject</h2>
+<div>Type:Text</div>
+<div>Primary key:</div>
+<div>Required:TRUE</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>fields</h2>
+<div>Type:JSON</div>
+<div>Primary key:</div>
+<div>Required:TRUE</div>
+<div>Length:</div>
+<div>Precision:</div>
+</div>
+</div>
+<div id="EmailTemplateList_Model" class="content_box">
+<h1>EmailTemplateList_Model</h1>
+<div class="content_item">
+<p>Поля:</p>
+<h2>id</h2>
+<div>Type:Int</div>
+<div>Primary key:TRUE</div>
+<div>Required:</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>email_type</h2>
+<div>Type:String</div>
+<div>Primary key:</div>
+<div>Required:</div>
+<div>Length:</div>
+<div>Precision:</div>
+<h2>template</h2>
+<div>Type:Text</div>
 <div>Primary key:</div>
 <div>Required:</div>
 <div>Length:</div>
@@ -3038,12 +3130,6 @@
 <div>Required:</div>
 <div>Length:</div>
 <div>Precision:</div>
-<h2>reminders_to_email</h2>
-<div>Type:Bool</div>
-<div>Primary key:</div>
-<div>Required:</div>
-<div>Length:</div>
-<div>Precision:</div>
 </div>
 </div>
 <div id="UserList_Model" class="content_box">
@@ -3130,12 +3216,6 @@
 <div>Precision:</div>
 <h2>color_palette</h2>
 <div>Type:Text</div>
-<div>Primary key:</div>
-<div>Required:</div>
-<div>Length:</div>
-<div>Precision:</div>
-<h2>reminders_to_email</h2>
-<div>Type:Bool</div>
 <div>Primary key:</div>
 <div>Required:</div>
 <div>Length:</div>

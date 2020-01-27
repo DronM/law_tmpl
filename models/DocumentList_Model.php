@@ -9,9 +9,11 @@
 require_once(FRAME_WORK_PATH.'basic_classes/ModelSQL.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldSQLInt.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldSQLString.php');
+require_once(FRAME_WORK_PATH.'basic_classes/FieldSQLBool.php');
 require_once(FRAME_WORK_PATH.'basic_classes/ModelOrderSQL.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldSQLDateTimeTZ.php');
 require_once(FRAME_WORK_PATH.'basic_classes/FieldSQLJSON.php');
+require_once(FRAME_WORK_PATH.'basic_classes/FieldSQLArray.php');
  
 class DocumentList_Model extends ModelSQL{
 	
@@ -81,6 +83,22 @@ class DocumentList_Model extends ModelSQL{
 						
 		$f_doc_templates_ref=new FieldSQLJSON($this->getDbLink(),$this->getDbName(),$this->getTableName(),"doc_templates_ref",$f_opts);
 		$this->addField($f_doc_templates_ref);
+		//********************
+		
+		//*** Field for_all_employees ***
+		$f_opts = array();
+		$f_opts['id']="for_all_employees";
+						
+		$f_for_all_employees=new FieldSQLBool($this->getDbLink(),$this->getDbName(),$this->getTableName(),"for_all_employees",$f_opts);
+		$this->addField($f_for_all_employees);
+		//********************
+		
+		//*** Field permission_ar ***
+		$f_opts = array();
+		$f_opts['id']="permission_ar";
+						
+		$f_permission_ar=new FieldSQLArray($this->getDbLink(),$this->getDbName(),$this->getTableName(),"permission_ar",$f_opts);
+		$this->addField($f_permission_ar);
 		//********************
 	
 		$order = new ModelOrderSQL();		

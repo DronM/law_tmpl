@@ -16,18 +16,21 @@
  * @param {Object} options
  */
 
-function UserProfile_Model(options){
-	var id = 'UserProfile_Model';
+function EmailTemplate_Model(options){
+	var id = 'EmailTemplate_Model';
 	options = options || {};
 	
 	options.fields = {};
 	
+			
+				
+			
 				
 	
 	var filed_options = {};
 	filed_options.primaryKey = true;	
-	filed_options.alias = 'Код';
-	filed_options.autoInc = false;	
+	
+	filed_options.autoInc = true;	
 	
 	options.fields.id = new FieldInt("id",filed_options);
 	
@@ -35,51 +38,55 @@ function UserProfile_Model(options){
 	
 	var filed_options = {};
 	filed_options.primaryKey = false;	
-	filed_options.alias = 'Имя';
+	filed_options.alias = 'Тип email';
 	filed_options.autoInc = false;	
 	
-	options.fields.name = new FieldString("name",filed_options);
+	options.fields.email_type = new FieldEnum("email_type",filed_options);
+	filed_options.enumValues = 'new_account,reset_pwd,user_email_conf';
+	options.fields.email_type.getValidator().setRequired(true);
 	
 				
 	
 	var filed_options = {};
 	filed_options.primaryKey = false;	
-	
+	filed_options.alias = 'Шаблон';
 	filed_options.autoInc = false;	
 	
-	options.fields.name_full = new FieldString("name_full",filed_options);
-	options.fields.name_full.getValidator().setMaxLength('250');
+	options.fields.template = new FieldText("template",filed_options);
+	options.fields.template.getValidator().setRequired(true);
 	
 				
 	
 	var filed_options = {};
 	filed_options.primaryKey = false;	
-	filed_options.alias = 'Эл.почта';
+	filed_options.alias = 'Комментарий';
 	filed_options.autoInc = false;	
 	
-	options.fields.email = new FieldString("email",filed_options);
+	options.fields.comment_text = new FieldText("comment_text",filed_options);
+	options.fields.comment_text.getValidator().setRequired(true);
 	
 				
 	
 	var filed_options = {};
 	filed_options.primaryKey = false;	
-	filed_options.alias = 'Моб.телефон';
+	filed_options.alias = 'Тема';
 	filed_options.autoInc = false;	
 	
-	options.fields.phone_cel = new FieldString("phone_cel",filed_options);
-	options.fields.phone_cel.getValidator().setMaxLength('11');
+	options.fields.mes_subject = new FieldText("mes_subject",filed_options);
+	options.fields.mes_subject.getValidator().setRequired(true);
 	
 				
 	
 	var filed_options = {};
 	filed_options.primaryKey = false;	
-	filed_options.alias = 'Цветовая схема';
+	filed_options.alias = 'Поля';
 	filed_options.autoInc = false;	
 	
-	options.fields.color_palette = new FieldText("color_palette",filed_options);
+	options.fields.fields = new FieldJSON("fields",filed_options);
+	options.fields.fields.getValidator().setRequired(true);
 	
 			
-		UserProfile_Model.superclass.constructor.call(this,id,options);
+		EmailTemplate_Model.superclass.constructor.call(this,id,options);
 }
-extend(UserProfile_Model,ModelXML);
+extend(EmailTemplate_Model,ModelXML);
 

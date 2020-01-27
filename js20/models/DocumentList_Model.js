@@ -92,6 +92,24 @@ function DocumentList_Model(options){
 	
 	options.fields.doc_templates_ref = new FieldJSON("doc_templates_ref",filed_options);
 	
+				
+	
+	var filed_options = {};
+	filed_options.primaryKey = false;	
+	
+	filed_options.autoInc = false;	
+	
+	options.fields.for_all_employees = new FieldBool("for_all_employees",filed_options);
+	
+				
+	
+	var filed_options = {};
+	filed_options.primaryKey = false;	
+	
+	filed_options.autoInc = false;	
+	
+	options.fields.permission_ar = new FieldArray("permission_ar",filed_options);
+	
 		DocumentList_Model.superclass.constructor.call(this,id,options);
 }
 extend(DocumentList_Model,ModelXML);

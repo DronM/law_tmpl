@@ -67,7 +67,8 @@ function DocTemplateDialog_View(id,options){
 		this.addElement(new AccessPermissionGrid(id+":permissions"));
 
 		this.addElement(new EditCheckBox(id+":for_all_employees",{
-			"labelCaption":"Разрешить использование шаблона для всех сотрудников"
+			"labelCaption":"Разрешить использование шаблона для всех сотрудников",
+			"value":true
 		}));
 		
 		this.addElement(new EditFile(id+":template_file",{

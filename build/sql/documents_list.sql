@@ -9,7 +9,9 @@ CREATE OR REPLACE VIEW documents_list AS
 		d.employee_id,
 		employees_ref(empl) AS employees_ref,
 		doc_templates_ref(tmpl) AS doc_templates_ref,
-		d.doc_number
+		d.doc_number,
+		d.for_all_employees,
+		d.permission_ar
 	FROM documents AS d
 	LEFT JOIN employees AS empl ON empl.id=d.employee_id
 	LEFT JOIN doc_templates AS tmpl ON tmpl.id=d.doc_template_id

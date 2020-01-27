@@ -364,6 +364,12 @@ $permissions = array();
 				
 					$permissions['RefinancingRate_Controller_get_object']=TRUE;
 				
+					$permissions['EmailTemplate_Controller_update']=TRUE;
+				
+					$permissions['EmailTemplate_Controller_get_list']=TRUE;
+				
+					$permissions['EmailTemplate_Controller_get_object']=TRUE;
+				
 return array_key_exists($contrId.'_'.$methId,$permissions);
 }
 ?>

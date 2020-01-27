@@ -1308,6 +1308,9 @@ class ViewBase extends ViewHTMLXSLT {
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/MultipleChoiceList_Controller.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/RefinancingRate_Model.js'));
 		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/RefinancingRate_Controller.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'controllers/EmailTemplate_Controller.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/EmailTemplate_Model.js'));
+		$this->addJsModel(new ModelJavaScript(USER_JS_PATH.'models/EmailTemplateList_Model.js'));
 	
 			if (isset($_SESSION['scriptId'])){
 				$script_id = $_SESSION['scriptId'];

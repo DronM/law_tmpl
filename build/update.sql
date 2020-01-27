@@ -542,3 +542,68 @@ ALTER TABLE users_list OWNER TO law_tmpl;
 		FALSE
 		);
 	
+
+-- ******************* update 27/01/2020 09:53:49 ******************
+-- View: public.email_templates_list
+
+-- DROP VIEW public.email_templates_list;
+
+CREATE OR REPLACE VIEW public.email_templates_list AS 
+ SELECT st.id,
+    st.email_type,
+    st.template
+   FROM email_templates st;
+
+ALTER TABLE public.email_templates_list
+  OWNER TO law_tmpl;
+
+
+
+-- ******************* update 27/01/2020 10:17:13 ******************
+-- VIEW: documents_list
+
+--DROP VIEW documents_list;
+
+CREATE OR REPLACE VIEW documents_list AS
+	SELECT
+		d.id,
+		d.date_time,
+		d.employee_id,
+		employees_ref(empl) AS employees_ref,
+		doc_templates_ref(tmpl) AS doc_templates_ref,
+		d.doc_number,
+		d.for_all_employees
+	FROM documents AS d
+	LEFT JOIN employees AS empl ON empl.id=d.employee_id
+	LEFT JOIN doc_templates AS tmpl ON tmpl.id=d.doc_template_id
+	ORDER BY d.date_time DESC
+	;
+	
+ALTER VIEW documents_list OWNER TO law_tmpl;
+
+
+
+-- ******************* update 27/01/2020 10:17:56 ******************
+-- VIEW: documents_list
+
+--DROP VIEW documents_list;
+
+CREATE OR REPLACE VIEW documents_list AS
+	SELECT
+		d.id,
+		d.date_time,
+		d.employee_id,
+		employees_ref(empl) AS employees_ref,
+		doc_templates_ref(tmpl) AS doc_templates_ref,
+		d.doc_number,
+		d.for_all_employees,
+		d.permission_ar
+	FROM documents AS d
+	LEFT JOIN employees AS empl ON empl.id=d.employee_id
+	LEFT JOIN doc_templates AS tmpl ON tmpl.id=d.doc_template_id
+	ORDER BY d.date_time DESC
+	;
+	
+ALTER VIEW documents_list OWNER TO law_tmpl;
+
+

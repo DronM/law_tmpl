@@ -123,15 +123,6 @@ function UserDialog_Model(options){
 	
 	options.fields.color_palette = new FieldText("color_palette",filed_options);
 	
-				
-	
-	var filed_options = {};
-	filed_options.primaryKey = false;	
-	
-	filed_options.autoInc = false;	
-	
-	options.fields.reminders_to_email = new FieldBool("reminders_to_email",filed_options);
-	
 		UserDialog_Model.superclass.constructor.call(this,id,options);
 }
 extend(UserDialog_Model,ModelXML);

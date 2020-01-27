@@ -104,7 +104,8 @@ function DocumentDialog_View(id,options){
 			this.addElement(new AccessPermissionGrid(id+":permissions"));
 
 			this.addElement(new EditCheckBox(id+":for_all_employees",{
-				"labelCaption":"Разрешить использование документа для всех сотрудников"
+				"labelCaption":"Разрешить использование документа для всех сотрудников",
+				"value":true
 			}));
 
 			this.addElement(new ButtonCmd(id+":cmdProcess",{
@@ -310,7 +311,7 @@ DocumentDialog_View.prototype.process = function(callBack){
 	pm.run({
 		"ok":function(resp){
 			var m = resp.getModel("DocumentDialog_Model");
-			console.dir(m)
+			//console.dir(m)
 			if(m){
 				if(m.getNextRow())
 					self.iniDocumentInf(m);

@@ -4,7 +4,7 @@
 	<versions>
 		<version dateOpen="2018-10-08 08:10:07">1.001</version>
 		<version dateOpen="2018-10-08 08:10:07" dateClose="2019-05-28 15:05:10">1.001 
-		<lastBuild>2020-01-24 11:15:53</lastBuild></version>
+		<lastBuild>2020-01-27 10:30:35</lastBuild></version>
 		<version dateOpen="2019-05-29 06:05:17" dateClose="2019-06-03 10:06:53">1.002</version>
 		<version dateOpen="2019-06-13 09:06:09" dateClose="2019-06-13 13:06:06">1.003</version>
 		<version dateOpen="2019-07-03 07:07:46" dateClose="2019-07-03 07:07:49">1.004</version>
@@ -12,6 +12,7 @@
 		<version dateOpen="2019-09-11 11:09:21" dateClose="2019-09-11 11:09:21">1.006</version>
 		<version dateOpen="2019-09-13 08:09:49" dateClose="2019-09-13 14:09:15">1.007</version>
 		<version dateOpen="2019-09-20 11:09:47" dateClose="2020-01-24 11:01:15">1.008</version>
+		<version dateOpen="2020-01-27 09:01:34" dateClose="2020-01-27 10:01:30">1.009</version>
 	</versions>
 	<!--
 	<globalFilters>
@@ -107,7 +108,6 @@
 			<field id="time_zone_locale_descr" dataType="String"/>
 			<field id="phone_cel" dataType="String" length="11" alias="Моб.телефон"/>
 			<field id="color_palette" dataType="Text" length="" alias="Цветовая схема"/>
-			<field id="reminders_to_email" dataType="Bool"/>
 		</model>
 		<model id="UserProfile" parent="ModelSQL" dataTable="users_profile" virtual="TRUE">
 			<field id="id" dataType="Int" primaryKey="TRUE" alias="Код"/>
@@ -116,7 +116,6 @@
 			<field id="email" dataType="String" alias="Эл.почта"/>
 			<field id="phone_cel" dataType="String" length="11" alias="Моб.телефон"/>
 			<field id="color_palette" dataType="Text" length="" alias="Цветовая схема"/>
-			<field id="reminders_to_email" dataType="Bool"/>
 			<globalFilter id="user_id" fieldId="id"/>
 		</model>
 		<model id="ConstantList" parent="ModelSQL" dataTable="constants_list_view" virtual="TRUE">
@@ -618,6 +617,8 @@
 			<field id="employees_ref" dataType="JSON"/>
 			<field id="doc_template_id" dataType="Int" refTable="doc_templates" refField="id" required="TRUE"/>
 			<field id="doc_templates_ref" dataType="JSON"/>
+			<field id="for_all_employees" dataType="Bool"/>
+			<field id="permission_ar" dataType="Array"/>
 		</model>
 		<model id="DocumentDialog" parent="ModelSQL" dataTable="documents_dialog" virtual="TRUE">
 			<field id="id" dataType="Int" primaryKey="TRUE" required="FALSE" autoInc="TRUE"/>
@@ -676,6 +677,26 @@
 			</defaultOrder>
 			<field id="set_date" dataType="Date" primaryKey="TRUE"/>
 			<field id="rate" dataType="Float" length="5" precision="2"/>
+		</model>
+		<!-- EMAIL -->
+		<model id="EmailTemplate" parent="ModelSQL" dataTable="email_templates" virtual="FALSE">
+			<defaultOrder>
+				<field id="email_type"/>
+			</defaultOrder>
+			<field id="id" dataType="Int" primaryKey="TRUE" autoInc="TRUE" required="FALSE"/>
+			<field id="email_type" dataType="Enum" primaryKey="FALSE" enumId="email_types" autoInc="FALSE" required="TRUE" alias="Тип email"/>
+			<field id="template" dataType="Text" required="TRUE" alias="Шаблон"/>
+			<field id="comment_text" dataType="Text" required="TRUE" alias="Комментарий"/>
+			<field id="mes_subject" dataType="Text" required="TRUE" alias="Тема"/>
+			<field id="fields" dataType="JSON" required="TRUE" alias="Поля"/>
+			<index id="email_templates_type_index" unique="TRUE">
+				<field id="email_type"/>
+			</index>
+		</model>
+		<model id="EmailTemplateList" parent="ModelSQL" dataTable="email_templates_list" virtual="TRUE">
+			<field id="id" dataType="Int" primaryKey="TRUE"/>
+			<field id="email_type" dataType="String"/>
+			<field id="template" dataType="Text"/>
 		</model>
 	</models>
 	<constants>
@@ -1034,9 +1055,15 @@
 			<publicMethod id="get_list" modelId="RefinancingRate"/>
 			<publicMethod id="get_object" modelId="RefinancingRate"/>
 		</controller>
+		<controller id="EmailTemplate" parentId="ControllerSQL">
+			<publicMethod id="update" modelId="EmailTemplate"/>
+			<publicMethod id="get_list" modelId="EmailTemplateList"/>
+			<publicMethod id="get_object" modelId="EmailTemplate"/>
+		</controller>
 	</controllers>
 	<permissions>
 		<permission type="allow" controllerId="all" methodId="all" roleId="admin"/>
+		<permission type="allow" controllerId="all" methodId="all" roleId="lawyer"/>
 		<permission type="allow" controllerId="User" methodId="login" roleId="guest"/>
 	</permissions>
 	<views>
@@ -1054,6 +1081,7 @@
 		<view id="10011" c="Contact_Controller" t="ContactList" f="get_list" section="Справочники" descr="Контакты"/>
 		<view id="10012" c="DataTypeFieldAlias_Controller" t="DataTypeFieldAliasList" f="get_list" section="Справочники" descr="Соответствия полей типам данных"/>
 		<view id="10013" c="RefinancingRate_Controller" t="RefinancingRateList" f="get_list" section="Справочники" descr="Ставки рефинансирования"/>
+		<view id="10014" c="EmailTemplate_Controller" t="EmailTemplateList" f="get_list" section="Справочники" descr="Шаблоны сообщений электронной почты"/>
 		<view id="20001" c="Document_Controller" t="DocumentList" f="get_list" section="Журналы" descr="Документы"/>
 		<view id="50001" c="Reminder_Controller" t="ReminderList" f="get_list" section="Формы" descr="Напоминания"/>
 		<view id="50002" c="ProjectManager_Controller" t="ProjectManager" section="Формы" descr="Управление проектом"/>
@@ -1668,6 +1696,9 @@
 		<jsScript file="controllers/MultipleChoiceList_Controller.js"/>
 		<jsScript file="models/RefinancingRate_Model.js"/>
 		<jsScript file="controllers/RefinancingRate_Controller.js"/>
+		<jsScript file="controllers/EmailTemplate_Controller.js"/>
+		<jsScript file="models/EmailTemplate_Model.js"/>
+		<jsScript file="models/EmailTemplateList_Model.js"/>
 	</jsScripts>
 	<cssScripts>
 		<cssScript file="assets/css/icons/icomoon/styles.css" compressed="TRUE" standalone="TRUE"/>
