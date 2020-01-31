@@ -395,8 +395,8 @@ class DocTemplate_Controller extends ControllerSQL{
 			Employee_Controller::set_employee_id($this->getDbLink());
 			
 			$where->addExpression('permission_ar',
-				sprintf(for_all_employees OR
-				"employee_id=%d OR 'employees%s' =ANY (permission_ar) OR 'departments%s' =ANY (permission_ar)
+				sprintf("for_all_employees OR
+				employee_id=%d OR 'employees%s' =ANY (permission_ar) OR 'departments%s' =ANY (permission_ar)
 				",
 				$_SESSION['employee_id'],
 				$_SESSION['employee_id'],

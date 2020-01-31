@@ -98,11 +98,16 @@ function CollectionGrid(id,options){
 			||inst_params[fields[i].user_id].func=="EditCheckBox"
 			){
 				inst_params[fields[i].user_id].colAlign = "center";
+			//console.log("fields[i].user_id="+fields[i].user_id)
+			//console.log(inst_params[fields[i].user_id].func)
+			//console.log(inst_params[fields[i].user_id].options)
+			//console.log("dateFormat="+inst_params[fields[i].user_id].options.dateFormat)
+				
 			}
 			else if(inst_params[fields[i].user_id].func=="FieldGroup"){
 				inst_params[fields[i].user_id].formatFunction = (function(){
 					return function(fields,cell){
-						console.log(fields)
+						//console.log(fields)
 						var res = "";
 						for(var id in fields){
 							if(id=="id")continue;
@@ -110,8 +115,8 @@ function CollectionGrid(id,options){
 							res+= (res=="")? "":String.fromCharCode(10);
 							
 							var v = fields[id].getValue();
-							console.log("V=")
-							console.log(v)
+							//console.log("V=")
+							//console.log(v)
 							v_str = "";
 							for(var v_id in v){
 								v_str+= (v_str=="")? "":String.fromCharCode(10);
@@ -243,17 +248,18 @@ function CollectionGrid(id,options){
 		if(!inst_params[f_id])continue;
 		
 		var col_constr = eval(inst_params[f_id].funcColumn);
+		var col_opts = CommonHelper.clone(inst_params[f_id].options);
+		col_opts.field = model.getField(f_id);
+		col_opts.ctrlClass = eval(inst_params[f_id].func);
+		col_opts.ctrlOptions = inst_params[f_id].options;
+		col_opts.formatFunction = inst_params[f_id].formatFunction;
+		
 		grid_elements.push(
 			new GridCellHead(id+":head:"+f_id,{
 				"value":inst_params[f_id].colCaption,
 				"colAttrs":{"align":inst_params[f_id].colAlign},
 				"columns":[
-					new col_constr({
-						"field":model.getField(f_id),
-						"ctrlClass":eval(inst_params[f_id].func),
-						"ctrlOptions":inst_params[f_id].options,
-						"formatFunction":inst_params[f_id].formatFunction
-					})							
+					new col_constr(col_opts)							
 				]
 			})
 		);	
